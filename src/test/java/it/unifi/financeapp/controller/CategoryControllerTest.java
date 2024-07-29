@@ -85,4 +85,16 @@ class CategoryControllerTest {
         verify(categoryService, never()).deleteCategory(anyLong());
         verify(categoryView).setStatus("No category selected for deletion.");
     }
+
+    @Test
+    void shouldDeleteSelectedCategory() {
+        when(categoryView.getSelectedCategoryIndex()).thenReturn(0);
+        when(categoryView.getCategoryIdFromTable(0)).thenReturn(1L);
+
+        controller.deleteCategory();
+
+        verify(categoryService).deleteCategory(1L);
+        verify(categoryView).removeCategoryFromTable(0);
+        verify(categoryView).setStatus("Category deleted successfully.");
+    }
 }
