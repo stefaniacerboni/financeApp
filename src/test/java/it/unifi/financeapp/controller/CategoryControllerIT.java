@@ -78,5 +78,20 @@ public class CategoryControllerIT {
         assertEquals("New Category", categoryView.getCategoryTable().getModel().getValueAt(0, 1), "The category name should match.");
     }
 
+    @Test
+    void testDeleteCategoryButtonFunctionality() {
+        // Prepare the view with one category
+        testAddCategoryButtonFunctionality(); // First add a category
+        categoryView.getCategoryTable().setRowSelectionInterval(0, 0); // Select the row
+
+        // Simulate delete button click
+        ActionEvent e = new ActionEvent(categoryView.getDeleteCategoryButton(), ActionEvent.ACTION_PERFORMED, null);
+        for (ActionListener al : categoryView.getDeleteCategoryButton().getActionListeners()) {
+            al.actionPerformed(e);
+        }
+
+        // Assert the row is deleted
+        assertEquals(0, categoryView.getCategoryTable().getModel().getRowCount(), "Table should be empty after deletion.");
+    }
 
 }
