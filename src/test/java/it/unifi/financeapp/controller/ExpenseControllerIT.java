@@ -44,13 +44,12 @@ public class ExpenseControllerIT {
         // Configure JDBC properties dynamically based on Testcontainers
         Map<String, String> overrides = new HashMap<>();
         overrides.put("javax.persistence.jdbc.url", mysqlContainer.getJdbcUrl());
-        overrides.put("javax.persistence.jdbc.expense", mysqlContainer.getUsername());
+        overrides.put("javax.persistence.jdbc.user", mysqlContainer.getUsername());
         overrides.put("javax.persistence.jdbc.password", mysqlContainer.getPassword());
         overrides.put("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");  // MySQL dialect
         overrides.put("hibernate.hbm2ddl.auto", "create-drop");
         // Create EntityManagerFactory with these properties
         emf = Persistence.createEntityManagerFactory("TestFinanceAppPU", overrides);
-
     }
 
     @BeforeEach
