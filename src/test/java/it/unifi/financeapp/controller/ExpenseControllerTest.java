@@ -52,12 +52,15 @@ class ExpenseControllerTest {
     void setUp() {
         MockitoAnnotations.initMocks(this);
         when(expenseView.getAddExpenseButton()).thenReturn(addExpenseButton);
+        when(expenseView.getDeleteExpenseButton()).thenReturn(deleteExpenseButton);
+        when(expenseView.getExpenseTable()).thenReturn(expenseTable);
+        when(expenseTable.getSelectionModel()).thenReturn(selectionModel);
         controller = new ExpenseController(expenseService, categoryService, userService, expenseView);
         controller.initView();
     }
 
     @Test
-    void testInitializeView() {
+    void shouldInitializeView() {
         verify(expenseService).getAllExpenses();
         verify(expenseView).getAddExpenseButton();
         verify(expenseView).getDeleteExpenseButton();
@@ -78,7 +81,7 @@ class ExpenseControllerTest {
     }
 
     @Test
-    void testAddExpense() {
+    void shouldAddExpense() {
         User user = new User("JohnDoe", "John", "Doe", "john.doe@example.com");
         Category category = new Category("Travel", "Travel expenses");
         when(expenseView.getUserComboBox()).thenReturn(userComboBox);
@@ -99,7 +102,7 @@ class ExpenseControllerTest {
     }
 
     @Test
-    void testHandleAddExpenseFailure() {
+    void shouldHandleAddExpenseFailure() {
         User user = new User("JohnDoe", "John", "Doe", "john.doe@example.com");
         Category category = new Category("Travel", "Travel expenses");
         when(expenseView.getUserComboBox()).thenReturn(userComboBox);
@@ -116,7 +119,7 @@ class ExpenseControllerTest {
     }
 
     @Test
-    void testDeleteExpense() {
+    void shouldDeleteExpense() {
         when(expenseView.getSelectedExpenseIndex()).thenReturn(0);
         when(expenseView.getExpenseIdFromTable(0)).thenReturn(1L);
 
@@ -128,7 +131,7 @@ class ExpenseControllerTest {
     }
 
     @Test
-    void testNotDeleteExpenseWhenNoneSelected() {
+    void shouldNotDeleteExpenseWhenNoneSelected() {
         when(expenseView.getSelectedExpenseIndex()).thenReturn(-1);
 
         controller.deleteExpense();
@@ -139,7 +142,7 @@ class ExpenseControllerTest {
     }
 
     @Test
-    void testUpdateDeleteButtonEnabledState() {
+    void shouldUpdateDeleteButtonEnabledState() {
         when(expenseView.getSelectedExpenseIndex()).thenReturn(0);
         controller.updateDeleteButtonEnabledState();
         verify(deleteExpenseButton).setEnabled(true);
@@ -150,7 +153,7 @@ class ExpenseControllerTest {
     }
 
     @Test
-    void testUpdateData() {
+    void shouldUpdateData() {
         when(expenseView.getUserComboBox()).thenReturn(userComboBox);
         when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
         controller.updateData();
@@ -159,7 +162,7 @@ class ExpenseControllerTest {
     }
 
     @Test
-    void testPopulateUserComboBoxWhenUsersAreUpdated() {
+    void shouldPopulateUserComboBoxWhenUsersAreUpdated() {
         when(expenseView.getUserComboBox()).thenReturn(userComboBox);
 
         List<User> users = List.of(new User("User1", "Email1"), new User("User2", "Email2"));
@@ -171,7 +174,7 @@ class ExpenseControllerTest {
     }
 
     @Test
-    void testPopulateCategoryComboBoxWhenCategoriesAreUpdated() {
+    void shouldPopulateCategoryComboBoxWhenCategoriesAreUpdated() {
         when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
         List<Category> categories = List.of(new Category("Category1", "Description1"), new Category("Category2", "Description2"));
         when(categoryService.getAllCategories()).thenReturn(categories);
