@@ -44,4 +44,17 @@ class UserServiceTest {
             verify(userRepository).save(user);
         }
     }
+
+    @Test
+    public void testSaveExistingUser() {
+        User existingUser = new User("username", "email");
+        existingUser.setId(1L); // Simulate an existing category
+        when(userRepository.save(existingUser)).thenReturn(existingUser);
+
+        User updatedUser = userService.addUser(existingUser);
+
+        assertNotNull(updatedUser);
+        Assertions.assertEquals(existingUser.getId(), updatedUser.getId());
+        verify(userRepository).save(existingUser);
+    }
 }
