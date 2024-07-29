@@ -106,5 +106,19 @@ class ExpenseServiceTest {
             verify(expenseRepository).update(originalExpense);
         }
 
+
+        @Test
+        void testDeleteExpense() {
+            Expense expense = new Expense(new Category("Food", "Category about food"),
+                    new User("username", "name", "surname", "email"),
+                    9.99, "2024-07-15");
+
+            when(expenseRepository.findById(expense.getId())).thenReturn(expense);
+
+            expenseService.deleteExpense(expense.getId());
+
+            verify(expenseRepository).delete(expense);
+        }
+
     }
 }
