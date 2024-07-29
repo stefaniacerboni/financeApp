@@ -77,4 +77,17 @@ public class UserControllerTest {
         verify(userView).setStatus("User added successfully.");
         verify(userView).clearForm();
     }
+
+    @Test
+    void shouldHandleAddUserFailure() {
+        when(userView.getUsername()).thenReturn("JohnDoe");
+        when(userView.getName()).thenReturn("John");
+        when(userView.getSurname()).thenReturn("Doe");
+        when(userView.getEmail()).thenReturn("johndoe@example.com");
+        when(userService.addUser(any(User.class))).thenReturn(null);
+
+        controller.addUser();
+
+        verify(userView).setStatus("Failed to add user.");
+    }
 }
