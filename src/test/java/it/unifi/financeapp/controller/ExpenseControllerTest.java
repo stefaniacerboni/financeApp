@@ -137,4 +137,15 @@ class ExpenseControllerTest {
         verify(expenseService, never()).deleteExpense(anyLong());
         verify(expenseView).setStatus("No expense selected for deletion.");
     }
+
+    @Test
+    void testUpdateDeleteButtonEnabledState() {
+        when(expenseView.getSelectedExpenseIndex()).thenReturn(0);
+        controller.updateDeleteButtonEnabledState();
+        verify(deleteExpenseButton).setEnabled(true);
+
+        when(expenseView.getSelectedExpenseIndex()).thenReturn(-1);
+        controller.updateDeleteButtonEnabledState();
+        verify(deleteExpenseButton).setEnabled(false);
+    }
 }
