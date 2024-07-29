@@ -166,5 +166,22 @@ public class ExpenseServiceIT {
         assertTrue(expectedExpenses.contains(expense2));
     }
 
+    @Test
+    void testDeleteExpense() {
+        // Create and save an expense
+        Category category = new Category("Coffee", "Category about coffee");
+        User user = new User("username", "email");
+        Expense expense = new Expense(category, user, 3.50, "2024-07-15");
+        Expense savedExpense = expenseService.addExpense(expense);
+        assertNotNull(savedExpense);
+
+        // Delete the expense
+        expenseService.deleteExpense(savedExpense.getId());
+
+        // Attempt to retrieve the deleted expense
+        Expense foundExpense = expenseService.findExpenseById(savedExpense.getId());
+        assertNull(foundExpense);
+    }
+
 
 }
