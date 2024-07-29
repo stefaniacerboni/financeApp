@@ -19,6 +19,9 @@ public class CategoryTest {
         Category category = new Category();
         String name = "Name";
         String description = "Description";
-        category.setName("Name");
+        category.setName(name);
+        category.setDescription(description);
+        assertEquals(name, category.getName());
+        assertEquals(description, category.getDescription());
     }
 }
