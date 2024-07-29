@@ -9,22 +9,15 @@
         <class>it.unifi.financeapp.model.Expense</class>
         <class>it.unifi.financeapp.model.User</class>
         <class>it.unifi.financeapp.model.Category</class>
-
         <properties>
-            <!-- Configuring JDBC properties -->
             <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:32773/testdb"/>
-            <property name="javax.persistence.jdbc.user" value="test"/>
-            <property name="javax.persistence.jdbc.password" value="test"/>
-            <!-- Hibernate properties -->
-            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
             <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="false"/>
-
-            <!-- Caching -->
             <property name="hibernate.cache.use_second_level_cache" value="false"/>
             <property name="hibernate.cache.use_query_cache" value="false"/>
         </properties>
+
     </persistence-unit>
 </persistence>
