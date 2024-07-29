@@ -6,6 +6,7 @@ import it.unifi.financeapp.service.exceptions.InvalidUserException;
 import org.hibernate.service.spi.ServiceException;
 
 import javax.persistence.PersistenceException;
+import java.util.List;
 
 public class UserService {
 
@@ -24,6 +25,11 @@ public class UserService {
             throw new ServiceException("Error while adding user", pe);
         }
     }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
 
     private void validateUser(User user) {
         if (user == null) {

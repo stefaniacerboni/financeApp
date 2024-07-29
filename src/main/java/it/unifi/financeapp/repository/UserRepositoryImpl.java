@@ -24,4 +24,9 @@ public class UserRepositoryImpl implements UserRepository {
         entityManager.getTransaction().commit();
         return user;
     }
+
+    @Override
+    public List<User> findAll() {
+        return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
+    }
 }
