@@ -163,4 +163,16 @@ public class UserServiceIT {
         assertTrue(expectedUsers.contains(savedUser2));
     }
 
+    @Test
+    void testDeleteAll(){
+        User user1 = new User("username1", "email1");
+        userService.addUser(user1);
+        List<User> actualUsers = userService.getAllUsers();
+        assertNotNull(actualUsers);
+        Assertions.assertEquals(1, actualUsers.size());
+        userService.deleteAll();
+        List<User> emptyUsers = userService.getAllUsers();
+        Assertions.assertEquals(0, emptyUsers.size());
+    }
+
 }
