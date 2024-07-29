@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -84,6 +85,23 @@ public class CategoryServiceTest {
             Assertions.assertEquals(2, actualCategories.size());
             Assertions.assertEquals(expectedCategories, actualCategories);
             verify(categoryRepository).findAll();
+        }
+
+        @Test
+        void testGetAllCategoriesEmptyList() {
+            when(categoryRepository.findAll()).thenReturn(List.of());
+            List<Category> actualCategories = categoryService.getAllCategories();
+            assertNotNull(actualCategories);
+            assertTrue(actualCategories.isEmpty());
+        }
+
+        @Test
+        void testDeleteCategory() {
+            Category category = new Category("name", "description");
+            when(categoryRepository.findById(category.getId())).thenReturn(category);
+            categoryService.deleteCategory(category.getId());
+            verify(categoryRepository).findById(category.getId());
+            verify(categoryRepository).delete(category);
         }
 
     }
