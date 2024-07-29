@@ -14,11 +14,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CategoryServiceTest {
@@ -27,6 +25,7 @@ public class CategoryServiceTest {
 
     @InjectMocks
     private CategoryService categoryService;
+
     @Nested
     @DisplayName("Happy Cases")
     class HappyCases {
@@ -104,5 +103,12 @@ public class CategoryServiceTest {
             verify(categoryRepository).delete(category);
         }
 
+        @Test
+        void testDeleteNonExistentCategory() {
+            Long categoryId = 1L;
+            when(categoryRepository.findById(categoryId)).thenReturn(null);
+            assertThrows(IllegalArgumentException.class, () -> categoryService.deleteCategory(categoryId));
+            verify(categoryRepository, never()).delete(any(Category.class));
+        }
     }
 }
