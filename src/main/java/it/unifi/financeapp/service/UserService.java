@@ -30,6 +30,10 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public User updateUser(User user) {
+        validateUser(user);
+        return userRepository.update(user);
+    }
 
     private void validateUser(User user) {
         if (user == null) {

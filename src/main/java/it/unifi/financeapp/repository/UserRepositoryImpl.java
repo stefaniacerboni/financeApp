@@ -29,4 +29,12 @@ public class UserRepositoryImpl implements UserRepository {
     public List<User> findAll() {
         return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
     }
+
+    @Override
+    public User update(User user) {
+        entityManager.getTransaction().begin();
+        User result = entityManager.merge(user);
+        entityManager.getTransaction().commit();
+        return result;
+    }
 }
