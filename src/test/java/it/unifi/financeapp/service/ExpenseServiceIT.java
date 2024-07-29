@@ -83,4 +83,23 @@ public class ExpenseServiceIT {
         Assertions.assertEquals(expense.getDate(), retrievedExpense.getDate());
     }
 
+    @Test
+    public void testAddExistingExpense() {
+        // Setup test data
+        Category category = new Category("Coffee", "Category about coffee");
+        User user = new User("username", "email");
+        Expense expense = new Expense(category, user, 3.50, "2024-07-15");
+        expense.setId(100L);
+        Expense savedExpense = expenseService.addExpense(expense);
+
+        // Assertions
+        assertNotNull(savedExpense);
+        Assertions.assertEquals(category.getName(), savedExpense.getCategory().getName());
+        Assertions.assertEquals(category.getDescription(), savedExpense.getCategory().getDescription());
+        Assertions.assertEquals(user.getName(), savedExpense.getUser().getName());
+        Assertions.assertEquals(user.getEmail(), savedExpense.getUser().getEmail());
+        Assertions.assertEquals(expense.getAmount(), savedExpense.getAmount(), 0.001);
+        Assertions.assertEquals(expense.getDate(), savedExpense.getDate());
+    }
+
 }
