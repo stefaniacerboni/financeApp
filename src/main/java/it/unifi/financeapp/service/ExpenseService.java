@@ -29,6 +29,10 @@ public class ExpenseService {
         return expenseRepository.findById(id);
     }
 
+    public Expense updateExpense(Expense expense) {
+        validateExpense(expense);
+        return expenseRepository.update(expense);
+    }
 
     private void validateExpense(Expense expense) {
         if (expense == null) {
