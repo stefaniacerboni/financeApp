@@ -37,4 +37,10 @@ public class UserRepositoryImpl implements UserRepository {
         entityManager.getTransaction().commit();
         return result;
     }
+
+    @Override
+    public User findById(Long id) {
+        return entityManager.find(User.class, id);
+    }
+
 }

@@ -35,6 +35,11 @@ public class UserService {
         return userRepository.update(user);
     }
 
+    public User findUserById(Long id) {
+        return userRepository.findById(id);
+    }
+
+
     private void validateUser(User user) {
         if (user == null) {
             throw new IllegalArgumentException("Cannot add a null user.");
