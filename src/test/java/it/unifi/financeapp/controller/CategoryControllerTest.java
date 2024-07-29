@@ -13,9 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.swing.*;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryControllerTest {
@@ -74,5 +73,16 @@ class CategoryControllerTest {
         controller.addCategory();
 
         verify(categoryView).setStatus("Failed to add category.");
+    }
+    
+    @Test
+    void shouldNotDeleteIfNoCategorySelected() {
+        when(categoryView.getSelectedCategoryIndex()).thenReturn(-1);
+
+        controller.deleteCategory();
+
+        verify(categoryView, never()).getCategoryIdFromTable(anyInt());
+        verify(categoryService, never()).deleteCategory(anyLong());
+        verify(categoryView).setStatus("No category selected for deletion.");
     }
 }
