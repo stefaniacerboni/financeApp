@@ -45,4 +45,16 @@ public class ExpenseController {
             expenseView.setStatus("Failed to add expense.");
         }
     }
+
+    public void deleteExpense() {
+        int selectedRow = expenseView.getSelectedExpenseIndex();
+        if (selectedRow >= 0) {
+            Long expenseId = expenseView.getExpenseIdFromTable(selectedRow);
+            expenseService.deleteExpense(expenseId);
+            expenseView.removeExpenseFromTable(selectedRow);
+            expenseView.setStatus("Expense deleted successfully.");
+        } else {
+            expenseView.setStatus("No expense selected for deletion.");
+        }
+    }
 }

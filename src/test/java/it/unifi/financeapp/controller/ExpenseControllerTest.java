@@ -57,7 +57,7 @@ class ExpenseControllerTest {
     }
 
     @Test
-    void shouldInitializeView() {
+    void testInitializeView() {
         verify(expenseService).getAllExpenses();
         verify(expenseView).getAddExpenseButton();
         verify(expenseView).getDeleteExpenseButton();
@@ -125,5 +125,16 @@ class ExpenseControllerTest {
         verify(expenseService).deleteExpense(1L);
         verify(expenseView).removeExpenseFromTable(0);
         verify(expenseView).setStatus("Expense deleted successfully.");
+    }
+
+    @Test
+    void testNotDeleteExpenseWhenNoneSelected() {
+        when(expenseView.getSelectedExpenseIndex()).thenReturn(-1);
+
+        controller.deleteExpense();
+
+        verify(expenseView, never()).getExpenseIdFromTable(anyInt());
+        verify(expenseService, never()).deleteExpense(anyLong());
+        verify(expenseView).setStatus("No expense selected for deletion.");
     }
 }
