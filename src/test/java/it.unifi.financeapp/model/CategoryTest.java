@@ -13,4 +13,12 @@ public class CategoryTest {
         assertEquals(name, category.getName());
         assertEquals(description, category.getDescription());
     }
+
+    @Test
+    void testSetCategoryDetails(){
+        Category category = new Category();
+        String name = "Name";
+        String description = "Description";
+        category.setName("Name");
+    }
 }
