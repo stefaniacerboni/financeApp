@@ -128,4 +128,19 @@ public class UserServiceIT {
         Assertions.assertEquals(updatedUser.getEmail(), foundUser.getEmail());
     }
 
+    @Test
+    void testDeleteUser() {
+        // Create and save an user
+        User user = new User("username", "email");
+        User savedUser = userService.addUser(user);
+        assertNotNull(savedUser);
+
+        // Delete the user
+        userService.deleteUser(savedUser.getId());
+
+        // Attempt to retrieve the deleted user
+        User foundUser = userService.findUserById(savedUser.getId());
+        assertNull(foundUser);
+    }
+
 }
