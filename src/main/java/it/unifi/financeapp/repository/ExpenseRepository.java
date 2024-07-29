@@ -1,4 +1,7 @@
 package it.unifi.financeapp.repository;
 
-public class ExpenseRepository {
+import it.unifi.financeapp.model.Expense;
+
+public interface ExpenseRepository {
+    Expense save (Expense expense);
 }
