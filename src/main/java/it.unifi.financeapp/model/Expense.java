@@ -13,6 +13,10 @@ public class Expense {
         this.date = date;
     }
 
+    public Expense() {
+
+    }
+
     public Category getCategory() {
         return category;
     }
