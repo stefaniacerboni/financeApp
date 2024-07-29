@@ -1,10 +1,9 @@
 package it.unifi.financeapp.service;
 
+import it.unifi.financeapp.model.User;
 import it.unifi.financeapp.repository.UserRepository;
 import it.unifi.financeapp.repository.UserRepositoryImpl;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.*;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -14,6 +13,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Testcontainers
 public class UserServiceIT {
@@ -57,4 +58,20 @@ public class UserServiceIT {
         userService.deleteAll();
     }
 
+    @Test
+    public void testAddAndRetrieveUser() {
+        // Setup test data
+        User user = new User("username", "name", "surname", "email");
+        User savedUser = userService.addUser(user);
+
+        // Retrieve from service
+        User retrievedUser = userService.findUserById(savedUser.getId());
+
+        // Assertions
+        assertNotNull(retrievedUser);
+        Assertions.assertEquals(user.getUsername(), retrievedUser.getUsername());
+        Assertions.assertEquals(user.getName(), retrievedUser.getName());
+        Assertions.assertEquals(user.getSurname(), retrievedUser.getSurname());
+        Assertions.assertEquals(user.getEmail(), retrievedUser.getEmail());
+    }
 }
