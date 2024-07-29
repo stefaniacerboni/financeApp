@@ -7,6 +7,7 @@ import it.unifi.financeapp.repository.UserRepositoryImpl;
 import it.unifi.financeapp.service.UserService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -14,8 +15,13 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Testcontainers
 public class UserControllerIT {
@@ -56,6 +62,28 @@ public class UserControllerIT {
         userView = new UserPanel();
         userController = new UserController(userService, userView);
         userController.initView();
+    }
+
+    @Test
+    void testAddUserButtonFunctionality() {
+        // Setting text to inputs
+        userView.setUsername("NewUser");
+        userView.setName("New User Name");
+        userView.setSurname("New User Surname");
+        userView.setEmail("New User Email");
+
+        // Simulating button click
+        ActionEvent e = new ActionEvent(userView.getAddUserButton(), ActionEvent.ACTION_PERFORMED, null);
+        for (ActionListener al : userView.getAddUserButton().getActionListeners()) {
+            al.actionPerformed(e);
+        }
+
+        // Assert changes
+        assertTrue(userView.getUserTable().getModel().getRowCount() > 0, "Table should have one user added.");
+        assertEquals("NewUser", userView.getUserTable().getModel().getValueAt(0, 1), "The user username should match.");
+        assertEquals("New User Name", userView.getUserTable().getModel().getValueAt(0, 2), "The user name should match.");
+        assertEquals("New User Surname", userView.getUserTable().getModel().getValueAt(0, 3), "The user surname should match.");
+        assertEquals("New User Email", userView.getUserTable().getModel().getValueAt(0, 4), "The user email should match.");
     }
 
 }
