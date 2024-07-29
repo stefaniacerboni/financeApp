@@ -59,5 +59,16 @@ public class CategoryServiceTest {
             Assertions.assertEquals(expectedCategory, result);
             verify(categoryRepository).findById(expectedCategory.getId());
         }
+
+        @Test
+        void testUpdateCategory() {
+            Category originalCategory = new Category("originalName", "description");
+            Category updatedCategory = new Category("updatedName", "description");
+            when(categoryRepository.update(originalCategory)).thenReturn(updatedCategory);
+            Category result = categoryService.updateCategory(originalCategory);
+            assertNotNull(result);
+            Assertions.assertEquals(updatedCategory.getName(), result.getName());
+            verify(categoryRepository).update(originalCategory);
+        }
     }
 }
