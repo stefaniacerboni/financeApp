@@ -1,5 +1,7 @@
 package it.unifi.financeapp.model;
 
+import java.util.Objects;
+
 public class Expense {
     private Category category;
     private User user;
@@ -47,5 +49,18 @@ public class Expense {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Expense expense = (Expense) o;
+        return Objects.equals(category, expense.category) && Objects.equals(user, expense.user) && Objects.equals(amount, expense.amount) && Objects.equals(date, expense.date);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(category, user, amount, date);
     }
 }
