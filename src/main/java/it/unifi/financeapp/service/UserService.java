@@ -39,6 +39,14 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    public void deleteUser(Long id) {
+        User user = userRepository.findById(id);
+        if (user != null) {
+            userRepository.delete(user);
+        } else
+            throw new IllegalArgumentException("Cannot delete a null expense.");
+
+    }
 
     private void validateUser(User user) {
         if (user == null) {

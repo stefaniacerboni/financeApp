@@ -43,4 +43,10 @@ public class UserRepositoryImpl implements UserRepository {
         return entityManager.find(User.class, id);
     }
 
+    @Override
+    public void delete(User user) {
+        entityManager.getTransaction().begin();
+        entityManager.remove(user);
+        entityManager.getTransaction().commit();
+    }
 }

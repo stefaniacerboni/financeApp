@@ -120,4 +120,20 @@ class UserServiceTest {
         verify(userRepository).findById(userId);
     }
 
+    @Test
+    void testDeleteUser() {
+        User user = new User("username", "name", "surname", "email");
+        Long userId = user.getId();
+
+        when(userRepository.findById(userId)).thenReturn(user);
+
+        userService.deleteUser(userId);
+
+        // Verify findById was called to fetch the user
+        verify(userRepository).findById(userId);
+
+        // Verify delete was called with the fetched user
+        verify(userRepository).delete(user);
+    }
+
 }
