@@ -108,4 +108,24 @@ public class UserServiceIT {
 
         assertTrue(exception.getMessage().contains("Cannot add a null user"));
     }
+
+    @Test
+    void testUpdateUser() {
+        // Create and save an initial user
+        User user = new User("username", "email");
+        User savedUser = userService.addUser(user);
+        assertNotNull(savedUser);
+
+        // Update the user
+        user.setUsername("anotherUsername");
+        user.setEmail("anotherEmail");
+        User updatedUser = userService.updateUser(user);
+
+        // Retrieve and assert changes
+        User foundUser = userService.findUserById(updatedUser.getId());
+        assertNotNull(foundUser);
+        Assertions.assertEquals(updatedUser.getUsername(), foundUser.getUsername());
+        Assertions.assertEquals(updatedUser.getEmail(), foundUser.getEmail());
+    }
+
 }
