@@ -57,4 +57,9 @@ public class ExpenseController {
             expenseView.setStatus("No expense selected for deletion.");
         }
     }
+
+    void updateDeleteButtonEnabledState() {
+        boolean isSelected = expenseView.getSelectedExpenseIndex() >= 0;
+        expenseView.getDeleteExpenseButton().setEnabled(isSelected);
+    }
 }
