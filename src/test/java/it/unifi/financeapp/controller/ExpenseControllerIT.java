@@ -10,6 +10,7 @@ import it.unifi.financeapp.service.ExpenseService;
 import it.unifi.financeapp.service.UserService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -17,8 +18,13 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Testcontainers
 public class ExpenseControllerIT {
@@ -72,5 +78,27 @@ public class ExpenseControllerIT {
         expenseController = new ExpenseController(expenseService, categoryService, userService, expenseView);
         expenseController.initView();
         expenseController.updateData();
+    }
+    
+    @Test
+    void testAddExpenseButtonFunctionality() {
+        // Setting text to inputs
+        expenseView.getUserComboBox().setSelectedIndex(0);
+        expenseView.getCategoryComboBox().setSelectedIndex(0);
+        expenseView.setAmount("50");
+        expenseView.setDate("2024-09-05");
+
+        // Simulating button click
+        ActionEvent e = new ActionEvent(expenseView.getAddExpenseButton(), ActionEvent.ACTION_PERFORMED, null);
+        for (ActionListener al : expenseView.getAddExpenseButton().getActionListeners()) {
+            al.actionPerformed(e);
+        }
+
+        // Assert changes
+        assertTrue(expenseView.getExpenseTable().getModel().getRowCount() > 0, "Table should have one expense added.");
+        assertEquals("Test Username", expenseView.getExpenseTable().getModel().getValueAt(0, 1), "The expense username should match.");
+        assertEquals("Category Name", expenseView.getExpenseTable().getModel().getValueAt(0, 2), "The username should match.");
+        assertEquals(50.0, expenseView.getExpenseTable().getModel().getValueAt(0, 3), "The amount should match.");
+        assertEquals("2024-09-05", expenseView.getExpenseTable().getModel().getValueAt(0, 4), "The date should match.");
     }
 }
