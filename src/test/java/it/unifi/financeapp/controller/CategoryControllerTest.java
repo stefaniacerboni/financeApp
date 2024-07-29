@@ -97,4 +97,15 @@ class CategoryControllerTest {
         verify(categoryView).removeCategoryFromTable(0);
         verify(categoryView).setStatus("Category deleted successfully.");
     }
+
+    @Test
+    void shouldUpdateDeleteButtonEnabledState() {
+        when(categoryView.getSelectedCategoryIndex()).thenReturn(0);
+        controller.updateDeleteButtonEnabledState();
+        verify(deleteCategoryButton).setEnabled(true);
+
+        when(categoryView.getSelectedCategoryIndex()).thenReturn(-1);
+        controller.updateDeleteButtonEnabledState();
+        verify(deleteCategoryButton).setEnabled(false);
+    }
 }
