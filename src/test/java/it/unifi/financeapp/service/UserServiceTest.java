@@ -89,4 +89,21 @@ class UserServiceTest {
         verify(userRepository).findAll();
     }
 
+    @Test
+    void testUpdateUser() {
+        User originalUser = new User("originalUsername", "name", "surname", "email");
+        User updatedUser = new User("updatedUsername", "updatedName", "updatedSurname", "email");
+
+        when(userRepository.update(originalUser)).thenReturn(updatedUser);
+
+        originalUser.setUsername("updatedUsername");
+        originalUser.setName("updatedName");
+        originalUser.setSurname("updatedSurname");
+        User result = userService.updateUser(originalUser);
+
+        assertNotNull(result);
+        Assertions.assertEquals(updatedUser.getUsername(), result.getUsername());
+        verify(userRepository).update(originalUser);
+    }
+
 }
