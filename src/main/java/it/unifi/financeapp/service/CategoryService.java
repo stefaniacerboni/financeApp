@@ -26,6 +26,11 @@ public class CategoryService {
         }
     }
 
+    public Category findCategoryById(Long id) {
+        return categoryRepository.findById(id);
+    }
+
+
     private void validateCategory(Category category) {
         if (category == null) {
             throw new IllegalArgumentException("Cannot add a null category.");
