@@ -20,8 +20,7 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
 public class CategoryControllerIT {
@@ -94,4 +93,15 @@ public class CategoryControllerIT {
         assertEquals(0, categoryView.getCategoryTable().getModel().getRowCount(), "Table should be empty after deletion.");
     }
 
+    @Test
+    void testTableSelectionEnablesDeleteButton() {
+        testAddCategoryButtonFunctionality();
+        assertFalse(categoryView.getDeleteCategoryButton().isEnabled(), "Delete button should initially be disabled.");
+
+        // Simulate table row selection
+        categoryView.getCategoryTable().setRowSelectionInterval(0, 0);
+
+        // Assert the delete button is enabled
+        assertTrue(categoryView.getDeleteCategoryButton().isEnabled(), "Delete button should be enabled when a row is selected.");
+    }
 }
