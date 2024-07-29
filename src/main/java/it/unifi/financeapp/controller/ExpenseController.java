@@ -9,6 +9,10 @@ import it.unifi.financeapp.service.CategoryService;
 import it.unifi.financeapp.service.ExpenseService;
 import it.unifi.financeapp.service.UserService;
 
+import javax.swing.*;
+import java.util.List;
+import java.util.Vector;
+
 public class ExpenseController {
     private final ExpenseService expenseService;
     private final UserService userService;
@@ -61,5 +65,20 @@ public class ExpenseController {
     void updateDeleteButtonEnabledState() {
         boolean isSelected = expenseView.getSelectedExpenseIndex() >= 0;
         expenseView.getDeleteExpenseButton().setEnabled(isSelected);
+    }
+
+    public void updateData() {
+        updateUsers();
+        updateCategories();
+    }
+
+    void updateUsers() {
+        List<User> users = userService.getAllUsers();
+        expenseView.getUserComboBox().setModel(new DefaultComboBoxModel<>(new Vector<>(users)));
+    }
+
+    void updateCategories() {
+        List<Category> categories = categoryService.getAllCategories();
+        expenseView.getCategoryComboBox().setModel(new DefaultComboBoxModel<>(new Vector<>(categories)));
     }
 }

@@ -148,4 +148,13 @@ class ExpenseControllerTest {
         controller.updateDeleteButtonEnabledState();
         verify(deleteExpenseButton).setEnabled(false);
     }
+
+    @Test
+    void testUpdateData() {
+        when(expenseView.getUserComboBox()).thenReturn(userComboBox);
+        when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
+        controller.updateData();
+        verify(userService).getAllUsers();
+        verify(categoryService).getAllCategories();
+    }
 }
