@@ -114,4 +114,16 @@ class ExpenseControllerTest {
 
         verify(expenseView).setStatus("Failed to add expense.");
     }
+
+    @Test
+    void testDeleteExpense() {
+        when(expenseView.getSelectedExpenseIndex()).thenReturn(0);
+        when(expenseView.getExpenseIdFromTable(0)).thenReturn(1L);
+
+        controller.deleteExpense();
+
+        verify(expenseService).deleteExpense(1L);
+        verify(expenseView).removeExpenseFromTable(0);
+        verify(expenseView).setStatus("Expense deleted successfully.");
+    }
 }
