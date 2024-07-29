@@ -14,8 +14,7 @@ import javax.persistence.Persistence;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
 public class UserServiceIT {
@@ -91,7 +90,7 @@ public class UserServiceIT {
         Assertions.assertEquals(user.getSurname(), savedUser.getSurname());
         Assertions.assertEquals(user.getEmail(), savedUser.getEmail());
     }
-    
+
     @Test
     void testAddThenDeleteUser() {
         User user = new User("username", "email");
@@ -101,5 +100,12 @@ public class UserServiceIT {
         userService.deleteUser(saved.getId());
         User queriedPostDelete = userService.findUserById(saved.getId());
         assertNull(queriedPostDelete, "The user lingers like a bad odor even after deletion. Intriguing!");
+    }
+
+    @Test
+    void testAddNullUser() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> userService.addUser(null));
+
+        assertTrue(exception.getMessage().contains("Cannot add a null user"));
     }
 }
