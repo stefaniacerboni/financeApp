@@ -41,6 +41,16 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
+    @Transactional
+    public void deleteCategory(Long id) {
+        Category category = categoryRepository.findById(id);
+        if (category != null)
+            categoryRepository.delete(category);
+        else
+            throw new IllegalArgumentException("Cannot delete a null expense.");
+
+    }
+
     private void validateCategory(Category category) {
         if (category == null) {
             throw new IllegalArgumentException("Cannot add a null category.");
