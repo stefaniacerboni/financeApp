@@ -34,6 +34,15 @@ public class ExpenseService {
         return expenseRepository.update(expense);
     }
 
+    public void deleteExpense(Long id) {
+        Expense expense = expenseRepository.findById(id);
+        if (expense != null)
+            expenseRepository.delete(expense);
+        else
+            throw new IllegalArgumentException("Cannot delete a null expense.");
+
+    }
+
     private void validateExpense(Expense expense) {
         if (expense == null) {
             throw new IllegalArgumentException("Cannot add a null expense");

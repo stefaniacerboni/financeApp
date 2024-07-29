@@ -49,4 +49,12 @@ public class ExpenseRepositoryImpl implements ExpenseRepository{
             expense.setCategory(entityManager.merge(expense.getCategory()));
         }
     }
+
+    @Transactional
+    @Override
+    public void delete(Expense expense) {
+        entityManager.getTransaction().begin();
+        entityManager.remove(expense);
+        entityManager.getTransaction().commit();
+    }
 }

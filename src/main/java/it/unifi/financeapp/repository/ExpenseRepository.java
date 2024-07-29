@@ -9,4 +9,6 @@ public interface ExpenseRepository {
     Expense findById(Long id);
 
     Expense update(Expense expense);
+
+    void delete(Expense expense);
 }
