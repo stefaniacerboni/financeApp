@@ -102,4 +102,15 @@ public class UserControllerTest {
         verify(userView).removeUserFromTable(0);
         verify(userView).setStatus("User deleted successfully.");
     }
+
+    @Test
+    void shouldUpdateDeleteButtonEnabledState() {
+        when(userView.getSelectedUserIndex()).thenReturn(0);
+        controller.updateDeleteButtonEnabledState();
+        verify(deleteUserButton).setEnabled(true);
+
+        when(userView.getSelectedUserIndex()).thenReturn(-1);
+        controller.updateDeleteButtonEnabledState();
+        verify(deleteUserButton).setEnabled(false);
+    }
 }

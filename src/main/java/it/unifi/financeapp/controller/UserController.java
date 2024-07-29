@@ -15,6 +15,7 @@ public class UserController {
 
     public void initView() {
         userView.getAddUserButton().addActionListener(e -> addUser());
+        userView.getDeleteUserButton().addActionListener(e -> deleteUser());
         loadUsers();
     }
 
@@ -32,6 +33,18 @@ public class UserController {
             userView.clearForm();
         } else {
             userView.setStatus("Failed to add user.");
+        }
+    }
+
+    public void deleteUser() {
+        int selectedRow = userView.getSelectedUserIndex();
+        if (selectedRow >= 0) {
+            Long userId = userView.getUserIdFromTable(selectedRow);
+            userService.deleteUser(userId);
+            userView.removeUserFromTable(selectedRow);
+            userView.setStatus("User deleted successfully.");
+        } else {
+            userView.setStatus("No user selected for deletion.");
         }
     }
 }
