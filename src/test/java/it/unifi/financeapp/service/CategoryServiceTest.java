@@ -11,6 +11,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -70,5 +73,18 @@ public class CategoryServiceTest {
             Assertions.assertEquals(updatedCategory.getName(), result.getName());
             verify(categoryRepository).update(originalCategory);
         }
+
+
+        @Test
+        void testGetAllCategories() {
+            List<Category> expectedCategories = Arrays.asList(new Category("name1", "description1"), new Category("name2", "description2"));
+            when(categoryRepository.findAll()).thenReturn(expectedCategories);
+            List<Category> actualCategories = categoryService.getAllCategories();
+            assertNotNull(actualCategories);
+            Assertions.assertEquals(2, actualCategories.size());
+            Assertions.assertEquals(expectedCategories, actualCategories);
+            verify(categoryRepository).findAll();
+        }
+
     }
 }
