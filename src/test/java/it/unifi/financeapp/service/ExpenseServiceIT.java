@@ -184,7 +184,7 @@ public class ExpenseServiceIT {
     }
 
     @Test
-    void testDeleteAll(){
+    void testDeleteAll() {
         User user = new User("username1", "email1");
         Category category = new Category("Travel", "Category about travel");
         Expense expense = new Expense(category, user, 200.0, "2024-07-22");
@@ -196,6 +196,4 @@ public class ExpenseServiceIT {
         List<Expense> emptyExpenses = expenseService.getAllExpenses();
         Assertions.assertEquals(0, emptyExpenses.size());
     }
-
-
 }
