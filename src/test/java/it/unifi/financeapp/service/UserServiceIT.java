@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @Testcontainers
 public class UserServiceIT {
@@ -89,5 +90,16 @@ public class UserServiceIT {
         Assertions.assertEquals(user.getName(), savedUser.getName());
         Assertions.assertEquals(user.getSurname(), savedUser.getSurname());
         Assertions.assertEquals(user.getEmail(), savedUser.getEmail());
+    }
+    
+    @Test
+    void testAddThenDeleteUser() {
+        User user = new User("username", "email");
+        User saved = userService.addUser(user);
+        Assertions.assertNotNull(saved, "What sorcery is this? The user vanished upon saving!");
+
+        userService.deleteUser(saved.getId());
+        User queriedPostDelete = userService.findUserById(saved.getId());
+        assertNull(queriedPostDelete, "The user lingers like a bad odor even after deletion. Intriguing!");
     }
 }
