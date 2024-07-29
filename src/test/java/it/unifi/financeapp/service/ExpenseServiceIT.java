@@ -121,6 +121,29 @@ public class ExpenseServiceIT {
         Expense queriedPostDelete = expenseService.findExpenseById(saved.getId());
         assertNull(queriedPostDelete, "The expense lingers like a bad odor even after deletion. Intriguing!");
     }
+    
+    @Test
+    void testUpdateExpense() {
+        // Create and save an initial expense
+        Category category = new Category("Transportation", "Category about transportation");
+        User user = new User("username", "email");
+        Expense expense = new Expense(category, user, 15.75, "2024-07-20");
+        Expense savedExpense = expenseService.addExpense(expense);
+        assertNotNull(savedExpense);
+
+        // Update the expense
+        Category category2 = new Category("Travel", "Category about travel");
+        savedExpense.setCategory(category2);
+        savedExpense.setAmount(20.00);
+        Expense updatedExpense = expenseService.updateExpense(savedExpense);
+
+        // Retrieve and assert changes
+        Expense foundExpense = expenseService.findExpenseById(updatedExpense.getId());
+        assertNotNull(foundExpense);
+        Assertions.assertEquals(category2.getName(), foundExpense.getCategory().getName());
+        Assertions.assertEquals(category2.getDescription(), foundExpense.getCategory().getDescription());
+        Assertions.assertEquals(20.00, foundExpense.getAmount(), 0.001);
+    }
 
 
 }
