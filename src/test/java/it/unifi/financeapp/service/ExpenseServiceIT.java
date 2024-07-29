@@ -14,7 +14,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -121,7 +123,7 @@ public class ExpenseServiceIT {
         Expense queriedPostDelete = expenseService.findExpenseById(saved.getId());
         assertNull(queriedPostDelete, "The expense lingers like a bad odor even after deletion. Intriguing!");
     }
-    
+
     @Test
     void testUpdateExpense() {
         // Create and save an initial expense
@@ -143,6 +145,25 @@ public class ExpenseServiceIT {
         Assertions.assertEquals(category2.getName(), foundExpense.getCategory().getName());
         Assertions.assertEquals(category2.getDescription(), foundExpense.getCategory().getDescription());
         Assertions.assertEquals(20.00, foundExpense.getAmount(), 0.001);
+    }
+
+    @Test
+    void testFindAll() {
+        User user = new User("username1", "email1");
+        Category category = new Category("Travel", "Category about travel");
+        Expense expense1 = new Expense(category, user, 200.0, "2024-07-22");
+        Expense expense2 = new Expense(category, user, 300.0, "2024-07-23");
+        Expense savedExpense1 = expenseService.addExpense(expense1);
+        Expense savedExpense2 = expenseService.addExpense(expense2);
+        assertNotNull(savedExpense1);
+        assertNotNull(savedExpense2);
+        List<Expense> expectedExpenses = Arrays.asList(expense1, expense2);
+
+        List<Expense> actualExpenses = expenseService.getAllExpenses();
+        assertNotNull(actualExpenses);
+        Assertions.assertEquals(expectedExpenses.size(), actualExpenses.size());
+        assertTrue(expectedExpenses.contains(expense1));
+        assertTrue(expectedExpenses.contains(expense2));
     }
 
 
