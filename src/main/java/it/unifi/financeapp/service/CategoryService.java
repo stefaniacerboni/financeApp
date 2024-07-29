@@ -7,6 +7,7 @@ import org.hibernate.service.spi.ServiceException;
 
 import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
+import java.util.List;
 
 public class CategoryService {
     private final CategoryRepository categoryRepository;
@@ -34,6 +35,10 @@ public class CategoryService {
     public Category updateCategory(Category category) {
         validateCategory(category);
         return categoryRepository.update(category);
+    }
+
+    public List<Category> getAllCategories() {
+        return categoryRepository.findAll();
     }
 
     private void validateCategory(Category category) {
