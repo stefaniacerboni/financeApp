@@ -169,4 +169,15 @@ class ExpenseControllerTest {
 
         verify(userComboBox).setModel(any(DefaultComboBoxModel.class));
     }
+
+    @Test
+    void testPopulateCategoryComboBoxWhenCategoriesAreUpdated() {
+        when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
+        List<Category> categories = List.of(new Category("Category1", "Description1"), new Category("Category2", "Description2"));
+        when(categoryService.getAllCategories()).thenReturn(categories);
+
+        controller.updateCategories();
+
+        verify(categoryComboBox).setModel(any(DefaultComboBoxModel.class));
+    }
 }
