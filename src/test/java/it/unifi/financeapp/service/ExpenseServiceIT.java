@@ -17,7 +17,7 @@ import javax.persistence.Persistence;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
 public class ExpenseServiceIT {
@@ -101,5 +101,26 @@ public class ExpenseServiceIT {
         Assertions.assertEquals(expense.getAmount(), savedExpense.getAmount(), 0.001);
         Assertions.assertEquals(expense.getDate(), savedExpense.getDate());
     }
+
+    @Test
+    void testAddNullExpense() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> expenseService.addExpense(null));
+
+        assertTrue(exception.getMessage().contains("Cannot add a null expense"));
+    }
+
+    @Test
+    void testAddThenDeleteExpense() {
+        Category category = new Category("Books", "Category about books");
+        User user = new User("username", "email");
+        Expense expense = new Expense(category, user, 62.50, "2024-08-01");
+        Expense saved = expenseService.addExpense(expense);
+        Assertions.assertNotNull(saved, "What sorcery is this? The expense vanished upon saving!");
+
+        expenseService.deleteExpense(saved.getId());
+        Expense queriedPostDelete = expenseService.findExpenseById(saved.getId());
+        assertNull(queriedPostDelete, "The expense lingers like a bad odor even after deletion. Intriguing!");
+    }
+
 
 }
