@@ -2,6 +2,8 @@ package it.unifi.financeapp.model;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class ExpenseTest {
     @Test
     void testExpenseCreation(){
@@ -10,5 +12,9 @@ public class ExpenseTest {
         Long amount = 100L;
         String date = "2024-12-12";
         Expense expense = new Expense(category, user, amount, date);
+        assertEquals(category, expense.getCategory());
+        assertEquals(user, expense.getUser());
+        assertEquals(amount, expense.getAmount());
+        assertEquals(date, expense.getDate());
     }
 }
