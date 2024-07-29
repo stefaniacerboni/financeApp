@@ -86,4 +86,20 @@ public class UserControllerIT {
         assertEquals("New User Email", userView.getUserTable().getModel().getValueAt(0, 4), "The user email should match.");
     }
 
+    @Test
+    void testDeleteUserButtonFunctionality() {
+        // Prepare the view with one user
+        testAddUserButtonFunctionality(); // First add a user
+        userView.getUserTable().setRowSelectionInterval(0, 0); // Select the row
+
+        // Simulate delete button click
+        ActionEvent e = new ActionEvent(userView.getDeleteUserButton(), ActionEvent.ACTION_PERFORMED, null);
+        for (ActionListener al : userView.getDeleteUserButton().getActionListeners()) {
+            al.actionPerformed(e);
+        }
+
+        // Assert the row is deleted
+        assertEquals(0, userView.getUserTable().getModel().getRowCount(), "Table should be empty after deletion.");
+    }
+
 }
