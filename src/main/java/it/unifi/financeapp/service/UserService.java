@@ -48,6 +48,11 @@ public class UserService {
 
     }
 
+    public void deleteAll() {
+        userRepository.deleteAll();
+    }
+
+
     private void validateUser(User user) {
         if (user == null) {
             throw new IllegalArgumentException("Cannot add a null user.");
