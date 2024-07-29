@@ -164,7 +164,7 @@ public class UserServiceIT {
     }
 
     @Test
-    void testDeleteAll(){
+    void testDeleteAll() {
         User user1 = new User("username1", "email1");
         userService.addUser(user1);
         List<User> actualUsers = userService.getAllUsers();
@@ -174,5 +174,4 @@ public class UserServiceIT {
         List<User> emptyUsers = userService.getAllUsers();
         Assertions.assertEquals(0, emptyUsers.size());
     }
-
 }
