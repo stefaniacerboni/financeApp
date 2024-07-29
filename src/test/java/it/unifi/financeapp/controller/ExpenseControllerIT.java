@@ -79,7 +79,7 @@ public class ExpenseControllerIT {
         expenseController.initView();
         expenseController.updateData();
     }
-    
+
     @Test
     void testAddExpenseButtonFunctionality() {
         // Setting text to inputs
@@ -100,5 +100,21 @@ public class ExpenseControllerIT {
         assertEquals("Category Name", expenseView.getExpenseTable().getModel().getValueAt(0, 2), "The username should match.");
         assertEquals(50.0, expenseView.getExpenseTable().getModel().getValueAt(0, 3), "The amount should match.");
         assertEquals("2024-09-05", expenseView.getExpenseTable().getModel().getValueAt(0, 4), "The date should match.");
+    }
+
+    @Test
+    void testDeleteExpenseButtonFunctionality() {
+        // Prepare the view with one expense
+        testAddExpenseButtonFunctionality(); // First add a expense
+        expenseView.getExpenseTable().setRowSelectionInterval(0, 0); // Select the row
+
+        // Simulate delete button click
+        ActionEvent e = new ActionEvent(expenseView.getDeleteExpenseButton(), ActionEvent.ACTION_PERFORMED, null);
+        for (ActionListener al : expenseView.getDeleteExpenseButton().getActionListeners()) {
+            al.actionPerformed(e);
+        }
+
+        // Assert the row is deleted
+        assertEquals(0, expenseView.getExpenseTable().getModel().getRowCount(), "Table should be empty after deletion.");
     }
 }
