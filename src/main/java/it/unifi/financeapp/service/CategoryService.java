@@ -30,6 +30,11 @@ public class CategoryService {
         return categoryRepository.findById(id);
     }
 
+    @Transactional
+    public Category updateCategory(Category category) {
+        validateCategory(category);
+        return categoryRepository.update(category);
+    }
 
     private void validateCategory(Category category) {
         if (category == null) {
