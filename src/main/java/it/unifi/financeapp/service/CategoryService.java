@@ -7,6 +7,7 @@ import org.hibernate.service.spi.ServiceException;
 
 import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
+import java.util.List;
 
 public class CategoryService {
     private final CategoryRepository categoryRepository;
@@ -30,6 +31,25 @@ public class CategoryService {
         return categoryRepository.findById(id);
     }
 
+    @Transactional
+    public Category updateCategory(Category category) {
+        validateCategory(category);
+        return categoryRepository.update(category);
+    }
+
+    public List<Category> getAllCategories() {
+        return categoryRepository.findAll();
+    }
+
+    @Transactional
+    public void deleteCategory(Long id) {
+        Category category = categoryRepository.findById(id);
+        if (category != null)
+            categoryRepository.delete(category);
+        else
+            throw new IllegalArgumentException("Cannot delete a null expense.");
+
+    }
 
     private void validateCategory(Category category) {
         if (category == null) {

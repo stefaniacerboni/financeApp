@@ -11,10 +11,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CategoryServiceTest {
@@ -23,6 +25,7 @@ public class CategoryServiceTest {
 
     @InjectMocks
     private CategoryService categoryService;
+
     @Nested
     @DisplayName("Happy Cases")
     class HappyCases {
@@ -58,6 +61,54 @@ public class CategoryServiceTest {
             assertNotNull(result);
             Assertions.assertEquals(expectedCategory, result);
             verify(categoryRepository).findById(expectedCategory.getId());
+        }
+
+        @Test
+        void testUpdateCategory() {
+            Category originalCategory = new Category("originalName", "description");
+            Category updatedCategory = new Category("updatedName", "description");
+            when(categoryRepository.update(originalCategory)).thenReturn(updatedCategory);
+            Category result = categoryService.updateCategory(originalCategory);
+            assertNotNull(result);
+            Assertions.assertEquals(updatedCategory.getName(), result.getName());
+            verify(categoryRepository).update(originalCategory);
+        }
+
+
+        @Test
+        void testGetAllCategories() {
+            List<Category> expectedCategories = Arrays.asList(new Category("name1", "description1"), new Category("name2", "description2"));
+            when(categoryRepository.findAll()).thenReturn(expectedCategories);
+            List<Category> actualCategories = categoryService.getAllCategories();
+            assertNotNull(actualCategories);
+            Assertions.assertEquals(2, actualCategories.size());
+            Assertions.assertEquals(expectedCategories, actualCategories);
+            verify(categoryRepository).findAll();
+        }
+
+        @Test
+        void testGetAllCategoriesEmptyList() {
+            when(categoryRepository.findAll()).thenReturn(List.of());
+            List<Category> actualCategories = categoryService.getAllCategories();
+            assertNotNull(actualCategories);
+            assertTrue(actualCategories.isEmpty());
+        }
+
+        @Test
+        void testDeleteCategory() {
+            Category category = new Category("name", "description");
+            when(categoryRepository.findById(category.getId())).thenReturn(category);
+            categoryService.deleteCategory(category.getId());
+            verify(categoryRepository).findById(category.getId());
+            verify(categoryRepository).delete(category);
+        }
+
+        @Test
+        void testDeleteNonExistentCategory() {
+            Long categoryId = 1L;
+            when(categoryRepository.findById(categoryId)).thenReturn(null);
+            assertThrows(IllegalArgumentException.class, () -> categoryService.deleteCategory(categoryId));
+            verify(categoryRepository, never()).delete(any(Category.class));
         }
     }
 }
