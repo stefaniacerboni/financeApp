@@ -23,8 +23,7 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
 public class ExpenseControllerIT {
@@ -116,5 +115,19 @@ public class ExpenseControllerIT {
 
         // Assert the row is deleted
         assertEquals(0, expenseView.getExpenseTable().getModel().getRowCount(), "Table should be empty after deletion.");
+    }
+
+    @Test
+    void testTableSelectionEnablesDeleteButton() {
+        // First add a expense
+        testAddExpenseButtonFunctionality();
+        // No selection initially, button should be disabled
+        assertFalse(expenseView.getDeleteExpenseButton().isEnabled(), "Delete button should initially be disabled.");
+
+        // Simulate table row selection
+        expenseView.getExpenseTable().setRowSelectionInterval(0, 0);
+
+        // Assert the delete button is enabled
+        assertTrue(expenseView.getDeleteExpenseButton().isEnabled(), "Delete button should be enabled when a row is selected.");
     }
 }
