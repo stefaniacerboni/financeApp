@@ -76,4 +76,17 @@ class UserServiceTest {
         Assertions.assertEquals(expectedUsers, actualUsers);
         verify(userRepository).findAll();
     }
+
+
+    @Test
+    void testGetAllUsersEmptyList() {
+        when(userRepository.findAll()).thenReturn(List.of());
+
+        List<User> actualUsers = userService.getAllUsers();
+
+        assertNotNull(actualUsers);
+        Assertions.assertTrue(actualUsers.isEmpty());
+        verify(userRepository).findAll();
+    }
+
 }
