@@ -74,7 +74,7 @@ class CategoryControllerTest {
 
         verify(categoryView).setStatus("Failed to add category.");
     }
-    
+
     @Test
     void shouldNotDeleteIfNoCategorySelected() {
         when(categoryView.getSelectedCategoryIndex()).thenReturn(-1);

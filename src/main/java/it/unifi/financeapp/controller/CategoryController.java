@@ -35,4 +35,15 @@ public class CategoryController {
         }
     }
 
+    public void deleteCategory() {
+        int selectedRow = categoryView.getSelectedCategoryIndex();
+        if (selectedRow >= 0) {
+            Long categoryId = categoryView.getCategoryIdFromTable(selectedRow);
+            categoryService.deleteCategory(categoryId);
+            categoryView.removeCategoryFromTable(selectedRow);
+            categoryView.setStatus("Category deleted successfully.");
+        } else {
+            categoryView.setStatus("No category selected for deletion.");
+        }
+    }
 }
