@@ -74,4 +74,20 @@ public class UserServiceIT {
         Assertions.assertEquals(user.getSurname(), retrievedUser.getSurname());
         Assertions.assertEquals(user.getEmail(), retrievedUser.getEmail());
     }
+
+
+    @Test
+    void testAddExistingUser() {
+        // Setup test data
+        User user = new User("username", "name", "surname", "email");
+        user.setId(100L);
+        User savedUser = userService.addUser(user);
+
+        // Assertions
+        assertNotNull(savedUser);
+        Assertions.assertEquals(user.getUsername(), savedUser.getUsername());
+        Assertions.assertEquals(user.getName(), savedUser.getName());
+        Assertions.assertEquals(user.getSurname(), savedUser.getSurname());
+        Assertions.assertEquals(user.getEmail(), savedUser.getEmail());
+    }
 }
