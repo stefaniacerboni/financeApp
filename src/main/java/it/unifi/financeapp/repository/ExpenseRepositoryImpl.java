@@ -31,6 +31,16 @@ public class ExpenseRepositoryImpl implements ExpenseRepository{
         return entityManager.find(Expense.class, id);
     }
 
+    @Transactional
+    @Override
+    public Expense update(Expense expense) {
+        entityManager.getTransaction().begin();
+        manageDependencies(expense);
+        Expense result = entityManager.merge(expense);
+        entityManager.getTransaction().commit();
+        return result;
+    }
+
     private void manageDependencies(Expense expense) {
         if (expense.getUser() != null && !entityManager.contains(expense.getUser())) {
             expense.setUser(entityManager.merge(expense.getUser()));

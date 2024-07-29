@@ -7,4 +7,6 @@ public interface ExpenseRepository {
     Expense save (Expense expense);
 
     Expense findById(Long id);
+
+    Expense update(Expense expense);
 }

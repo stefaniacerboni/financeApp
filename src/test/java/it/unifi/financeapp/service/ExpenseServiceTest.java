@@ -89,5 +89,22 @@ class ExpenseServiceTest {
             verify(expenseRepository).findById(expectedExpense.getId());
         }
 
+
+        @Test
+        void testUpdateExpense() {
+            Category category = new Category("Travel", "Category about travel");
+            User user = new User("username", "name", "surname", "email");
+            Expense originalExpense = new Expense(category, user, 300.00, "2024-07-16");
+            Expense updatedExpense = new Expense(category, user, 350.00, "2024-07-16");
+
+            when(expenseRepository.update(originalExpense)).thenReturn(updatedExpense);
+
+            Expense result = expenseService.updateExpense(originalExpense);
+
+            assertNotNull(result);
+            assertEquals(updatedExpense.getAmount(), result.getAmount());
+            verify(expenseRepository).update(originalExpense);
+        }
+
     }
 }
