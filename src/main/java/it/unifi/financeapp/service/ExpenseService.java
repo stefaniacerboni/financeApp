@@ -25,6 +25,11 @@ public class ExpenseService {
         }
     }
 
+    public Expense findExpenseById(Long id) {
+        return expenseRepository.findById(id);
+    }
+
+
     private void validateExpense(Expense expense) {
         if (expense == null) {
             throw new IllegalArgumentException("Cannot add a null expense");
