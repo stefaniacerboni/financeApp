@@ -5,10 +5,10 @@ import java.util.Objects;
 public class Expense {
     private Category category;
     private User user;
-    private Long amount;
+    private double amount;
     private String date;
 
-    public Expense(Category category, User user, Long amount, String date) {
+    public Expense(Category category, User user, double amount, String date) {
         this.category = category;
         this.user = user;
         this.amount = amount;
@@ -35,11 +35,11 @@ public class Expense {
         this.user = user;
     }
 
-    public Long getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(Long amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
