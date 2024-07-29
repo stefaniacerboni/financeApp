@@ -106,4 +106,18 @@ class UserServiceTest {
         verify(userRepository).update(originalUser);
     }
 
+    @Test
+    void testFindUserById() {
+        User expectedUser = new User("username", "email");
+        Long userId = expectedUser.getId();
+
+        when(userRepository.findById(userId)).thenReturn(expectedUser);
+
+        User result = userService.findUserById(userId);
+
+        assertNotNull(result);
+        Assertions.assertEquals(expectedUser, result);
+        verify(userRepository).findById(userId);
+    }
+
 }
