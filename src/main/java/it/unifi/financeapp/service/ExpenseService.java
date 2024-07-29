@@ -48,6 +48,9 @@ public class ExpenseService {
         return expenseRepository.findAll();
     }
 
+    public void deleteAll() {
+        expenseRepository.deleteAll();
+    }
 
     private void validateExpense(Expense expense) {
         if (expense == null) {

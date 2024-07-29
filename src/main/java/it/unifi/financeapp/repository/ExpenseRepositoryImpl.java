@@ -42,15 +42,6 @@ public class ExpenseRepositoryImpl implements ExpenseRepository{
         return result;
     }
 
-    private void manageDependencies(Expense expense) {
-        if (expense.getUser() != null && !entityManager.contains(expense.getUser())) {
-            expense.setUser(entityManager.merge(expense.getUser()));
-        }
-        if (expense.getCategory() != null && !entityManager.contains(expense.getCategory())) {
-            expense.setCategory(entityManager.merge(expense.getCategory()));
-        }
-    }
-
     @Transactional
     @Override
     public void delete(Expense expense) {
@@ -62,5 +53,22 @@ public class ExpenseRepositoryImpl implements ExpenseRepository{
     @Override
     public List<Expense> findAll() {
         return entityManager.createQuery("SELECT e FROM Expense e", Expense.class).getResultList();
+    }
+
+    @Transactional
+    @Override
+    public void deleteAll() {
+        entityManager.getTransaction().begin();
+        entityManager.createNativeQuery("DELETE e FROM expenses e").executeUpdate();
+        entityManager.getTransaction().commit();
+    }
+
+    private void manageDependencies(Expense expense) {
+        if (expense.getUser() != null && !entityManager.contains(expense.getUser())) {
+            expense.setUser(entityManager.merge(expense.getUser()));
+        }
+        if (expense.getCategory() != null && !entityManager.contains(expense.getCategory())) {
+            expense.setCategory(entityManager.merge(expense.getCategory()));
+        }
     }
 }
