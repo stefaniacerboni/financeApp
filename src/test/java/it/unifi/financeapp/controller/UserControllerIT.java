@@ -46,7 +46,6 @@ public class UserControllerIT {
         overrides.put("hibernate.hbm2ddl.auto", "create-drop");
         // Create EntityManagerFactory with these properties
         emf = Persistence.createEntityManagerFactory("TestFinanceAppPU", overrides);
-
     }
 
     @BeforeEach
