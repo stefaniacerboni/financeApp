@@ -1,14 +1,26 @@
 package it.unifi.financeapp.model;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name = "expenses")
 public class Expense {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
-    private Long amount;
+    private double amount;
     private String date;
 
-    public Expense(Category category, User user, Long amount, String date) {
+    public Expense(Category category, User user, double amount, String date) {
         this.category = category;
         this.user = user;
         this.amount = amount;
@@ -17,6 +29,14 @@ public class Expense {
 
     public Expense() {
 
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Category getCategory() {
@@ -35,11 +55,11 @@ public class Expense {
         this.user = user;
     }
 
-    public Long getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(Long amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 

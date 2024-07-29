@@ -11,7 +11,7 @@ public class ExpenseTest {
     void testExpenseCreation() {
         Category category = new Category("Travel", "Expenses for travel");
         User user = new User("Username", "Name", "Surname", "Email");
-        Long amount = 100L;
+        double amount = 100.0;
         String date = "2024-12-12";
         Expense expense = new Expense(category, user, amount, date);
         assertEquals(category, expense.getCategory());
@@ -25,7 +25,7 @@ public class ExpenseTest {
         Expense expense = new Expense();
         Category category = new Category("Travel", "Expenses for travel");
         User user = new User("Username", "Name", "Surname", "Email");
-        Long amount = 100L;
+        double amount = 100.0;
         String date = "2024-12-12";
         expense.setCategory(category);
         expense.setUser(user);
