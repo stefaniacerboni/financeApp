@@ -3,12 +3,11 @@ package it.unifi.financeapp.model;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class UserTest {
 
     @Test
-    void testCreateUser(){
+    void testCreateUser() {
         String username = "Username";
         String name = "Name";
         String surname = "Surname";
@@ -21,7 +20,7 @@ public class UserTest {
     }
 
     @Test
-    void testSetUserDetails(){
+    void testSetUserDetails() {
         String username = "Username";
         String name = "Name";
         String surname = "Surname";
@@ -38,7 +37,7 @@ public class UserTest {
     }
 
     @Test
-    void testCreateUserWithNoNameSurname(){
+    void testCreateUserWithNoNameSurname() {
         String username = "Username";
         String email = "Email";
         User user = new User(username, email);

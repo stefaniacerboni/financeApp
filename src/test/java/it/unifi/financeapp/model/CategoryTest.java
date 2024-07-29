@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 public class CategoryTest {
 
     @Test
-    void testCreateCategory(){
+    void testCreateCategory() {
         String name = "Travel";
         String description = "Category about travel";
         Category category = new Category(name, description);
@@ -17,7 +17,7 @@ public class CategoryTest {
     }
 
     @Test
-    void testSetCategoryDetails(){
+    void testSetCategoryDetails() {
         Category category = new Category();
         String name = "Name";
         String description = "Description";

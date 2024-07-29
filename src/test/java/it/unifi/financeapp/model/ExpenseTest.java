@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 public class ExpenseTest {
 
     @Test
-    void testExpenseCreation(){
+    void testExpenseCreation() {
         Category category = new Category("Travel", "Expenses for travel");
         User user = new User("Username", "Name", "Surname", "Email");
         Long amount = 100L;
@@ -21,7 +21,7 @@ public class ExpenseTest {
     }
 
     @Test
-    void testSetExpenseDetails(){
+    void testSetExpenseDetails() {
         Expense expense = new Expense();
         Category category = new Category("Travel", "Expenses for travel");
         User user = new User("Username", "Name", "Surname", "Email");
