@@ -7,21 +7,30 @@ import it.unifi.financeapp.repository.CategoryRepositoryImpl;
 import it.unifi.financeapp.service.CategoryService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@Testcontainers
 public class CategoryControllerIT {
     @Container
     public static final MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:5.7")
             .withDatabaseName("testdb")
             .withUsername("test")
             .withPassword("test");
+
     private static EntityManagerFactory emf;
     CategoryView categoryView;
     CategoryService categoryService;
@@ -54,4 +63,20 @@ public class CategoryControllerIT {
         categoryController = new CategoryController(categoryService, categoryView);
         categoryController.initView();
     }
+
+    @Test
+    void testAddCategoryButtonFunctionality() {
+        categoryView.setName("New Category");
+        categoryView.setDescription("New Description");
+
+        ActionEvent e = new ActionEvent(categoryView.getAddCategoryButton(), ActionEvent.ACTION_PERFORMED, null);
+        for (ActionListener al : categoryView.getAddCategoryButton().getActionListeners()) {
+            al.actionPerformed(e);
+        }
+
+        assertTrue(categoryView.getCategoryTable().getModel().getRowCount() > 0, "Table should have one category added.");
+        assertEquals("New Category", categoryView.getCategoryTable().getModel().getValueAt(0, 1), "The category name should match.");
+    }
+
+
 }
