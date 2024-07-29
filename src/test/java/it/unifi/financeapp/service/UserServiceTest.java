@@ -11,6 +11,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -56,5 +59,21 @@ class UserServiceTest {
         assertNotNull(updatedUser);
         Assertions.assertEquals(existingUser.getId(), updatedUser.getId());
         verify(userRepository).save(existingUser);
+    }
+
+    @Test
+    void testGetAllUsers() {
+        User user1 = new User("username1", "email1");
+        User user2 = new User("username2", "email2");
+        List<User> expectedUsers = Arrays.asList(user1, user2);
+
+        when(userRepository.findAll()).thenReturn(expectedUsers);
+
+        List<User> actualUsers = userService.getAllUsers();
+
+        assertNotNull(actualUsers);
+        Assertions.assertEquals(2, actualUsers.size());
+        Assertions.assertEquals(expectedUsers, actualUsers);
+        verify(userRepository).findAll();
     }
 }
