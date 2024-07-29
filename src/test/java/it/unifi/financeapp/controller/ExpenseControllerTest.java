@@ -52,9 +52,6 @@ class ExpenseControllerTest {
     void setUp() {
         MockitoAnnotations.initMocks(this);
         when(expenseView.getAddExpenseButton()).thenReturn(addExpenseButton);
-        when(expenseView.getDeleteExpenseButton()).thenReturn(deleteExpenseButton);
-        when(expenseView.getExpenseTable()).thenReturn(expenseTable);
-        when(expenseTable.getSelectionModel()).thenReturn(selectionModel);
         controller = new ExpenseController(expenseService, categoryService, userService, expenseView);
         controller.initView();
     }
@@ -78,5 +75,26 @@ class ExpenseControllerTest {
         controller.loadExpenses();
 
         verify(expenseView, times(expenses.size())).addExpenseToTable(any(Expense.class));
+    }
+
+    @Test
+    void testAddExpense() {
+        User user = new User("JohnDoe", "John", "Doe", "john.doe@example.com");
+        Category category = new Category("Travel", "Travel expenses");
+        when(expenseView.getUserComboBox()).thenReturn(userComboBox);
+        when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
+        when(expenseView.getUserComboBox().getSelectedItem()).thenReturn(user);
+        when(expenseView.getCategoryComboBox().getSelectedItem()).thenReturn(category);
+        when(expenseView.getAmount()).thenReturn("100");
+        when(expenseView.getDate()).thenReturn("2024-01-01");
+        Expense expense = new Expense(category, user, 100L, "2024-01-01");
+        when(expenseService.addExpense(any(Expense.class))).thenReturn(expense);
+
+        controller.addExpense();
+
+        verify(expenseService).addExpense(any(Expense.class));
+        verify(expenseView).addExpenseToTable(expense);
+        verify(expenseView).setStatus("Expense added successfully.");
+        verify(expenseView).clearForm();
     }
 }
