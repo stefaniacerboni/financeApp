@@ -11,7 +11,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -141,6 +143,24 @@ public class UserServiceIT {
         // Attempt to retrieve the deleted user
         User foundUser = userService.findUserById(savedUser.getId());
         assertNull(foundUser);
+    }
+
+    @Test
+    void testFindAll() {
+        User user1 = new User("username1", "email1");
+        User user2 = new User("username2", "email2");
+        User savedUser1 = userService.addUser(user1);
+        User savedUser2 = userService.addUser(user2);
+        assertNotNull(savedUser1);
+        assertNotNull(savedUser2);
+        List<User> expectedUsers = Arrays.asList(user1, user2);
+
+        List<User> actualCategories = userService.getAllUsers();
+        assertNotNull(actualCategories);
+        Assertions.assertEquals(expectedUsers.size(), actualCategories.size());
+        Assertions.assertEquals(expectedUsers, actualCategories);
+        assertTrue(expectedUsers.contains(savedUser1));
+        assertTrue(expectedUsers.contains(savedUser2));
     }
 
 }
