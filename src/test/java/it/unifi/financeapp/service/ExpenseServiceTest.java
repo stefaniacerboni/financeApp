@@ -12,8 +12,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -118,6 +120,34 @@ class ExpenseServiceTest {
             expenseService.deleteExpense(expense.getId());
 
             verify(expenseRepository).delete(expense);
+        }
+
+        @Test
+        void testDeleteExpenseNull() {
+            Exception exception = assertThrows(IllegalArgumentException.class, () -> expenseService.deleteExpense(1L));
+            assertEquals(exception.getMessage(), "Cannot delete a null expense.");
+        }
+
+
+        @Test
+        void testGetAllExpenses() {
+            List<Expense> expectedExpenses = Arrays.asList(
+                    new Expense(new Category("Food", "Category about food"),
+                            new User("username", "name", "surname", "email"),
+                            9.99, "2024-07-15"),
+                    new Expense(new Category("Utilities", "Category about utilities"),
+                            new User("username", "name", "surname", "email"),
+                            34.76, "2024-07-16")
+            );
+
+            when(expenseRepository.findAll()).thenReturn(expectedExpenses);
+
+            List<Expense> actualExpenses = expenseService.getAllExpenses();
+
+            assertNotNull(actualExpenses);
+            assertEquals(2, actualExpenses.size());
+            assertEquals(expectedExpenses, actualExpenses);
+            verify(expenseRepository).findAll();
         }
 
     }
