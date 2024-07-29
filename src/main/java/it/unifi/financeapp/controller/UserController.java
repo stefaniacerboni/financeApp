@@ -16,6 +16,7 @@ public class UserController {
     public void initView() {
         userView.getAddUserButton().addActionListener(e -> addUser());
         userView.getDeleteUserButton().addActionListener(e -> deleteUser());
+        userView.getUserTable().getSelectionModel().addListSelectionListener(e -> updateDeleteButtonEnabledState());
         loadUsers();
     }
 
@@ -46,5 +47,10 @@ public class UserController {
         } else {
             userView.setStatus("No user selected for deletion.");
         }
+    }
+
+    void updateDeleteButtonEnabledState() {
+        boolean isSelected = userView.getSelectedUserIndex() >= 0;
+        userView.getDeleteUserButton().setEnabled(isSelected);
     }
 }

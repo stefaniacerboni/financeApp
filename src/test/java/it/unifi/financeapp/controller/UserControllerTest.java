@@ -113,4 +113,15 @@ public class UserControllerTest {
         controller.updateDeleteButtonEnabledState();
         verify(deleteUserButton).setEnabled(false);
     }
+
+    @Test
+    void shouldNotDeleteIfNoUserSelected() {
+        when(userView.getSelectedUserIndex()).thenReturn(-1);
+
+        controller.deleteUser();
+
+        verify(userView, never()).getUserIdFromTable(anyInt());
+        verify(userService, never()).deleteUser(anyLong());
+        verify(userView).setStatus("No user selected for deletion.");
+    }
 }
