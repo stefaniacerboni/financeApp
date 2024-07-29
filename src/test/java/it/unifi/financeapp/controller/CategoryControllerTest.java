@@ -64,4 +64,15 @@ class CategoryControllerTest {
         verify(categoryView).setStatus("Category added successfully.");
         verify(categoryView).clearForm();
     }
+
+    @Test
+    void shouldHandleAddCategoryFailure() {
+        when(categoryView.getName()).thenReturn("New Category");
+        when(categoryView.getDescription()).thenReturn("New Description");
+        when(categoryService.addCategory(any(Category.class))).thenReturn(null);
+
+        controller.addCategory();
+
+        verify(categoryView).setStatus("Failed to add category.");
+    }
 }
