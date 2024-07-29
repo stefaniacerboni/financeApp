@@ -6,6 +6,7 @@ import it.unifi.financeapp.service.exceptions.InvalidExpenseException;
 import org.hibernate.service.spi.ServiceException;
 
 import javax.persistence.PersistenceException;
+import java.util.List;
 
 public class ExpenseService {
 
@@ -42,6 +43,11 @@ public class ExpenseService {
             throw new IllegalArgumentException("Cannot delete a null expense.");
 
     }
+
+    public List<Expense> getAllExpenses() {
+        return expenseRepository.findAll();
+    }
+
 
     private void validateExpense(Expense expense) {
         if (expense == null) {

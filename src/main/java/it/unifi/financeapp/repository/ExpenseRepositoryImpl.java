@@ -4,6 +4,7 @@ import it.unifi.financeapp.model.Expense;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.util.List;
 
 public class ExpenseRepositoryImpl implements ExpenseRepository{
     private final EntityManager entityManager;
@@ -56,5 +57,10 @@ public class ExpenseRepositoryImpl implements ExpenseRepository{
         entityManager.getTransaction().begin();
         entityManager.remove(expense);
         entityManager.getTransaction().commit();
+    }
+
+    @Override
+    public List<Expense> findAll() {
+        return entityManager.createQuery("SELECT e FROM Expense e", Expense.class).getResultList();
     }
 }
