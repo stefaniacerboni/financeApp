@@ -30,6 +30,11 @@ public class CategoryServiceTest {
         void testAddCategory() {
             Category category = new Category("name", "description");
             when(categoryRepository.save(any(Category.class))).thenReturn(category);
+            Category result = categoryService.addCategory(category);
+            assertNotNull(result);
+            Assertions.assertEquals(category.getName(), result.getName());
+            Assertions.assertEquals(category.getDescription(), result.getDescription());
+            verify(categoryRepository).save(category);
         }
     }
 }
