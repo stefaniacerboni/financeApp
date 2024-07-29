@@ -51,6 +51,10 @@ public class CategoryService {
 
     }
 
+    public void deleteAll() {
+        categoryRepository.deleteAll();
+    }
+
     private void validateCategory(Category category) {
         if (category == null) {
             throw new IllegalArgumentException("Cannot add a null category.");
