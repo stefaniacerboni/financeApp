@@ -90,4 +90,16 @@ public class UserControllerTest {
 
         verify(userView).setStatus("Failed to add user.");
     }
+
+    @Test
+    void shouldDeleteSelectedUser() {
+        when(userView.getSelectedUserIndex()).thenReturn(0);
+        when(userView.getUserIdFromTable(0)).thenReturn(1L);
+
+        controller.deleteUser();
+
+        verify(userService).deleteUser(1L);
+        verify(userView).removeUserFromTable(0);
+        verify(userView).setStatus("User deleted successfully.");
+    }
 }
