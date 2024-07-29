@@ -2,6 +2,7 @@ package it.unifi.financeapp.service;
 
 import it.unifi.financeapp.model.Category;
 import it.unifi.financeapp.repository.CategoryRepository;
+import it.unifi.financeapp.service.exceptions.InvalidCategoryException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -11,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.PersistenceException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -109,6 +111,64 @@ public class CategoryServiceTest {
             when(categoryRepository.findById(categoryId)).thenReturn(null);
             assertThrows(IllegalArgumentException.class, () -> categoryService.deleteCategory(categoryId));
             verify(categoryRepository, never()).delete(any(Category.class));
+        }
+    }
+
+    @Nested
+    @DisplayName("Error Cases")
+    class ErrorCases {
+
+        @Test
+        void testAddCategoryDatabaseError() {
+            Category newCategory = new Category("newName", "newDescription");
+            when(categoryRepository.save(any(Category.class))).thenThrow(new RuntimeException("Database error"));
+            RuntimeException exception = assertThrows(RuntimeException.class, () -> categoryService.addCategory(newCategory));
+            assertTrue(exception.getMessage().contains("Database error"));
+        }
+
+        @Test
+        void testAddNullCategoryThrowsException() {
+            assertThrows(IllegalArgumentException.class, () -> categoryService.addCategory(null));
+        }
+
+        @Test
+        void testAddCategoryThrowsPersistenceException() {
+            Category category = new Category("name", "description");
+            doThrow(new PersistenceException("Could not persist category")).when(categoryRepository).save(any(Category.class));
+            assertThrows(PersistenceException.class, () -> categoryService.addCategory(category));
+        }
+
+        @Test
+        void testAddCategoryWithInvalidData() {
+            Category invalidCategory = new Category("", "  ");
+            assertThrows(InvalidCategoryException.class, () -> categoryService.addCategory(invalidCategory));
+        }
+
+        @Test
+        void testAddCategoryWithNullNameThrowsException() {
+            Category categoryWithNullName = new Category(null, "Valid Description");
+            Exception exception = assertThrows(InvalidCategoryException.class, () -> categoryService.addCategory(categoryWithNullName));
+            Assertions.assertEquals("Name must be not null.", exception.getMessage());
+        }
+
+        @Test
+        void testAddCategoryWithNullDescriptionThrowsException() {
+            Category categoryWithNullDescription = new Category("Valid Name", null);
+            Exception exception = assertThrows(InvalidCategoryException.class, () -> categoryService.addCategory(categoryWithNullDescription));
+            Assertions.assertEquals("Description cannot be null.", exception.getMessage());
+        }
+
+
+        @Test
+        void testGetAllCategoriesWithError() {
+            when(categoryRepository.findAll()).thenThrow(new RuntimeException("Database error"));
+            assertThrows(RuntimeException.class, () -> categoryService.getAllCategories());
+        }
+
+        @Test
+        void testUpdateCategoryWithInvalidData() {
+            Category invalidCategory = new Category("originalName", null);
+            assertThrows(InvalidCategoryException.class, () -> categoryService.updateCategory(invalidCategory));
         }
     }
 }
