@@ -157,4 +157,16 @@ class ExpenseControllerTest {
         verify(userService).getAllUsers();
         verify(categoryService).getAllCategories();
     }
+
+    @Test
+    void testPopulateUserComboBoxWhenUsersAreUpdated() {
+        when(expenseView.getUserComboBox()).thenReturn(userComboBox);
+
+        List<User> users = List.of(new User("User1", "Email1"), new User("User2", "Email2"));
+        when(userService.getAllUsers()).thenReturn(users);
+
+        controller.updateUsers();
+
+        verify(userComboBox).setModel(any(DefaultComboBoxModel.class));
+    }
 }
