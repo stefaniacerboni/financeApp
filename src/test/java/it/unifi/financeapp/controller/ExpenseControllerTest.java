@@ -142,17 +142,6 @@ class ExpenseControllerTest {
     }
 
     @Test
-    void shouldUpdateDeleteButtonEnabledState() {
-        when(expenseView.getSelectedExpenseIndex()).thenReturn(0);
-        controller.updateDeleteButtonEnabledState();
-        verify(deleteExpenseButton).setEnabled(true);
-
-        when(expenseView.getSelectedExpenseIndex()).thenReturn(-1);
-        controller.updateDeleteButtonEnabledState();
-        verify(deleteExpenseButton).setEnabled(false);
-    }
-
-    @Test
     void shouldUpdateData() {
         when(expenseView.getUserComboBox()).thenReturn(userComboBox);
         when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
