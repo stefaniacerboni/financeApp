@@ -47,7 +47,7 @@ class CategoryPanelTest {
     }
 
     @Test
-    void testWhenNameAndDescriptionAreFilledThenAddButtonShouldBeEnabled(){
+    void testWhenNameAndDescriptionAreFilledThenAddButtonShouldBeEnabled() {
         JTextComponentFixture nameField = window.textBox("nameField");
         JTextComponentFixture descriptionField = window.textBox("descriptionField");
         nameField.setText("Name");
