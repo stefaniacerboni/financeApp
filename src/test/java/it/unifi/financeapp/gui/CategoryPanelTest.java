@@ -36,9 +36,7 @@ class CategoryPanelTest {
         });
 
         window = new FrameFixture(frame);
-        if (System.getProperty("headless", "false").equals("false")) {
-            window.show();
-        }
+        window.show();
     }
 
     @AfterEach
