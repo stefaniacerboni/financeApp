@@ -62,6 +62,7 @@ public class UserPanel extends JPanel implements UserView {
         southPanel.add(deleteUserButton);
 
         statusLabel = new JLabel(" ");
+        statusLabel.setName("statusLabel");
         statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
         southPanel.add(statusLabel);
 
@@ -88,11 +89,19 @@ public class UserPanel extends JPanel implements UserView {
         };
         usernameField.getDocument().addDocumentListener(listener);
         emailField.getDocument().addDocumentListener(listener);
+
+        userTable.getSelectionModel().addListSelectionListener(e -> updateDeleteButtonEnabledState());
     }
 
     void checkFields() {
         boolean enabled = !usernameField.getText().trim().isEmpty() && !emailField.getText().trim().isEmpty();
         addUserButton.setEnabled(enabled);
+    }
+
+
+    void updateDeleteButtonEnabledState() {
+        boolean isSelected = getSelectedUserIndex() >= 0;
+        deleteUserButton.setEnabled(isSelected);
     }
 
     @Override
