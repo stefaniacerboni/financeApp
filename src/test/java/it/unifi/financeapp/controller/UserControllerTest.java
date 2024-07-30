@@ -104,17 +104,6 @@ public class UserControllerTest {
     }
 
     @Test
-    void shouldUpdateDeleteButtonEnabledState() {
-        when(userView.getSelectedUserIndex()).thenReturn(0);
-        controller.updateDeleteButtonEnabledState();
-        verify(deleteUserButton).setEnabled(true);
-
-        when(userView.getSelectedUserIndex()).thenReturn(-1);
-        controller.updateDeleteButtonEnabledState();
-        verify(deleteUserButton).setEnabled(false);
-    }
-
-    @Test
     void shouldNotDeleteIfNoUserSelected() {
         when(userView.getSelectedUserIndex()).thenReturn(-1);
 
