@@ -53,8 +53,6 @@ class ExpenseControllerTest {
         MockitoAnnotations.initMocks(this);
         when(expenseView.getAddExpenseButton()).thenReturn(addExpenseButton);
         when(expenseView.getDeleteExpenseButton()).thenReturn(deleteExpenseButton);
-        when(expenseView.getExpenseTable()).thenReturn(expenseTable);
-        when(expenseTable.getSelectionModel()).thenReturn(selectionModel);
         controller = new ExpenseController(expenseService, categoryService, userService, expenseView);
         controller.initView();
     }
