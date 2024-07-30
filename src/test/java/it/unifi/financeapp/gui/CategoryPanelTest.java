@@ -23,7 +23,7 @@ class CategoryPanelTest {
     private FrameFixture window;
 
     private CategoryView categoryView;
-    
+
     @BeforeEach
     void setUp() {
         JFrame frame = GuiActionRunner.execute(() -> {
@@ -36,8 +36,9 @@ class CategoryPanelTest {
         });
 
         window = new FrameFixture(frame);
-        window.show();
-    }
+        if (System.getProperty("headless", "false").equals("false")) {
+            window.show();
+        }    }
 
     @AfterEach
     void tearDown() {
