@@ -165,7 +165,7 @@ public class CategoryServiceIT {
     }
 
     @Test
-    void testDeleteAll(){
+    void testDeleteAll() {
         Category category1 = new Category("Meals", "Category about meals");
         categoryService.addCategory(category1);
         List<Category> actualCategories = categoryService.getAllCategories();

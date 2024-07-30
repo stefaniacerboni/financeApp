@@ -57,6 +57,7 @@ public class CategoryPanel extends JPanel implements CategoryView {
 
         //Status Label
         statusLabel = new JLabel(" ");
+        statusLabel.setName("statusLabel");
         statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
         southPanel.add(statusLabel);
 
@@ -83,6 +84,8 @@ public class CategoryPanel extends JPanel implements CategoryView {
         };
         nameField.getDocument().addDocumentListener(listener);
         descriptionField.getDocument().addDocumentListener(listener);
+
+        categoryTable.getSelectionModel().addListSelectionListener(e -> updateDeleteButtonEnabledState());
     }
 
     /**
@@ -91,6 +94,11 @@ public class CategoryPanel extends JPanel implements CategoryView {
     void checkFields() {
         boolean enabled = !nameField.getText().trim().isEmpty() && !descriptionField.getText().trim().isEmpty();
         addCategoryButton.setEnabled(enabled);
+    }
+
+    void updateDeleteButtonEnabledState() {
+        boolean isSelected = getSelectedCategoryIndex() >= 0;
+        deleteCategoryButton.setEnabled(isSelected);
     }
 
     @Override

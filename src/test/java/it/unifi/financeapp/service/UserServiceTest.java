@@ -29,27 +29,6 @@ class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
-
-    @Nested
-    @DisplayName("Happy Cases")
-    class HappyCases {
-
-        @Test
-        void testAddUser() {
-            User user = new User("username", "name", "surname", "email");
-            when(userRepository.save(any(User.class))).thenReturn(user);
-
-            User result = userService.addUser(user);
-
-            assertNotNull(result);
-            Assertions.assertEquals(user.getUsername(), result.getUsername());
-            Assertions.assertEquals(user.getName(), result.getName());
-            Assertions.assertEquals(user.getSurname(), result.getSurname());
-            Assertions.assertEquals(user.getEmail(), result.getEmail());
-            verify(userRepository).save(user);
-        }
-    }
-
     @Test
     public void testSaveExistingUser() {
         User existingUser = new User("username", "email");
@@ -78,7 +57,6 @@ class UserServiceTest {
         Assertions.assertEquals(expectedUsers, actualUsers);
         verify(userRepository).findAll();
     }
-
 
     @Test
     void testGetAllUsersEmptyList() {
@@ -136,6 +114,26 @@ class UserServiceTest {
 
         // Verify delete was called with the fetched user
         verify(userRepository).delete(user);
+    }
+
+    @Nested
+    @DisplayName("Happy Cases")
+    class HappyCases {
+
+        @Test
+        void testAddUser() {
+            User user = new User("username", "name", "surname", "email");
+            when(userRepository.save(any(User.class))).thenReturn(user);
+
+            User result = userService.addUser(user);
+
+            assertNotNull(result);
+            Assertions.assertEquals(user.getUsername(), result.getUsername());
+            Assertions.assertEquals(user.getName(), result.getName());
+            Assertions.assertEquals(user.getSurname(), result.getSurname());
+            Assertions.assertEquals(user.getEmail(), result.getEmail());
+            verify(userRepository).save(user);
+        }
     }
 
     @Nested
