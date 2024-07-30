@@ -39,8 +39,6 @@ class CategoryControllerTest {
         MockitoAnnotations.initMocks(this);
         when(categoryView.getAddCategoryButton()).thenReturn(addCategoryButton);
         when(categoryView.getDeleteCategoryButton()).thenReturn(deleteCategoryButton);
-        when(categoryView.getCategoryTable()).thenReturn(categoryTable);
-        when(categoryTable.getSelectionModel()).thenReturn(selectionModel);
         controller = new CategoryController(categoryService, categoryView);
         controller.initView();
     }

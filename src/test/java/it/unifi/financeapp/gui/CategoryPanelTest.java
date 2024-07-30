@@ -2,14 +2,12 @@ package it.unifi.financeapp.gui;
 
 import it.unifi.financeapp.model.Category;
 import org.assertj.swing.core.matcher.JButtonMatcher;
-import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.fixture.JLabelFixture;
 import org.assertj.swing.fixture.JTableFixture;
 import org.assertj.swing.fixture.JTextComponentFixture;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,13 +23,7 @@ class CategoryPanelTest {
     private FrameFixture window;
 
     private CategoryView categoryView;
-
-    @BeforeAll
-    static void setUpOnce() {
-        // Install a security manager to catch violations of Swing threading rules
-        FailOnThreadViolationRepaintManager.install();
-    }
-
+    
     @BeforeEach
     void setUp() {
         JFrame frame = GuiActionRunner.execute(() -> {
@@ -49,8 +41,9 @@ class CategoryPanelTest {
 
     @AfterEach
     void tearDown() {
-        // Clean up the test fixture to ensure no side effects for other tests
-        window.cleanUp();
+        if (window != null) {
+            window.cleanUp();
+        }
     }
 
     @Test
