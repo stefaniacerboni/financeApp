@@ -16,7 +16,6 @@ public class CategoryController {
     public void initView() {
         categoryView.getAddCategoryButton().addActionListener(e -> addCategory());
         categoryView.getDeleteCategoryButton().addActionListener(e -> deleteCategory());
-        categoryView.getCategoryTable().getSelectionModel().addListSelectionListener(e -> updateDeleteButtonEnabledState());
         loadCategories();
     }
 
@@ -47,10 +46,5 @@ public class CategoryController {
         } else {
             categoryView.setStatus("No category selected for deletion.");
         }
-    }
-
-    void updateDeleteButtonEnabledState() {
-        boolean isSelected = categoryView.getSelectedCategoryIndex() >= 0;
-        categoryView.getDeleteCategoryButton().setEnabled(isSelected);
     }
 }
