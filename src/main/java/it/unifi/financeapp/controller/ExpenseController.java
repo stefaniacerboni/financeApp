@@ -29,7 +29,6 @@ public class ExpenseController {
     public void initView() {
         expenseView.getAddExpenseButton().addActionListener(e -> addExpense());
         expenseView.getDeleteExpenseButton().addActionListener(e -> deleteExpense());
-        expenseView.getExpenseTable().getSelectionModel().addListSelectionListener(e -> updateDeleteButtonEnabledState());
         loadExpenses();
     }
 
@@ -62,11 +61,6 @@ public class ExpenseController {
         } else {
             expenseView.setStatus("No expense selected for deletion.");
         }
-    }
-
-    void updateDeleteButtonEnabledState() {
-        boolean isSelected = expenseView.getSelectedExpenseIndex() >= 0;
-        expenseView.getDeleteExpenseButton().setEnabled(isSelected);
     }
 
     public void updateData() {

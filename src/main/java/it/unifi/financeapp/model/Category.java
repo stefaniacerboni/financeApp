@@ -58,4 +58,9 @@ public class Category {
         return Objects.hash(name, description);
     }
 
+    @Override
+    public String toString() {
+        return "name='" + name + '\'' +
+                ", description='" + description;
+    }
 }

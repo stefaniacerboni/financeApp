@@ -104,6 +104,8 @@ public class ExpensePanel extends JPanel implements ExpenseView {
         };
         amountField.getDocument().addDocumentListener(listener);
         dateField.getDocument().addDocumentListener(listener);
+
+        expenseTable.getSelectionModel().addListSelectionListener(e -> updateDeleteButtonEnabledState());
     }
 
     /**
@@ -114,6 +116,11 @@ public class ExpensePanel extends JPanel implements ExpenseView {
         String date = dateField.getText();
         addExpenseButton.setEnabled(!amount.trim().isEmpty() && !date.trim().isEmpty());
 
+    }
+
+    void updateDeleteButtonEnabledState() {
+        boolean isSelected = getSelectedExpenseIndex() >= 0;
+        deleteExpenseButton.setEnabled(isSelected);
     }
 
     @Override

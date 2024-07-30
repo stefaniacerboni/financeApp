@@ -53,8 +53,6 @@ class ExpenseControllerTest {
         MockitoAnnotations.initMocks(this);
         when(expenseView.getAddExpenseButton()).thenReturn(addExpenseButton);
         when(expenseView.getDeleteExpenseButton()).thenReturn(deleteExpenseButton);
-        when(expenseView.getExpenseTable()).thenReturn(expenseTable);
-        when(expenseTable.getSelectionModel()).thenReturn(selectionModel);
         controller = new ExpenseController(expenseService, categoryService, userService, expenseView);
         controller.initView();
     }
@@ -139,17 +137,6 @@ class ExpenseControllerTest {
         verify(expenseView, never()).getExpenseIdFromTable(anyInt());
         verify(expenseService, never()).deleteExpense(anyLong());
         verify(expenseView).setStatus("No expense selected for deletion.");
-    }
-
-    @Test
-    void shouldUpdateDeleteButtonEnabledState() {
-        when(expenseView.getSelectedExpenseIndex()).thenReturn(0);
-        controller.updateDeleteButtonEnabledState();
-        verify(deleteExpenseButton).setEnabled(true);
-
-        when(expenseView.getSelectedExpenseIndex()).thenReturn(-1);
-        controller.updateDeleteButtonEnabledState();
-        verify(deleteExpenseButton).setEnabled(false);
     }
 
     @Test
