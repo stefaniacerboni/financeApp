@@ -45,13 +45,10 @@ jobs:
 
       - name: Run integration tests with Xvfb
         run: xvfb-run --auto-servernum --server-args="-screen 0 1024x768x24" mvn verify -Pintegration-tests
-        
-      - name: Test with JaCoCo
-        run: xvfb-run mvn test jacoco:report
 
-      - name: Upload coverage to Coveralls
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        run: xvfb-run mvn coveralls:report
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@v2.3.0
+        with:
+          github-token: ${{ COVERALLS_REPO_TOKEN }}
 
             
