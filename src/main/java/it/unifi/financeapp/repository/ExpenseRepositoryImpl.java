@@ -6,7 +6,7 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.List;
 
-public class ExpenseRepositoryImpl implements ExpenseRepository{
+public class ExpenseRepositoryImpl implements ExpenseRepository {
     private final EntityManager entityManager;
 
     public ExpenseRepositoryImpl(EntityManager entityManager) {

@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ExpenseRepository {
 
-    Expense save (Expense expense);
+    Expense save(Expense expense);
 
     Expense findById(Long id);
 
