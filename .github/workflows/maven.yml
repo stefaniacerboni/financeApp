@@ -47,11 +47,11 @@ jobs:
         run: xvfb-run --auto-servernum --server-args="-screen 0 1024x768x24" mvn verify -Pintegration-tests
         
       - name: Test with JaCoCo
-        run: mvn test jacoco:report
+        run: xvfb-run mvn test jacoco:report
 
       - name: Upload coverage to Coveralls
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        run: mvn coveralls:report
+        run: xvfb-run mvn coveralls:report
 
             
