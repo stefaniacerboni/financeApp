@@ -198,17 +198,5 @@ public class ExpensePanel extends JPanel implements ExpenseView {
     public JTable getExpenseTable() {
         return expenseTable;
     }
-
-    JTextField getAmountField() {
-        return amountField;
-    }
-
-    JTextField getDateField() {
-        return dateField;
-    }
-
-    JLabel getStatusLabel() {
-        return statusLabel;
-    }
 }
 

@@ -6,7 +6,7 @@ import it.unifi.financeapp.service.CategoryService;
 
 public class CategoryController {
     private final CategoryService categoryService;
-    private CategoryView categoryView;
+    private final CategoryView categoryView;
 
     public CategoryController(CategoryService categoryService, CategoryView categoryView) {
         this.categoryService = categoryService;

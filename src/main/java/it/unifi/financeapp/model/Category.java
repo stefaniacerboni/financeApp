@@ -25,7 +25,7 @@ public class Category {
         return id;
     }
 
-    public void setId(Long id){
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -33,12 +33,12 @@ public class Category {
         return name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public void setDescription(String description) {

@@ -165,17 +165,5 @@ public class CategoryPanel extends JPanel implements CategoryView {
     public JTable getCategoryTable() {
         return categoryTable;
     }
-
-    public JTextField getNameField() {
-        return nameField;
-    }
-
-    public JTextField getDescriptionField() {
-        return descriptionField;
-    }
-
-    public JLabel getStatusLabel() {
-        return statusLabel;
-    }
 }
 

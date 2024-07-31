@@ -120,7 +120,7 @@ public class UserPanel extends JPanel implements UserView {
     }
 
     @Override
-    public void setName(String name){
+    public void setName(String name) {
         nameField.setText(name);
     }
 
@@ -190,25 +190,5 @@ public class UserPanel extends JPanel implements UserView {
     @Override
     public JTable getUserTable() {
         return userTable;
-    }
-
-    JTextField getUsernameField() {
-        return usernameField;
-    }
-
-    JTextField getNameField() {
-        return nameField;
-    }
-
-    JTextField getSurnameField() {
-        return surnameField;
-    }
-
-    JTextField getEmailField() {
-        return emailField;
-    }
-
-    public JLabel getStatusLabel() {
-        return statusLabel;
     }
 }
