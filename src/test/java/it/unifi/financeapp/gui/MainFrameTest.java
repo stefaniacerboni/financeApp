@@ -1,8 +1,8 @@
 package it.unifi.financeapp.gui;
 
-import it.unifi.financeapp.service.CategoryService;
-import it.unifi.financeapp.service.ExpenseService;
-import it.unifi.financeapp.service.UserService;
+import it.unifi.financeapp.controller.CategoryController;
+import it.unifi.financeapp.controller.ExpenseController;
+import it.unifi.financeapp.controller.UserController;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.junit.jupiter.api.AfterEach;
@@ -17,20 +17,21 @@ import javax.swing.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class MainFrameTest {
+class MainFrameTest {
+
+    @Mock
+    private CategoryController categoryController;
+    @Mock
+    private UserController userController;
+    @Mock
+    private ExpenseController expenseController;
 
     private FrameFixture window;
 
-    @Mock
-    private CategoryService categoryService;
-    @Mock
-    private UserService userService;
-    @Mock
-    private ExpenseService expenseService;
-
     @BeforeEach
     public void setUp() {
-        JFrame frame = GuiActionRunner.execute(() -> new MainFrame(categoryService, userService, expenseService));
+        // Note: Ensure mocks are correctly set to return panels before creating MainFrame
+        JFrame frame = GuiActionRunner.execute(() -> new MainFrame(categoryController, userController, expenseController));
         window = new FrameFixture(frame);
         window.show();
     }
@@ -51,16 +52,14 @@ public class MainFrameTest {
         // Assuming that switching to the "Expenses" tab triggers data loading
         window.tabbedPane().selectTab("Expenses");
         // Verify that data loading method was called
-        verify(categoryService, atLeastOnce()).getAllCategories();
-        verify(userService, atLeastOnce()).getAllUsers();
-        verify(expenseService, atLeastOnce()).getAllExpenses();
+        verify(expenseController, atLeastOnce()).updateData();
     }
 
     @Test
     public void switchingToCategoriesTabShouldNotTriggerDataLoading() {
-        // Assuming that switching to the "Expenses" tab triggers data loading
+        // Switching to the "Category" tab shouldn't trigger data loading
         window.tabbedPane().selectTab("Categories");
-        // Verify that data loading method was called
-        verify(expenseService, atMostOnce()).getAllExpenses();
+        // Verify that data loading method wasn't called
+        verify(expenseController, never()).updateData();
     }
 }

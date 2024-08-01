@@ -91,7 +91,7 @@ public class ExpensePanel extends JPanel implements ExpenseView {
     private void attachDocumentListeners() {
         DocumentListener listener = new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {
-                //
+                // This method is not used in this context.
             }
 
             public void removeUpdate(DocumentEvent e) {
