@@ -4,39 +4,44 @@ package it.unifi.financeapp.gui;
 import it.unifi.financeapp.controller.CategoryController;
 import it.unifi.financeapp.controller.ExpenseController;
 import it.unifi.financeapp.controller.UserController;
+import it.unifi.financeapp.service.CategoryService;
+import it.unifi.financeapp.service.ExpenseService;
+import it.unifi.financeapp.service.UserService;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class MainFrame extends JFrame {
 
-    private JTabbedPane tabbedPane;
+    // Assuming these are your service classes
+    private final CategoryService categoryService;
+    private final UserService userService;
+    private final ExpenseService expenseService;
 
-    //Controller
-    private CategoryController categoryController;
-    private UserController userController;
-    private ExpenseController expenseController;
-
-    //Panel
-    private CategoryPanel categoryPanel;
-    private UserPanel userPanel;
-    private ExpensePanel expensePanel;
-
-
-    public MainFrame(CategoryController categoryController, UserController userController, ExpenseController expenseController) {
-        this.categoryController = categoryController;
-        this.userController = userController;
-        this.expenseController = expenseController;
+    MainFrame(CategoryService categoryService, UserService userService, ExpenseService expenseService) {
+        this.categoryService = categoryService;
+        this.userService = userService;
+        this.expenseService = expenseService;
 
         setTitle("Expense Management System");
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         initUI();
     }
 
-    void initUI() {
-        tabbedPane = new JTabbedPane();
+    private void initUI() {
+        JTabbedPane tabbedPane = new JTabbedPane();
+
+        // Create instances of the panels
+        CategoryPanel categoryPanel = new CategoryPanel();
+        UserPanel userPanel = new UserPanel();
+        ExpensePanel expensePanel = new ExpensePanel();
+
+        // Create instances of the controllers and connect them with views and services
+        // Controllers
+        CategoryController categoryController = new CategoryController(categoryService, categoryPanel);
+        UserController userController = new UserController(userService, userPanel);
+        ExpenseController expenseController = new ExpenseController(expenseService, categoryService, userService, expensePanel);
 
         // Initialize views within the controllers
         categoryController.initView();

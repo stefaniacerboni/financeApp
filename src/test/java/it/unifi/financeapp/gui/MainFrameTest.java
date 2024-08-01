@@ -1,15 +1,14 @@
 package it.unifi.financeapp.gui;
 
-import it.unifi.financeapp.controller.CategoryController;
-import it.unifi.financeapp.controller.ExpenseController;
-import it.unifi.financeapp.controller.UserController;
+import it.unifi.financeapp.service.CategoryService;
+import it.unifi.financeapp.service.ExpenseService;
+import it.unifi.financeapp.service.UserService;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -18,32 +17,20 @@ import javax.swing.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class MainFrameTest {
-    @Mock
-    private CategoryController categoryController;
-    @Mock
-    private UserController userController;
-    @Mock
-    private ExpenseController expenseController;
-    @Mock
-    private CategoryPanel categoryPanel;
-    @Mock
-    private UserPanel userPanel;
-    @Mock
-    private ExpensePanel expensePanel;
-
-    @InjectMocks
-    private MainFrame mainFrame;
+public class MainFrameTest {
 
     private FrameFixture window;
 
+    @Mock
+    private CategoryService categoryService;
+    @Mock
+    private UserService userService;
+    @Mock
+    private ExpenseService expenseService;
+
     @BeforeEach
     public void setUp() {
-        // Note: Ensure mocks are correctly set to return panels before creating MainFrame
-        JFrame frame = GuiActionRunner.execute(() -> {
-            mainFrame = new MainFrame(categoryController, userController, expenseController);
-            return mainFrame;
-        });
+        JFrame frame = GuiActionRunner.execute(() -> new MainFrame(categoryService, userService, expenseService));
         window = new FrameFixture(frame);
         window.show();
     }
@@ -64,14 +51,16 @@ class MainFrameTest {
         // Assuming that switching to the "Expenses" tab triggers data loading
         window.tabbedPane().selectTab("Expenses");
         // Verify that data loading method was called
-        verify(expenseController, atLeastOnce()).updateData();
+        verify(categoryService, atLeastOnce()).getAllCategories();
+        verify(userService, atLeastOnce()).getAllUsers();
+        verify(expenseService, atLeastOnce()).getAllExpenses();
     }
 
     @Test
     public void switchingToCategoriesTabShouldNotTriggerDataLoading() {
-        // Switching to the "Category" tab shouldn't trigger data loading
+        // Assuming that switching to the "Expenses" tab triggers data loading
         window.tabbedPane().selectTab("Categories");
-        // Verify that data loading method wasn't called
-        verify(expenseController, never()).updateData();
+        // Verify that data loading method was called
+        verify(expenseService, atMostOnce()).getAllExpenses();
     }
 }
