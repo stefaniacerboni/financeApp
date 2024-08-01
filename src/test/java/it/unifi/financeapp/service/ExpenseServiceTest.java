@@ -171,9 +171,17 @@ class ExpenseServiceTest {
     class ErrorCases {
         @Test
         void testAddExpenseWithInvalidData() {
-            Expense invalidExpense = new Expense(null, null, -100.00, "2024-07-16");
+            User user = new User("username", "name", "surname", "email");
+            Expense invalidExpense = new Expense(null, user, 100.00, "2024-07-16");
 
-            assertThrows(InvalidExpenseException.class, () -> expenseService.addExpense(invalidExpense));
+            Exception exception = assertThrows(InvalidExpenseException.class, () -> expenseService.addExpense(invalidExpense));
+            assertEquals("Category cannot be null.", exception.getMessage());
+            Category category = new Category("Food", "Category about food");
+            invalidExpense.setCategory(category);
+            invalidExpense.setUser(null);
+            exception = assertThrows(InvalidExpenseException.class, () -> expenseService.addExpense(invalidExpense));
+            assertEquals("User cannot be null.", exception.getMessage());
+
         }
 
         @Test

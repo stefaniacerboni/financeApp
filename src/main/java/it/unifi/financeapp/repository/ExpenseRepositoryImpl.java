@@ -64,11 +64,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
     }
 
     private void manageDependencies(Expense expense) {
-        if (expense.getUser() != null) {
-            expense.setUser(entityManager.merge(expense.getUser()));
-        }
-        if (expense.getCategory() != null) {
-            expense.setCategory(entityManager.merge(expense.getCategory()));
-        }
+        expense.setUser(entityManager.merge(expense.getUser()));
+        expense.setCategory(entityManager.merge(expense.getCategory()));
     }
 }
