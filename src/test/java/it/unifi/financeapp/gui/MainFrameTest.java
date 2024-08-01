@@ -14,8 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.swing.*;
 
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class MainFrameTest {
@@ -55,5 +54,13 @@ public class MainFrameTest {
         verify(categoryService, atLeastOnce()).getAllCategories();
         verify(userService, atLeastOnce()).getAllUsers();
         verify(expenseService, atLeastOnce()).getAllExpenses();
+    }
+
+    @Test
+    public void switchingToCategoriesTabShouldNotTriggerDataLoading() {
+        // Assuming that switching to the "Expenses" tab triggers data loading
+        window.tabbedPane().selectTab("Categories");
+        // Verify that data loading method was called
+        verify(expenseService, atMostOnce()).getAllExpenses();
     }
 }

@@ -4,14 +4,10 @@ package it.unifi.financeapp.gui;
 import it.unifi.financeapp.controller.CategoryController;
 import it.unifi.financeapp.controller.ExpenseController;
 import it.unifi.financeapp.controller.UserController;
-import it.unifi.financeapp.repository.*;
 import it.unifi.financeapp.service.CategoryService;
 import it.unifi.financeapp.service.ExpenseService;
 import it.unifi.financeapp.service.UserService;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.swing.*;
 import java.awt.*;
 
@@ -22,18 +18,6 @@ public class MainFrame extends JFrame {
     private UserService userService;
     private ExpenseService expenseService;
 
-    public MainFrame() {
-        setTitle("Finance Management System");
-        setSize(800, 600);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        // Initialize services
-        initializeServices();
-
-        initUI();
-    }
-
     MainFrame(CategoryService categoryService, UserService userService, ExpenseService expenseService) {
         this.categoryService = categoryService;
         this.userService = userService;
@@ -43,24 +27,6 @@ public class MainFrame extends JFrame {
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         initUI();
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            MainFrame frame = new MainFrame();
-            frame.setVisible(true);
-        });
-    }
-
-    private void initializeServices() {
-        EntityManagerFactory emFactory = Persistence.createEntityManagerFactory("FinanceAppPU");
-        EntityManager entityManager = emFactory.createEntityManager();
-        CategoryRepository categoryRepository = new CategoryRepositoryImpl(entityManager);
-        this.categoryService = new CategoryService(categoryRepository);
-        UserRepository userRepository = new UserRepositoryImpl(entityManager);
-        this.userService = new UserService(userRepository);
-        ExpenseRepository expenseRepository = new ExpenseRepositoryImpl(entityManager);
-        this.expenseService = new ExpenseService(expenseRepository);
     }
 
     private void initUI() {

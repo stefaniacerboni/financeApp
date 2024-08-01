@@ -80,6 +80,45 @@ public class ExpenseTest {
         assertNotEquals(expense, other);
     }
 
+
+    @Test
+    void testEqualsWithDifferentCategories() {
+        Category travel = new Category("Travel", "Expenses for travel");
+        Category food = new Category("Food", "Expenses for food");
+        User user = new User("Username", "Name", "Surname", "Email");
+        Expense expense1 = new Expense(travel, user, 100L, "2024-12-23");
+        Expense expense2 = new Expense(food, user, 100L, "2024-12-23");
+        assertNotEquals(expense1, expense2, "Expenses should not be equal if categories differ");
+    }
+
+    @Test
+    void testEqualsWithDifferentUsers() {
+        Category category = new Category("Travel", "Expenses for travel");
+        User user1 = new User("Username1", "Name", "Surname", "Email");
+        User user2 = new User("Username2", "Name", "Surname", "Email");
+        Expense expense1 = new Expense(category, user1, 100L, "2024-12-23");
+        Expense expense2 = new Expense(category, user2, 100L, "2024-12-23");
+        assertNotEquals(expense1, expense2, "Expenses should not be equal if users differ");
+    }
+
+    @Test
+    void testEqualsWithDifferentAmounts() {
+        Category category = new Category("Travel", "Expenses for travel");
+        User user = new User("Username", "Name", "Surname", "Email");
+        Expense expense1 = new Expense(category, user, 100L, "2024-12-23");
+        Expense expense2 = new Expense(category, user, 200L, "2024-12-23");
+        assertNotEquals(expense1, expense2, "Expenses should not be equal if amounts differ");
+    }
+
+    @Test
+    void testEqualsWithDifferentDates() {
+        Category category = new Category("Travel", "Expenses for travel");
+        User user = new User("Username", "Name", "Surname", "Email");
+        Expense expense1 = new Expense(category, user, 100L, "2024-12-23");
+        Expense expense2 = new Expense(category, user, 100L, "2025-12-23");
+        assertNotEquals(expense1, expense2, "Expenses should not be equal if dates differ");
+    }
+
     @Test
     void testHashCodeConsistency() {
         Category category = new Category("Travel", "Expenses for travel");

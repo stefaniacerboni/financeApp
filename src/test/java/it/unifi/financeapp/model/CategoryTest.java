@@ -2,8 +2,7 @@ package it.unifi.financeapp.model;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CategoryTest {
 
@@ -37,7 +36,7 @@ public class CategoryTest {
     void testEqualsWithSameData() {
         Category cat1 = new Category("Travel", "Expenses for travel");
         Category cat2 = new Category("Travel", "Expenses for travel");
-        assertEquals(cat1, cat2);
+        assertTrue(cat1.equals(cat2));
     }
 
     @Test
@@ -58,6 +57,49 @@ public class CategoryTest {
         Category category = new Category("Travel", "Expenses for travel");
         Object other = new Object();
         assertNotEquals(category, other);
+    }
+
+
+    @Test
+    void testEqualsWithDifferentName() {
+        Category cat1 = new Category("Travel", "Expenses for travel");
+        Category cat2 = new Category("Food", "Expenses for travel");
+        assertNotEquals(cat1, cat2, "Categories should not be equal if names are different");
+    }
+
+    @Test
+    void testEqualsWithDifferentDescription() {
+        Category cat1 = new Category("Travel", "Expenses for travel");
+        Category cat2 = new Category("Travel", "Expenses for business");
+        assertNotEquals(cat1, cat2, "Categories should not be equal if descriptions are different");
+    }
+
+    @Test
+    void testEqualsWithNullValuesInOne() {
+        Category cat1 = new Category(null, null);
+        Category cat2 = new Category("Travel", "Expenses for travel");
+        assertNotEquals(cat1, cat2, "Categories should not be equal if one has null fields");
+    }
+
+    @Test
+    void testEqualsWithNullValuesInBoth() {
+        Category cat1 = new Category(null, null);
+        Category cat2 = new Category(null, null);
+        assertEquals(cat1, cat2, "Categories should be equal if both have all null fields");
+    }
+
+    @Test
+    void testEqualsWithOneNullName() {
+        Category cat1 = new Category(null, "Expenses for travel");
+        Category cat2 = new Category("Travel", "Expenses for travel");
+        assertNotEquals(cat1, cat2, "Categories should not be equal if one has a null name");
+    }
+
+    @Test
+    void testEqualsWithOneNullDescription() {
+        Category cat1 = new Category("Travel", null);
+        Category cat2 = new Category("Travel", "Expenses for travel");
+        assertNotEquals(cat1, cat2, "Categories should not be equal if one has a null description");
     }
 
     @Test
