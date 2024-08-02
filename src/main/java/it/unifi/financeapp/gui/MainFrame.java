@@ -17,6 +17,7 @@ public class MainFrame extends JFrame {
     private final CategoryService categoryService;
     private final UserService userService;
     private final ExpenseService expenseService;
+    JTabbedPane tabbedPane;
 
     MainFrame(CategoryService categoryService, UserService userService, ExpenseService expenseService) {
         this.categoryService = categoryService;
@@ -30,7 +31,7 @@ public class MainFrame extends JFrame {
     }
 
     private void initUI() {
-        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane = new JTabbedPane();
 
         // Create instances of the panels
         CategoryPanel categoryPanel = new CategoryPanel();
@@ -61,5 +62,9 @@ public class MainFrame extends JFrame {
 
         // Add the tabbed pane to the main frame
         getContentPane().add(tabbedPane, BorderLayout.CENTER);
+    }
+
+    public JTabbedPane getTabbedPane() {
+        return tabbedPane;
     }
 }

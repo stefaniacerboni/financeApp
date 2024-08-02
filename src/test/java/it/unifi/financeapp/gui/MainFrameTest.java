@@ -29,9 +29,18 @@ public class MainFrameTest {
     @Mock
     private ExpenseService expenseService;
 
+    MainFrame mainFrame;
+
     @BeforeEach
     public void setUp() {
-        JFrame frame = GuiActionRunner.execute(() -> new MainFrame(categoryService, userService, expenseService));
+        JFrame frame = GuiActionRunner.execute(() -> {
+            mainFrame = new MainFrame(categoryService, userService, expenseService);
+            mainFrame.pack();
+            mainFrame.validate();
+            mainFrame.repaint();
+            mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            return mainFrame;
+        });
         window = new FrameFixture(frame);
         window.show();
     }
@@ -53,7 +62,7 @@ public class MainFrameTest {
         Mockito.reset(categoryService, userService, expenseService);
 
         // Interact with the UI
-        window.tabbedPane().target().setSelectedIndex(2);
+        mainFrame.getTabbedPane().setSelectedIndex(2);
 
         // Verify that the expected method was called as a result of the interaction
         verify(categoryService, atLeastOnce()).getAllCategories();
@@ -66,7 +75,7 @@ public class MainFrameTest {
         Mockito.reset(categoryService, userService, expenseService);
 
         // Interact with the UI
-        window.tabbedPane().target().setSelectedIndex(0);
+        mainFrame.getTabbedPane().setSelectedIndex(0);
 
         // Verify that the expected method was called as a result of the interaction
         verify(expenseService, never()).getAllExpenses();
