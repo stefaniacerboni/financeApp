@@ -10,6 +10,8 @@ import it.unifi.financeapp.service.UserService;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainFrame extends JFrame {
 
@@ -54,9 +56,15 @@ public class MainFrame extends JFrame {
         tabbedPane.addTab("Users", userPanel);
         tabbedPane.addTab("Expenses", expensePanel);
 
+        // Map each tab index to a Runnable action
+        Map<Integer, Runnable> tabActions = new HashMap<>();
+        tabActions.put(tabbedPane.indexOfTab("Expenses"), expenseController::updateData);
+
+        // Attach a change listener that executes the corresponding action
         tabbedPane.addChangeListener(e -> {
-            if (tabbedPane.getSelectedIndex() == tabbedPane.indexOfTab("Expenses")) {
-                expenseController.updateData();
+            Runnable action = tabActions.get(tabbedPane.getSelectedIndex());
+            if (action != null) {
+                action.run();
             }
         });
 

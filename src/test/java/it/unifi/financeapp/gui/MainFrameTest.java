@@ -81,5 +81,12 @@ public class MainFrameTest {
         verify(expenseService, never()).getAllExpenses();
         verify(categoryService, never()).getAllCategories();
         verify(userService, never()).getAllUsers();
+
+        mainFrame.getTabbedPane().setSelectedIndex(1);
+
+        verify(expenseService, never()).getAllExpenses();
+        verify(categoryService, never()).getAllCategories();
+        verify(userService, never()).getAllUsers();
+
     }
 }
