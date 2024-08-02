@@ -112,6 +112,12 @@ public class CategoryServiceTest {
             assertThrows(IllegalArgumentException.class, () -> categoryService.deleteCategory(categoryId));
             verify(categoryRepository, never()).delete(any(Category.class));
         }
+
+        @Test
+        void testDeleteAll() {
+            categoryRepository.deleteAll();
+            verify(categoryRepository).deleteAll();
+        }
     }
 
     @Nested

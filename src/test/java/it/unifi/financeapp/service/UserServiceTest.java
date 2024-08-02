@@ -29,96 +29,96 @@ class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
-    @Test
-    public void testSaveExistingUser() {
-        User existingUser = new User("username", "email");
-        existingUser.setId(1L); // Simulate an existing category
-        when(userRepository.save(existingUser)).thenReturn(existingUser);
-
-        User updatedUser = userService.addUser(existingUser);
-
-        assertNotNull(updatedUser);
-        Assertions.assertEquals(existingUser.getId(), updatedUser.getId());
-        verify(userRepository).save(existingUser);
-    }
-
-    @Test
-    void testGetAllUsers() {
-        User user1 = new User("username1", "email1");
-        User user2 = new User("username2", "email2");
-        List<User> expectedUsers = Arrays.asList(user1, user2);
-
-        when(userRepository.findAll()).thenReturn(expectedUsers);
-
-        List<User> actualUsers = userService.getAllUsers();
-
-        assertNotNull(actualUsers);
-        Assertions.assertEquals(2, actualUsers.size());
-        Assertions.assertEquals(expectedUsers, actualUsers);
-        verify(userRepository).findAll();
-    }
-
-    @Test
-    void testGetAllUsersEmptyList() {
-        when(userRepository.findAll()).thenReturn(List.of());
-
-        List<User> actualUsers = userService.getAllUsers();
-
-        assertNotNull(actualUsers);
-        Assertions.assertTrue(actualUsers.isEmpty());
-        verify(userRepository).findAll();
-    }
-
-    @Test
-    void testUpdateUser() {
-        User originalUser = new User("originalUsername", "name", "surname", "email");
-        User updatedUser = new User("updatedUsername", "updatedName", "updatedSurname", "email");
-
-        when(userRepository.update(originalUser)).thenReturn(updatedUser);
-
-        originalUser.setUsername("updatedUsername");
-        originalUser.setName("updatedName");
-        originalUser.setSurname("updatedSurname");
-        User result = userService.updateUser(originalUser);
-
-        assertNotNull(result);
-        Assertions.assertEquals(updatedUser.getUsername(), result.getUsername());
-        verify(userRepository).update(originalUser);
-    }
-
-    @Test
-    void testFindUserById() {
-        User expectedUser = new User("username", "email");
-        Long userId = expectedUser.getId();
-
-        when(userRepository.findById(userId)).thenReturn(expectedUser);
-
-        User result = userService.findUserById(userId);
-
-        assertNotNull(result);
-        Assertions.assertEquals(expectedUser, result);
-        verify(userRepository).findById(userId);
-    }
-
-    @Test
-    void testDeleteUser() {
-        User user = new User("username", "name", "surname", "email");
-        Long userId = user.getId();
-
-        when(userRepository.findById(userId)).thenReturn(user);
-
-        userService.deleteUser(userId);
-
-        // Verify findById was called to fetch the user
-        verify(userRepository).findById(userId);
-
-        // Verify delete was called with the fetched user
-        verify(userRepository).delete(user);
-    }
-
     @Nested
     @DisplayName("Happy Cases")
     class HappyCases {
+
+        @Test
+        public void testSaveExistingUser() {
+            User existingUser = new User("username", "email");
+            existingUser.setId(1L); // Simulate an existing category
+            when(userRepository.save(existingUser)).thenReturn(existingUser);
+
+            User updatedUser = userService.addUser(existingUser);
+
+            assertNotNull(updatedUser);
+            Assertions.assertEquals(existingUser.getId(), updatedUser.getId());
+            verify(userRepository).save(existingUser);
+        }
+
+        @Test
+        void testGetAllUsers() {
+            User user1 = new User("username1", "email1");
+            User user2 = new User("username2", "email2");
+            List<User> expectedUsers = Arrays.asList(user1, user2);
+
+            when(userRepository.findAll()).thenReturn(expectedUsers);
+
+            List<User> actualUsers = userService.getAllUsers();
+
+            assertNotNull(actualUsers);
+            Assertions.assertEquals(2, actualUsers.size());
+            Assertions.assertEquals(expectedUsers, actualUsers);
+            verify(userRepository).findAll();
+        }
+
+        @Test
+        void testGetAllUsersEmptyList() {
+            when(userRepository.findAll()).thenReturn(List.of());
+
+            List<User> actualUsers = userService.getAllUsers();
+
+            assertNotNull(actualUsers);
+            Assertions.assertTrue(actualUsers.isEmpty());
+            verify(userRepository).findAll();
+        }
+
+        @Test
+        void testUpdateUser() {
+            User originalUser = new User("originalUsername", "name", "surname", "email");
+            User updatedUser = new User("updatedUsername", "updatedName", "updatedSurname", "email");
+
+            when(userRepository.update(originalUser)).thenReturn(updatedUser);
+
+            originalUser.setUsername("updatedUsername");
+            originalUser.setName("updatedName");
+            originalUser.setSurname("updatedSurname");
+            User result = userService.updateUser(originalUser);
+
+            assertNotNull(result);
+            Assertions.assertEquals(updatedUser.getUsername(), result.getUsername());
+            verify(userRepository).update(originalUser);
+        }
+
+        @Test
+        void testFindUserById() {
+            User expectedUser = new User("username", "email");
+            Long userId = expectedUser.getId();
+
+            when(userRepository.findById(userId)).thenReturn(expectedUser);
+
+            User result = userService.findUserById(userId);
+
+            assertNotNull(result);
+            Assertions.assertEquals(expectedUser, result);
+            verify(userRepository).findById(userId);
+        }
+
+        @Test
+        void testDeleteUser() {
+            User user = new User("username", "name", "surname", "email");
+            Long userId = user.getId();
+
+            when(userRepository.findById(userId)).thenReturn(user);
+
+            userService.deleteUser(userId);
+
+            // Verify findById was called to fetch the user
+            verify(userRepository).findById(userId);
+
+            // Verify delete was called with the fetched user
+            verify(userRepository).delete(user);
+        }
 
         @Test
         void testAddUser() {
@@ -133,6 +133,12 @@ class UserServiceTest {
             Assertions.assertEquals(user.getSurname(), result.getSurname());
             Assertions.assertEquals(user.getEmail(), result.getEmail());
             verify(userRepository).save(user);
+        }
+
+        @Test
+        void testDeleteAll() {
+            userService.deleteAll();
+            verify(userRepository).deleteAll();
         }
     }
 

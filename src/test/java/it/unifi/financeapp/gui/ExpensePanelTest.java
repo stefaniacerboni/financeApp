@@ -57,6 +57,20 @@ public class ExpensePanelTest {
     }
 
     @Test
+    void testTextFieldContentIsMatching(){
+        JTextComponentFixture amountField = window.textBox("amountField");
+        JTextComponentFixture dateField = window.textBox("dateField");
+        amountField.setText("Name");
+        dateField.setText("Description");
+        amountField.requireText(expenseView.getAmount());
+        dateField.requireText(expenseView.getDate());
+        expenseView.setAmount("New Name");
+        expenseView.setDate("New Description");
+        amountField.requireText(expenseView.getAmount());
+        dateField.requireText(expenseView.getDate());
+    }
+
+    @Test
     void testEnableAddButtonWhenFieldsAreFilled() {
         window.comboBox("userComboBox").selectItem(0);
         window.comboBox("categoryComboBox").selectItem(0);
@@ -122,6 +136,7 @@ public class ExpensePanelTest {
         tableFixture.requireRowCount(1);
         // Select the first row and assert that the delete button is enabled
         execute(() -> expenseView.getExpenseTable().setRowSelectionInterval(0, 0));
+        assertEquals(1L, expenseView.getExpenseIdFromTable(0));
         window.button("deleteExpenseButton").requireEnabled();
         execute(() -> expenseView.removeExpenseFromTable(0));
         tableFixture.requireRowCount(0);

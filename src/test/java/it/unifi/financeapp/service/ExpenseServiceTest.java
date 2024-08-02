@@ -164,6 +164,12 @@ class ExpenseServiceTest {
             assertTrue(actualExpenses.isEmpty());
             verify(expenseRepository).findAll();
         }
+
+        @Test
+        void testDeleteAll() {
+            expenseService.deleteAll();
+            verify(expenseRepository).deleteAll();
+        }
     }
 
     @Nested
