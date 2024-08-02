@@ -64,7 +64,7 @@ public class MainFrame extends JFrame {
         getContentPane().add(tabbedPane, BorderLayout.CENTER);
     }
 
-    public JTabbedPane getTabbedPane() {
+    JTabbedPane getTabbedPane() {
         return tabbedPane;
     }
 }
