@@ -75,6 +75,7 @@ public class UserPanel extends JPanel implements UserView {
 
     private void attachDocumentListeners() {
         DocumentListener listener = new DocumentListener() {
+            @Generated
             public void changedUpdate(DocumentEvent e) {
                 // This method is not used in this context.
             }

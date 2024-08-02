@@ -70,6 +70,7 @@ public class CategoryPanel extends JPanel implements CategoryView {
 
     private void attachDocumentListeners() {
         DocumentListener listener = new DocumentListener() {
+            @Generated
             public void changedUpdate(DocumentEvent e) {
                 // This method is not used in this context.
             }
