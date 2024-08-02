@@ -144,9 +144,7 @@ class CategoryPanelTest {
 
     @Test
     void testChangedUpdate(){
-        JTextComponentFixture nameField = window.textBox("nameField");
-        JTextComponentFixture descriptionField = window.textBox("descriptionField");
-        JTextPane pane = (JTextPane) nameField.target();
-        pane.addStyle("Style", null);
+        JTextPane jTextPane = categoryView.getTextPane();
+        jTextPane.addStyle("Style", null);
     }
 }
