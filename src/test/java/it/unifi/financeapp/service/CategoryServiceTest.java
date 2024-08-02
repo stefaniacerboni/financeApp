@@ -115,7 +115,7 @@ public class CategoryServiceTest {
 
         @Test
         void testDeleteAll() {
-            categoryRepository.deleteAll();
+            categoryService.deleteAll();
             verify(categoryRepository).deleteAll();
         }
     }
