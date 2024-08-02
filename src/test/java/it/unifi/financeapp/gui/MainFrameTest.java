@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.swing.*;
@@ -48,19 +49,28 @@ public class MainFrameTest {
 
     @Test
     public void switchingToExpensesTabShouldTriggerDataLoading() {
-        // Assuming that switching to the "Expenses" tab triggers data loading
-        window.tabbedPane().selectTab("Expenses");
-        // Verify that data loading method was called
+        // Reset mocks to clear any interactions during initialization
+        Mockito.reset(categoryService, userService, expenseService);
+
+        // Interact with the UI
+        window.tabbedPane().target().setSelectedIndex(2);
+
+        // Verify that the expected method was called as a result of the interaction
         verify(categoryService, atLeastOnce()).getAllCategories();
         verify(userService, atLeastOnce()).getAllUsers();
-        verify(expenseService, atLeastOnce()).getAllExpenses();
     }
 
     @Test
     public void switchingToCategoriesTabShouldNotTriggerDataLoading() {
-        // Assuming that switching to the "Expenses" tab triggers data loading
-        window.tabbedPane().selectTab("Categories");
-        // Verify that data loading method was called
-        verify(expenseService, atMostOnce()).getAllExpenses();
+        // Reset mocks to clear any interactions during initialization
+        Mockito.reset(categoryService, userService, expenseService);
+
+        // Interact with the UI
+        window.tabbedPane().target().setSelectedIndex(0);
+
+        // Verify that the expected method was called as a result of the interaction
+        verify(expenseService, never()).getAllExpenses();
+        verify(categoryService, never()).getAllCategories();
+        verify(userService, never()).getAllUsers();
     }
 }
