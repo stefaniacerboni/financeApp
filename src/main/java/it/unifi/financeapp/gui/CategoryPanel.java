@@ -10,7 +10,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class CategoryPanel extends JPanel implements CategoryView {
-    private JTextField nameField, descriptionField;
+    private JTextPane nameField, descriptionField;
     private JButton addCategoryButton, deleteCategoryButton;
     private JTable categoryTable;
     private DefaultTableModel tableModel;
@@ -26,12 +26,12 @@ public class CategoryPanel extends JPanel implements CategoryView {
         JPanel formPanel = new JPanel(new GridLayout(3, 2));
         formPanel.setName("formPanel");
         formPanel.add(new JLabel("Name:"));
-        nameField = new JTextField();
+        nameField = new JTextPane();
         nameField.setName("nameField");
         formPanel.add(nameField);
 
         formPanel.add(new JLabel("Description:"));
-        descriptionField = new JTextField();
+        descriptionField = new JTextPane();
         descriptionField.setName("descriptionField");
         formPanel.add(descriptionField);
 
@@ -84,6 +84,7 @@ public class CategoryPanel extends JPanel implements CategoryView {
         };
         nameField.getDocument().addDocumentListener(listener);
         descriptionField.getDocument().addDocumentListener(listener);
+
 
         categoryTable.getSelectionModel().addListSelectionListener(e -> updateDeleteButtonEnabledState());
     }
