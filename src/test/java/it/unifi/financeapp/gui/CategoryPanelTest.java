@@ -141,10 +141,4 @@ class CategoryPanelTest {
         nameField.requireText("");
         descriptionField.requireText("");
     }
-
-    @Test
-    void testChangedUpdate(){
-        JTextPane jTextPane = categoryView.getTextPane();
-        jTextPane.addStyle("Style", null);
-    }
 }

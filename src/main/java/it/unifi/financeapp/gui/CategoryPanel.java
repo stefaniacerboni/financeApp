@@ -11,7 +11,6 @@ import java.awt.*;
 
 public class CategoryPanel extends JPanel implements CategoryView {
     private JTextField nameField, descriptionField;
-    private JTextPane jTextPane;
     private JButton addCategoryButton, deleteCategoryButton;
     private JTable categoryTable;
     private DefaultTableModel tableModel;
@@ -85,10 +84,6 @@ public class CategoryPanel extends JPanel implements CategoryView {
         };
         nameField.getDocument().addDocumentListener(listener);
         descriptionField.getDocument().addDocumentListener(listener);
-
-        jTextPane = new JTextPane();
-        jTextPane.setName("jTextPane");
-        jTextPane.getDocument().addDocumentListener(listener);
 
 
         categoryTable.getSelectionModel().addListSelectionListener(e -> updateDeleteButtonEnabledState());
@@ -170,11 +165,6 @@ public class CategoryPanel extends JPanel implements CategoryView {
 
     public JTable getCategoryTable() {
         return categoryTable;
-    }
-
-    @Override
-    public JTextPane getTextPane() {
-        return jTextPane;
     }
 }
 

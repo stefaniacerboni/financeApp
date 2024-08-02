@@ -30,6 +30,4 @@ public interface CategoryView {
     JButton getDeleteCategoryButton();
 
     JTable getCategoryTable();
-
-    JTextPane getTextPane();
 }
