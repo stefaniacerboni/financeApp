@@ -103,6 +103,20 @@ class CategoryPanelTest {
     }
 
     @Test
+    void testFieldContentIsMatching() {
+        JTextComponentFixture nameField = window.textBox("nameField");
+        JTextComponentFixture descriptionField = window.textBox("descriptionField");
+        nameField.setText("Name");
+        descriptionField.setText("Description");
+        nameField.requireText(categoryView.getName());
+        descriptionField.requireText(categoryView.getDescription());
+        categoryView.setName("New Name");
+        categoryView.setDescription("New Description");
+        nameField.requireText(categoryView.getName());
+        descriptionField.requireText(categoryView.getDescription());
+    }
+
+    @Test
     void testDeleteButtonShouldRemoveCategoryFromTable() {
         testShownCategoryShouldMatchCategoryAdded();
         JTableFixture tableFixture = window.table("entityTable");

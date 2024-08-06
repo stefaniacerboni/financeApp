@@ -48,6 +48,30 @@ class UserPanelTest {
     }
 
     @Test
+    void testFieldContentIsMatching() {
+        JTextComponentFixture usernameField = window.textBox("usernameField");
+        JTextComponentFixture nameField = window.textBox("nameField");
+        JTextComponentFixture surnameField = window.textBox("surnameField");
+        JTextComponentFixture emailField = window.textBox("emailField");
+        usernameField.setText("Username");
+        nameField.setText("Name");
+        surnameField.setText("Surname");
+        emailField.setText("Email");
+        usernameField.requireText(userView.getUsername());
+        nameField.requireText(userView.getName());
+        surnameField.requireText(userView.getSurname());
+        emailField.requireText(userView.getEmail());
+        userView.setUsername("New Username");
+        userView.setName("New Name");
+        userView.setSurname("New Surname");
+        userView.setEmail("New Email");
+        usernameField.requireText(userView.getUsername());
+        nameField.requireText(userView.getName());
+        surnameField.requireText(userView.getSurname());
+        emailField.requireText(userView.getEmail());
+    }
+
+    @Test
     void testWhenUsernameAndEmailAreFilledThenAddButtonShouldBeEnabled() {
         JTextComponentFixture usernameField = window.textBox("usernameField");
         JTextComponentFixture emailField = window.textBox("emailField");
