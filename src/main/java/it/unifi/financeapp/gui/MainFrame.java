@@ -15,9 +15,9 @@ import java.util.Map;
 
 public class MainFrame extends JFrame {
 
-    private transient final CategoryService categoryService;
-    private transient final UserService userService;
-    private transient final ExpenseService expenseService;
+    private final transient CategoryService categoryService;
+    private final transient UserService userService;
+    private final transient ExpenseService expenseService;
     JTabbedPane tabbedPane;
 
     MainFrame(CategoryService categoryService, UserService userService, ExpenseService expenseService) {
