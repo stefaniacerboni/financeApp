@@ -60,6 +60,7 @@ class ExpensePanelTest {
     void testTextFieldContentIsMatching(){
         JTextComponentFixture amountField = window.textBox("amountField");
         JTextComponentFixture dateField = window.textBox("dateField");
+        JTableFixture entityTable = window.table("entityTable");
         amountField.setText("Name");
         dateField.setText("Description");
         amountField.requireText(expenseView.getAmount());
@@ -68,6 +69,9 @@ class ExpensePanelTest {
         expenseView.setDate("New Description");
         amountField.requireText(expenseView.getAmount());
         dateField.requireText(expenseView.getDate());
+        entityTable.requireRowCount(0);
+        assertEquals(-1, expenseView.getSelectedExpenseIndex());
+
     }
 
     @Test

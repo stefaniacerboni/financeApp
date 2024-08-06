@@ -53,6 +53,7 @@ class UserPanelTest {
         JTextComponentFixture nameField = window.textBox("nameField");
         JTextComponentFixture surnameField = window.textBox("surnameField");
         JTextComponentFixture emailField = window.textBox("emailField");
+        JTableFixture entityTable = window.table("entityTable");
         usernameField.setText("Username");
         nameField.setText("Name");
         surnameField.setText("Surname");
@@ -69,6 +70,9 @@ class UserPanelTest {
         nameField.requireText(userView.getName());
         surnameField.requireText(userView.getSurname());
         emailField.requireText(userView.getEmail());
+        entityTable.requireRowCount(0);
+        assertEquals(-1, userView.getSelectedUserIndex());
+
     }
 
     @Test
