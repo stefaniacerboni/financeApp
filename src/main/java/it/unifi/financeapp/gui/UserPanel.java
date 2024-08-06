@@ -16,7 +16,7 @@ public class UserPanel extends BasePanel implements UserView {
     }
 
     @Override
-    public JPanel createFormPanel() {
+    protected JPanel createFormPanel() {
         JPanel formPanel = new JPanel(new GridLayout(5, 2));
         formPanel.add(new JLabel("Username:"));
         usernameField = new JTextField();

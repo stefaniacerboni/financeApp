@@ -16,7 +16,7 @@ public class ExpensePanel extends BasePanel implements ExpenseView {
     public ExpensePanel() {
     }
 
-    public JPanel createFormPanel() {
+    protected JPanel createFormPanel() {
         // Top Panel for form
         JPanel formPanel = new JPanel(new GridLayout(5, 2));
         formPanel.setName("formPanel");
@@ -41,7 +41,7 @@ public class ExpensePanel extends BasePanel implements ExpenseView {
         formPanel.add(dateField);
 
         addButton = new JButton("Add Expense");
-        addButton.setEnabled(false); // Initially disable the Add button
+        addButton.setEnabled(false);
         formPanel.add(addButton);
 
         return formPanel;
