@@ -51,9 +51,9 @@ class ExpensePanelTest {
     void testInitialConditions() {
         window.textBox("amountField").requireEmpty();
         window.textBox("dateField").requireEmpty();
-        window.button("addExpenseButton").requireDisabled();
-        window.button("deleteExpenseButton").requireDisabled();
-        window.table("expenseTable").requireRowCount(0);
+        window.button("addButton").requireDisabled();
+        window.button("deleteButton").requireDisabled();
+        window.table("entityTable").requireRowCount(0);
     }
 
     @Test
@@ -76,7 +76,7 @@ class ExpensePanelTest {
         window.comboBox("categoryComboBox").selectItem(0);
         window.textBox("amountField").setText("100");
         window.textBox("dateField").setText("2024-01-01");
-        window.button("addExpenseButton").requireEnabled();
+        window.button("addButton").requireEnabled();
     }
 
     @Test
@@ -85,13 +85,13 @@ class ExpensePanelTest {
         JTextComponentFixture dateField = window.textBox("dateField");
         amountField.setText("100");
         dateField.setText(" ");
-        window.button(JButtonMatcher.withName("addExpenseButton")).requireDisabled();
+        window.button(JButtonMatcher.withName("addButton")).requireDisabled();
         amountField.setText("");
         dateField.setText("");
-        window.button(JButtonMatcher.withName("addExpenseButton")).requireDisabled();
+        window.button(JButtonMatcher.withName("addButton")).requireDisabled();
         amountField.setText(" ");
         dateField.setText("2024-01-01");
-        window.button(JButtonMatcher.withName("addExpenseButton")).requireDisabled();
+        window.button(JButtonMatcher.withName("addButton")).requireDisabled();
     }
 
     @Test
@@ -122,22 +122,22 @@ class ExpensePanelTest {
         testShownExpenseShouldMatchExpenseAdded();
         // Select the first row and assert that the delete button is enabled
         execute(() -> expenseView.getExpenseTable().setRowSelectionInterval(0, 0));
-        window.button("deleteExpenseButton").requireEnabled();
+        window.button("deleteButton").requireEnabled();
 
         // Clear selection and assert that the delete button is disabled
         execute(() -> expenseView.getExpenseTable().clearSelection());
-        window.button("deleteExpenseButton").requireDisabled();
+        window.button("deleteButton").requireDisabled();
     }
 
     @Test
     void testDeleteButtonShouldRemoveExpenseFromTable() {
         testShownExpenseShouldMatchExpenseAdded();
-        JTableFixture tableFixture = window.table("expenseTable");
+        JTableFixture tableFixture = window.table("entityTable");
         tableFixture.requireRowCount(1);
         // Select the first row and assert that the delete button is enabled
         execute(() -> expenseView.getExpenseTable().setRowSelectionInterval(0, 0));
         assertEquals(1L, expenseView.getExpenseIdFromTable(0));
-        window.button("deleteExpenseButton").requireEnabled();
+        window.button("deleteButton").requireEnabled();
         execute(() -> expenseView.removeExpenseFromTable(0));
         tableFixture.requireRowCount(0);
     }

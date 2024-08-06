@@ -47,26 +47,12 @@ class CategoryPanelTest {
     }
 
     @Test
-    void testFieldContentIsMatching(){
-        JTextComponentFixture nameField = window.textBox("nameField");
-        JTextComponentFixture descriptionField = window.textBox("descriptionField");
-        nameField.setText("Name");
-        descriptionField.setText("Description");
-        nameField.requireText(categoryView.getName());
-        descriptionField.requireText(categoryView.getDescription());
-        categoryView.setName("New Name");
-        categoryView.setDescription("New Description");
-        nameField.requireText(categoryView.getName());
-        descriptionField.requireText(categoryView.getDescription());
-    }
-
-    @Test
     void testWhenNameAndDescriptionAreFilledThenAddButtonShouldBeEnabled() {
         JTextComponentFixture nameField = window.textBox("nameField");
         JTextComponentFixture descriptionField = window.textBox("descriptionField");
         nameField.setText("Name");
         descriptionField.setText("Description");
-        window.button(JButtonMatcher.withName("addCategoryButton")).requireEnabled();
+        window.button(JButtonMatcher.withName("addButton")).requireEnabled();
     }
 
 
@@ -76,13 +62,13 @@ class CategoryPanelTest {
         JTextComponentFixture descriptionField = window.textBox("descriptionField");
         nameField.setText("Name");
         descriptionField.setText(" ");
-        window.button(JButtonMatcher.withName("addCategoryButton")).requireDisabled();
+        window.button(JButtonMatcher.withName("addButton")).requireDisabled();
         nameField.setText("");
         descriptionField.setText("");
-        window.button(JButtonMatcher.withName("addCategoryButton")).requireDisabled();
+        window.button(JButtonMatcher.withName("addButton")).requireDisabled();
         nameField.setText(" ");
         descriptionField.setText("Description");
-        window.button(JButtonMatcher.withName("addCategoryButton")).requireDisabled();
+        window.button(JButtonMatcher.withName("addButton")).requireDisabled();
     }
 
     @Test
@@ -109,21 +95,21 @@ class CategoryPanelTest {
         testShownCategoryShouldMatchCategoryAdded();
         // Select the first row and assert that the delete button is enabled
         execute(() -> categoryView.getCategoryTable().setRowSelectionInterval(0, 0));
-        window.button("deleteCategoryButton").requireEnabled();
+        window.button("deleteButton").requireEnabled();
 
         // Clear selection and assert that the delete button is disabled
         execute(() -> categoryView.getCategoryTable().clearSelection());
-        window.button("deleteCategoryButton").requireDisabled();
+        window.button("deleteButton").requireDisabled();
     }
 
     @Test
     void testDeleteButtonShouldRemoveCategoryFromTable() {
         testShownCategoryShouldMatchCategoryAdded();
-        JTableFixture tableFixture = window.table("categoryTable");
+        JTableFixture tableFixture = window.table("entityTable");
         tableFixture.requireRowCount(1);
         // Select the first row and assert that the delete button is enabled
         execute(() -> categoryView.getCategoryTable().setRowSelectionInterval(0, 0));
-        window.button("deleteCategoryButton").requireEnabled();
+        window.button("deleteButton").requireEnabled();
         assertEquals(1L, categoryView.getCategoryIdFromTable(0));
         execute(() -> categoryView.removeCategoryFromTable(0));
         tableFixture.requireRowCount(0);

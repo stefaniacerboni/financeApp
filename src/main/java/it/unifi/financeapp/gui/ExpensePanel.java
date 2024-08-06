@@ -5,28 +5,18 @@ import it.unifi.financeapp.model.Expense;
 import it.unifi.financeapp.model.User;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-public class ExpensePanel extends JPanel implements ExpenseView {
+public class ExpensePanel extends BasePanel implements ExpenseView {
     private JComboBox<User> userComboBox;
     private JComboBox<Category> categoryComboBox;
     private JTextField amountField;
     private JTextField dateField;
-    private JButton addExpenseButton;
-    private JButton deleteExpenseButton;
-    private JTable expenseTable;
-    private JLabel statusLabel;
-    private DefaultTableModel tableModel;
 
     public ExpensePanel() {
-        setLayout(new BorderLayout());
-        initUI();
     }
 
-    void initUI() {
+    public JPanel createFormPanel() {
         // Top Panel for form
         JPanel formPanel = new JPanel(new GridLayout(5, 2));
         formPanel.setName("formPanel");
@@ -50,80 +40,41 @@ public class ExpensePanel extends JPanel implements ExpenseView {
         dateField.setName("dateField");
         formPanel.add(dateField);
 
-        addExpenseButton = new JButton("Add Expense");
-        addExpenseButton.setEnabled(false); // Initially disable the Add button
-        addExpenseButton.setName("addExpenseButton");
-        formPanel.add(addExpenseButton);
+        addButton = new JButton("Add Expense");
+        addButton.setEnabled(false); // Initially disable the Add button
+        addButton.setName("addExpenseButton");
+        formPanel.add(addButton);
 
-        // Table to display categories
-        String[] columnNames = {"Id", "User", "Category", "Amount", "Date"};
-        Object[][] data = {};  // Initial empty data
-        tableModel = new DefaultTableModel(data, columnNames);
-        expenseTable = new JTable(tableModel);
-        expenseTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        expenseTable.setName("expenseTable");
-
-
-        JScrollPane scrollPane = new JScrollPane(expenseTable);
-        scrollPane.setName("expenseScrollPane");
-        scrollPane.setPreferredSize(new Dimension(400, 150));
-
-        // Button to delete selected category
-        deleteExpenseButton = new JButton("Delete Selected");
-        deleteExpenseButton.setName("deleteExpenseButton");
-        deleteExpenseButton.setEnabled(false);
-
-        statusLabel = new JLabel(" ");
-        statusLabel.setName("statusLabel");
-        statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
-        // Panel to hold the button and label
-        JPanel southPanel = new JPanel(new FlowLayout());
-        southPanel.setName("southPanel");
-        southPanel.add(deleteExpenseButton);
-        southPanel.add(statusLabel);
-
-        add(formPanel, BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.CENTER);
-        add(southPanel, BorderLayout.SOUTH);
-
-        attachDocumentListeners();
+        return formPanel;
     }
 
-    private void attachDocumentListeners() {
-        DocumentListener listener = new DocumentListener() {
-            @Generated
-            public void changedUpdate(DocumentEvent e) {
-                // This method is not used in this context.
-            }
+    @Override
+    protected String[] getColumnNames() {
+        return new String[]{"Id", "User", "Category", "Amount", "Date"};
+    }
 
-            public void removeUpdate(DocumentEvent e) {
-                checkFields();
-            }
-
-            public void insertUpdate(DocumentEvent e) {
-                checkFields();
-            }
-        };
+    @Override
+    public void attachDocumentListeners() {
         amountField.getDocument().addDocumentListener(listener);
         dateField.getDocument().addDocumentListener(listener);
 
-        expenseTable.getSelectionModel().addListSelectionListener(e -> updateDeleteButtonEnabledState());
+        entityTable.getSelectionModel().addListSelectionListener(e -> updateDeleteButtonEnabledState());
     }
 
     /**
      * Enables the Add button only if both amount and date fields are not empty.
      */
-    void checkFields() {
+    @Override
+    public void checkFields() {
         String amount = amountField.getText();
         String date = dateField.getText();
-        addExpenseButton.setEnabled(!amount.trim().isEmpty() && !date.trim().isEmpty());
+        addButton.setEnabled(!amount.trim().isEmpty() && !date.trim().isEmpty());
 
     }
 
-    void updateDeleteButtonEnabledState() {
+    public void updateDeleteButtonEnabledState() {
         boolean isSelected = getSelectedExpenseIndex() >= 0;
-        deleteExpenseButton.setEnabled(isSelected);
+        deleteButton.setEnabled(isSelected);
     }
 
     @Override
@@ -179,7 +130,7 @@ public class ExpensePanel extends JPanel implements ExpenseView {
 
     @Override
     public int getSelectedExpenseIndex() {
-        return expenseTable.getSelectedRow();
+        return entityTable.getSelectedRow();
     }
 
     @Override
@@ -189,17 +140,17 @@ public class ExpensePanel extends JPanel implements ExpenseView {
 
     @Override
     public JButton getAddExpenseButton() {
-        return addExpenseButton;
+        return addButton;
     }
 
     @Override
     public JButton getDeleteExpenseButton() {
-        return deleteExpenseButton;
+        return deleteButton;
     }
 
     @Override
     public JTable getExpenseTable() {
-        return expenseTable;
+        return entityTable;
     }
 }
 
