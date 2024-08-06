@@ -53,7 +53,7 @@ public class ExpensePanel extends BasePanel implements ExpenseView {
     }
 
     @Override
-    public void attachDocumentListeners() {
+    protected void attachDocumentListeners() {
         amountField.getDocument().addDocumentListener(listener);
         dateField.getDocument().addDocumentListener(listener);
     }
@@ -62,7 +62,7 @@ public class ExpensePanel extends BasePanel implements ExpenseView {
      * Enables the Add button only if both amount and date fields are not empty.
      */
     @Override
-    public void checkFields() {
+    protected void checkFields() {
         String amount = amountField.getText();
         String date = dateField.getText();
         addButton.setEnabled(!amount.trim().isEmpty() && !date.trim().isEmpty());

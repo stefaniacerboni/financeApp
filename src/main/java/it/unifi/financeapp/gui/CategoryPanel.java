@@ -39,7 +39,7 @@ public class CategoryPanel extends BasePanel implements CategoryView {
     }
 
     @Override
-    public void attachDocumentListeners() {
+    protected void attachDocumentListeners() {
         nameField.getDocument().addDocumentListener(listener);
         descriptionField.getDocument().addDocumentListener(listener);
     }
@@ -48,7 +48,7 @@ public class CategoryPanel extends BasePanel implements CategoryView {
      * Enables the Add button only if both name and description fields are not empty.
      */
     @Override
-    public void checkFields() {
+    protected void checkFields() {
         boolean enabled = !nameField.getText().trim().isEmpty() && !descriptionField.getText().trim().isEmpty();
         addButton.setEnabled(enabled);
     }

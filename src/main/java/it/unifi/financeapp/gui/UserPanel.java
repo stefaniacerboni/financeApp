@@ -51,13 +51,13 @@ public class UserPanel extends BasePanel implements UserView {
     }
 
     @Override
-    public void attachDocumentListeners() {
+    protected void attachDocumentListeners() {
         usernameField.getDocument().addDocumentListener(listener);
         emailField.getDocument().addDocumentListener(listener);
     }
 
     @Override
-    public void checkFields() {
+    protected void checkFields() {
         boolean enabled = !usernameField.getText().trim().isEmpty() && !emailField.getText().trim().isEmpty();
         addButton.setEnabled(enabled);
     }
