@@ -40,7 +40,6 @@ public class UserPanel extends BasePanel implements UserView {
 
         addButton = new JButton("Add User");
         addButton.setEnabled(false);
-        addButton.setName("addUserButton");
         formPanel.add(addButton);
 
         return formPanel;
@@ -55,8 +54,6 @@ public class UserPanel extends BasePanel implements UserView {
     public void attachDocumentListeners() {
         usernameField.getDocument().addDocumentListener(listener);
         emailField.getDocument().addDocumentListener(listener);
-
-        entityTable.getSelectionModel().addListSelectionListener(e -> updateDeleteButtonEnabledState());
     }
 
     @Override

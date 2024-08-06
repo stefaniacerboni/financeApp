@@ -42,7 +42,6 @@ public class ExpensePanel extends BasePanel implements ExpenseView {
 
         addButton = new JButton("Add Expense");
         addButton.setEnabled(false); // Initially disable the Add button
-        addButton.setName("addExpenseButton");
         formPanel.add(addButton);
 
         return formPanel;
@@ -57,8 +56,6 @@ public class ExpensePanel extends BasePanel implements ExpenseView {
     public void attachDocumentListeners() {
         amountField.getDocument().addDocumentListener(listener);
         dateField.getDocument().addDocumentListener(listener);
-
-        entityTable.getSelectionModel().addListSelectionListener(e -> updateDeleteButtonEnabledState());
     }
 
     /**
