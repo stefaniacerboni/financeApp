@@ -35,8 +35,7 @@ public class UserPanel extends BasePanel implements UserView {
         emailField.setName("emailField");
         formPanel.add(emailField);
 
-        addButton = new JButton("Add User");
-        addButton.setEnabled(false);
+        addButton = createAddButton("User");
         formPanel.add(addButton);
 
         return formPanel;
@@ -49,8 +48,7 @@ public class UserPanel extends BasePanel implements UserView {
 
     @Override
     protected void attachDocumentListeners() {
-        usernameField.getDocument().addDocumentListener(listener);
-        emailField.getDocument().addDocumentListener(listener);
+        attachDocumentListeners(usernameField, emailField);
     }
 
     @Override

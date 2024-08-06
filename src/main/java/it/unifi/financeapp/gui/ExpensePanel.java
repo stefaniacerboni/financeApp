@@ -38,8 +38,7 @@ public class ExpensePanel extends BasePanel implements ExpenseView {
         dateField.setName("dateField");
         formPanel.add(dateField);
 
-        addButton = new JButton("Add Expense");
-        addButton.setEnabled(false);
+        addButton = createAddButton("Expense");
         formPanel.add(addButton);
 
         return formPanel;
@@ -52,8 +51,7 @@ public class ExpensePanel extends BasePanel implements ExpenseView {
 
     @Override
     protected void attachDocumentListeners() {
-        amountField.getDocument().addDocumentListener(listener);
-        dateField.getDocument().addDocumentListener(listener);
+        attachDocumentListeners(amountField, dateField);
     }
 
     /**

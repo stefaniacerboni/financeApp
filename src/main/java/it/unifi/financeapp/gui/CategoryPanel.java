@@ -23,9 +23,7 @@ public class CategoryPanel extends BasePanel implements CategoryView {
         descriptionField.setName("descriptionField");
         formPanel.add(descriptionField);
 
-        addButton = new JButton("Add Category");
-        addButton.setEnabled(false);
-        formPanel.add(addButton);
+        addButton = createAddButton("Category");
 
         return formPanel;
     }
@@ -37,8 +35,7 @@ public class CategoryPanel extends BasePanel implements CategoryView {
 
     @Override
     protected void attachDocumentListeners() {
-        nameField.getDocument().addDocumentListener(listener);
-        descriptionField.getDocument().addDocumentListener(listener);
+        attachDocumentListeners(nameField, descriptionField);
     }
 
     /**

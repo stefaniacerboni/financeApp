@@ -28,7 +28,7 @@ public abstract class BasePanel extends JPanel {
         }
     };
 
-    public BasePanel() {
+    protected BasePanel() {
         initUI();
     }
 
@@ -37,8 +37,6 @@ public abstract class BasePanel extends JPanel {
 
         // Form Panel (Abstract - defined by subclasses)
         JPanel formPanel = createFormPanel();
-
-        addButton.setName("addButton");
 
         // Table
         String[] columnNames = getColumnNames(); // Abstract method to get column names
@@ -70,7 +68,33 @@ public abstract class BasePanel extends JPanel {
         entityTable.getSelectionModel().addListSelectionListener(e -> updateDeleteButtonEnabledState());
     }
 
+    protected void attachDocumentListeners(JTextField... fields) {
+        for (JTextField field : fields) {
+            field.getDocument().addDocumentListener(new DocumentListener() {
+                public void changedUpdate(DocumentEvent e) {
+                    checkFields();
+                }
+
+                public void removeUpdate(DocumentEvent e) {
+                    checkFields();
+                }
+
+                public void insertUpdate(DocumentEvent e) {
+                    checkFields();
+                }
+            });
+        }
+    }
+
     protected abstract JPanel createFormPanel();
+
+    protected JButton createAddButton(String label) {
+        JButton button = new JButton("Add " + label);
+        button.setName("addButton");
+        button.setEnabled(false);
+        return button;
+    }
+
 
     protected abstract String[] getColumnNames();
 
