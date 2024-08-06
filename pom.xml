@@ -176,9 +176,7 @@
                 <version>0.8.7</version>
                 <configuration>
                     <excludes>
-                        <exclude>it.unifi.financeapp.model.Category</exclude>
-                        <exclude>it.unifi.financeapp.model.User</exclude>
-                        <exclude>it.unifi.financeapp.model.Expense</exclude>
+                        <exclude>it.unifi.financeapp.model</exclude>
                     </excludes>
                 </configuration>
                 <executions>
