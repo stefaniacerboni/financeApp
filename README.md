@@ -2,6 +2,11 @@
 
 FinanceApp is a comprehensive financial management application designed using Test-Driven Development (TDD). This application supports tracking of expenses, categories, and user data.
 
+[![Build Status](https://github.com/stefaniacerboni/financeApp/actions/workflows/maven.yml/badge.svg)](https://github.com/stefaniacerboni/financeApp/actions)
+[![Coverage Status](https://coveralls.io/repos/github/stefaniacerboni/financeApp/badge.svg?branch=main)](https://coveralls.io/github/stefaniacerboni/financeApp?branch=main)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=stefaniacerboni_financeApp&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=stefaniacerboni_financeApp)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=stefaniacerboni_financeApp&metric=coverage)](https://sonarcloud.io/summary/new_code?id=stefaniacerboni_financeApp)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=stefaniacerboni_financeApp&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=stefaniacerboni_financeApp)
 ## Features
 
 - **User Management**: Add, edit, and delete users.
@@ -66,3 +71,5 @@ Stefania Cerboni
 ## Code Coverage
 
 [![Coverage Status](https://coveralls.io/repos/github/stefaniacerboni/financeApp/badge.svg)](https://coveralls.io/github/stefaniacerboni/financeApp)
+
+
