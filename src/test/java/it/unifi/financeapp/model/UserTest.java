@@ -78,7 +78,7 @@ class UserTest {
     void testEqualsAgainstDifferentClass() {
         User user = new User("Username", "Name", "Surname", "Email");
         Object other = new Object();
-        assertNotEquals(user, other);
+        assertNotEquals(other, user);
     }
 
 

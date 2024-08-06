@@ -77,7 +77,7 @@ class ExpenseTest {
         User user = new User("Username", "Name", "Surname", "Email");
         Expense expense = new Expense(category, user, 100L, "2024-12-23");
         Object other = new Object();
-        assertNotEquals(expense, other);
+        assertNotEquals(other, expense);
     }
 
 
