@@ -54,12 +54,6 @@ public class CategoryPanel extends BasePanel implements CategoryView {
     }
 
     @Override
-    public void updateDeleteButtonEnabledState() {
-        boolean isSelected = getSelectedCategoryIndex() >= 0;
-        deleteButton.setEnabled(isSelected);
-    }
-
-    @Override
     public String getName() {
         return nameField.getText();
     }

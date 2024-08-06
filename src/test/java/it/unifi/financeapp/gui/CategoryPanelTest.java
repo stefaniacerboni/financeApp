@@ -92,6 +92,9 @@ class CategoryPanelTest {
 
     @Test
     void testDeleteButtonShouldBeEnabledOnlyWhenACategoryIsSelected() {
+        assertEquals(-1, window.table("entityTable").target().getSelectedRow());
+        window.button("deleteButton").requireDisabled();
+
         testShownCategoryShouldMatchCategoryAdded();
         // Select the first row and assert that the delete button is enabled
         execute(() -> categoryView.getCategoryTable().setRowSelectionInterval(0, 0));

@@ -72,11 +72,6 @@ public class ExpensePanel extends BasePanel implements ExpenseView {
 
     }
 
-    public void updateDeleteButtonEnabledState() {
-        boolean isSelected = getSelectedExpenseIndex() >= 0;
-        deleteButton.setEnabled(isSelected);
-    }
-
     @Override
     public JComboBox<User> getUserComboBox() {
         return userComboBox;

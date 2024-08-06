@@ -66,12 +66,6 @@ public class UserPanel extends BasePanel implements UserView {
     }
 
     @Override
-    public void updateDeleteButtonEnabledState() {
-        boolean isSelected = getSelectedUserIndex() >= 0;
-        deleteButton.setEnabled(isSelected);
-    }
-
-    @Override
     public String getUsername() {
         return usernameField.getText();
     }
