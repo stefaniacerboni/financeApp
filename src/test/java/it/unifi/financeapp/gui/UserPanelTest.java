@@ -104,7 +104,7 @@ class UserPanelTest {
     }
 
     @Test
-    public void testShownUserShouldMatchUserAdded() {
+    void testShownUserShouldMatchUserAdded() {
         User user = new User("Username", "Email");
         user.setId(1L);
         execute(() -> userView.addUserToTable(user));
@@ -116,7 +116,7 @@ class UserPanelTest {
     }
 
     @Test
-    public void testDeleteButtonShouldBeEnabledOnlyWhenAUserIsSelected() {
+    void testDeleteButtonShouldBeEnabledOnlyWhenAUserIsSelected() {
         testShownUserShouldMatchUserAdded();
         // Select the first row and assert that the delete button is enabled
         execute(() -> userView.getUserTable().setRowSelectionInterval(0, 0));
@@ -128,7 +128,7 @@ class UserPanelTest {
     }
 
     @Test
-    public void testDeleteButtonShouldRemoveUserFromTable() {
+    void testDeleteButtonShouldRemoveUserFromTable() {
         testShownUserShouldMatchUserAdded();
         JTableFixture tableFixture = window.table("userTable");
         tableFixture.requireRowCount(1);

@@ -19,7 +19,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
-public class UserServiceIT {
+class UserServiceIT {
 
     @Container
     public static final MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:5.7")
@@ -31,7 +31,7 @@ public class UserServiceIT {
     private static UserService userService;
 
     @BeforeAll
-    public static void setUp() {
+    static void setUp() {
         // Configure JDBC properties dynamically based on Testcontainers
         Map<String, String> overrides = new HashMap<>();
         overrides.put("javax.persistence.jdbc.url", mysqlContainer.getJdbcUrl());
@@ -48,7 +48,7 @@ public class UserServiceIT {
     }
 
     @AfterAll
-    public static void tearDown() {
+    static void tearDown() {
         if (emf != null) {
             emf.close();
         }
@@ -56,12 +56,12 @@ public class UserServiceIT {
     }
 
     @AfterEach
-    public void cleanUpDatabase() {
+    void cleanUpDatabase() {
         userService.deleteAll();
     }
 
     @Test
-    public void testAddAndRetrieveUser() {
+    void testAddAndRetrieveUser() {
         // Setup test data
         User user = new User("username", "name", "surname", "email");
         User savedUser = userService.addUser(user);

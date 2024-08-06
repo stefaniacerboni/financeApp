@@ -34,7 +34,7 @@ class UserServiceTest {
     class HappyCases {
 
         @Test
-        public void testSaveExistingUser() {
+        void testSaveExistingUser() {
             User existingUser = new User("username", "email");
             existingUser.setId(1L); // Simulate an existing category
             when(userRepository.save(existingUser)).thenReturn(existingUser);

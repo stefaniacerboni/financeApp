@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 @Testcontainers
-public class CategoryServiceIT {
+class CategoryServiceIT {
 
     @Container
     public static final MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:5.7")
@@ -33,7 +33,7 @@ public class CategoryServiceIT {
     private static CategoryService categoryService;
 
     @BeforeAll
-    public static void setUp() {
+    static void setUp() {
         // Configure JDBC properties dynamically based on Testcontainers
         Map<String, String> overrides = new HashMap<>();
         overrides.put("javax.persistence.jdbc.url", mysqlContainer.getJdbcUrl());
@@ -53,7 +53,7 @@ public class CategoryServiceIT {
     }
 
     @AfterAll
-    public static void tearDown() {
+    static void tearDown() {
         if (emf != null) {
             emf.close();
         }

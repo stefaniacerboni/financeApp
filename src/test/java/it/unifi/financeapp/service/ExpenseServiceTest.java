@@ -50,7 +50,7 @@ class ExpenseServiceTest {
         }
 
         @Test
-        public void testSaveExistingExpense() {
+        void testSaveExistingExpense() {
             // Arrange
             Category existingCategory = new Category("name", "description");
             User existingUser = new User("username", "name", "surname", "email");

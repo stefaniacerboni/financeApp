@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
-public class UserRepositoryTest {
+class UserRepositoryTest {
 
     @Mock
     EntityManager entityManager;
@@ -31,14 +31,14 @@ public class UserRepositoryTest {
     private EntityTransaction transaction;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.initMocks(this);
         when(entityManager.getTransaction()).thenReturn(transaction);
         userRepository = new UserRepositoryImpl(entityManager);
     }
 
     @Test
-    public void testFindById() {
+    void testFindById() {
         Long id = 1L;
         User mockUser = new User("Username", "Email");
         when(entityManager.find(User.class, id)).thenReturn(mockUser);
@@ -50,7 +50,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void testFindAll() {
+    void testFindAll() {
         User user1 = new User("Username", "Email");
         User user2 = new User("Username1", "Email1");
         when(entityManager.createQuery("SELECT u FROM User u", User.class)).thenReturn(typedQuery);
@@ -64,7 +64,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void testSaveNewUser() {
+    void testSaveNewUser() {
         User newUser = new User("New", "New User Email");
 
         userRepository.save(newUser);
@@ -75,7 +75,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void testSaveExistingUser() {
+    void testSaveExistingUser() {
         User existingUser = new User("Existing", "Existing User Email");
         existingUser.setId(1L);  // Simulate an existing user
 
@@ -90,7 +90,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void testUpdateUser() {
+    void testUpdateUser() {
         User user = new User("Existing", "Existing User Email");
         user.setId(1L);
 
@@ -103,7 +103,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void testDeleteUser() {
+    void testDeleteUser() {
         User user = new User("To Be Deleted", "To be deleted Email");
         user.setId(1L);
 
@@ -113,7 +113,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void testDeleteAllUsers() {
+    void testDeleteAllUsers() {
         when(entityManager.createNativeQuery("DELETE u FROM users u")).thenReturn(nativeQuery);
 
         userRepository.deleteAll();

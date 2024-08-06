@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
-public class CategoryRepositoryTest {
+class CategoryRepositoryTest {
 
     @Mock
     EntityManager entityManager;
@@ -30,14 +30,14 @@ public class CategoryRepositoryTest {
     private EntityTransaction transaction;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.initMocks(this);
         when(entityManager.getTransaction()).thenReturn(transaction);
         categoryRepository = new CategoryRepositoryImpl(entityManager);
     }
 
     @Test
-    public void testFindById() {
+    void testFindById() {
         Long id = 1L;
         Category mockCategory = new Category("Utilities", "Utility bills");
         when(entityManager.find(Category.class, id)).thenReturn(mockCategory);
@@ -49,7 +49,7 @@ public class CategoryRepositoryTest {
     }
 
     @Test
-    public void testFindAll() {
+    void testFindAll() {
         Category cat1 = new Category("Utilities", "Utility bills");
         Category cat2 = new Category("Groceries", "Weekly food supplies");
         when(entityManager.createQuery("SELECT c FROM Category c", Category.class)).thenReturn(typedQuery);
@@ -63,7 +63,7 @@ public class CategoryRepositoryTest {
     }
 
     @Test
-    public void testSaveNewCategory() {
+    void testSaveNewCategory() {
         Category newCategory = new Category("New", "New Category Description");
 
         categoryRepository.save(newCategory);
@@ -74,7 +74,7 @@ public class CategoryRepositoryTest {
     }
 
     @Test
-    public void testSaveExistingCategory() {
+    void testSaveExistingCategory() {
         Category existingCategory = new Category("Existing", "Existing Category Description");
         existingCategory.setId(1L);  // Simulate an existing category
 
@@ -89,7 +89,7 @@ public class CategoryRepositoryTest {
     }
 
     @Test
-    public void testUpdateCategory() {
+    void testUpdateCategory() {
         Category category = new Category("Existing", "Existing Category Description");
         category.setId(1L);
 
@@ -102,7 +102,7 @@ public class CategoryRepositoryTest {
     }
 
     @Test
-    public void testDeleteCategory() {
+    void testDeleteCategory() {
         Category category = new Category("To Be Deleted", "To be deleted description");
         category.setId(1L);
 
@@ -112,7 +112,7 @@ public class CategoryRepositoryTest {
     }
 
     @Test
-    public void testDeleteAllCategories() {
+    void testDeleteAllCategories() {
         when(entityManager.createNativeQuery("DELETE c FROM categories c")).thenReturn(nativeQuery);
 
         categoryRepository.deleteAll();

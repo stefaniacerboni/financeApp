@@ -33,14 +33,14 @@ class ExpenseRepositoryTest {
     private ExpenseRepositoryImpl expenseRepository;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.initMocks(this);
         when(entityManager.getTransaction()).thenReturn(transaction);
         expenseRepository = new ExpenseRepositoryImpl(entityManager);
     }
 
     @Test
-    public void testSaveNewExpense() {
+    void testSaveNewExpense() {
         Category category = new Category("Travel", "Expenses for travel");
         User user = new User("john.doe", "john.doe@example.com");
         Expense newExpense = new Expense(category, user, 100.0, "2021-07-16");
@@ -53,7 +53,7 @@ class ExpenseRepositoryTest {
     }
 
     @Test
-    public void testFindById() {
+    void testFindById() {
         Long expenseId = 1L;
         Category category = new Category("Travel", "Expenses for travel");
         User user = new User("john.doe", "john.doe@example.com");
@@ -69,7 +69,7 @@ class ExpenseRepositoryTest {
     }
 
     @Test
-    public void testFindAllExpenses() {
+    void testFindAllExpenses() {
         Category category = new Category("Travel", "Expenses for travel");
         User user = new User("john.doe", "john.doe@example.com");
         Expense expense1 = new Expense(category, user, 100.0, "2021-07-16");
@@ -86,7 +86,7 @@ class ExpenseRepositoryTest {
     }
 
     @Test
-    public void testUpdateExpense() {
+    void testUpdateExpense() {
         Expense existingExpense = new Expense(new Category("Meals", "Meals and Entertainment"), new User("jane.doe", "jane@example.com"), 100.00, "2022-01-02");
         when(entityManager.merge(existingExpense)).thenReturn(existingExpense);
         Expense updatedExpense = expenseRepository.update(existingExpense);
@@ -97,7 +97,7 @@ class ExpenseRepositoryTest {
     }
 
     @Test
-    public void testDeleteExpense() {
+    void testDeleteExpense() {
         Expense expenseToDelete = new Expense(new Category("Accommodation", "Hotel expenses"), new User("john.doe", "john@example.com"), 300.00, "2022-01-03");
         expenseRepository.delete(expenseToDelete);
         verify(entityManager).remove(expenseToDelete);
@@ -106,7 +106,7 @@ class ExpenseRepositoryTest {
     }
 
     @Test
-    public void testSaveExistingExpense() {
+    void testSaveExistingExpense() {
         Expense existingExpense = new Expense(new Category("Meals", "Meals and Entertainment"), new User("john.doe", "john@example.com"), 150.00, "2022-01-02");
         existingExpense.setId(1L); // Assume this expense already has an ID, indicating it is already persisted
         when(entityManager.merge(existingExpense)).thenReturn(existingExpense);
@@ -122,7 +122,7 @@ class ExpenseRepositoryTest {
     }
 
     @Test
-    public void testDeleteAllExpenses() {
+    void testDeleteAllExpenses() {
         when(entityManager.createNativeQuery("DELETE e FROM expenses e")).thenReturn(nativeQuery);
 
         expenseRepository.deleteAll();

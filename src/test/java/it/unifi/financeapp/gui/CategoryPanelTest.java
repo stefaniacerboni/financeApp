@@ -93,7 +93,7 @@ class CategoryPanelTest {
     }
 
     @Test
-    public void testShownCategoryShouldMatchCategoryAdded() {
+    void testShownCategoryShouldMatchCategoryAdded() {
         Category category = new Category("Name", "Description");
         category.setId(1L);
         execute(() -> categoryView.addCategoryToTable(category));
@@ -105,7 +105,7 @@ class CategoryPanelTest {
     }
 
     @Test
-    public void testDeleteButtonShouldBeEnabledOnlyWhenACategoryIsSelected() {
+    void testDeleteButtonShouldBeEnabledOnlyWhenACategoryIsSelected() {
         testShownCategoryShouldMatchCategoryAdded();
         // Select the first row and assert that the delete button is enabled
         execute(() -> categoryView.getCategoryTable().setRowSelectionInterval(0, 0));
@@ -117,7 +117,7 @@ class CategoryPanelTest {
     }
 
     @Test
-    public void testDeleteButtonShouldRemoveCategoryFromTable() {
+    void testDeleteButtonShouldRemoveCategoryFromTable() {
         testShownCategoryShouldMatchCategoryAdded();
         JTableFixture tableFixture = window.table("categoryTable");
         tableFixture.requireRowCount(1);

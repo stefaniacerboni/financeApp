@@ -22,7 +22,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
-public class ExpenseServiceIT {
+class ExpenseServiceIT {
 
     @Container
     public static final MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:5.7")
@@ -34,7 +34,7 @@ public class ExpenseServiceIT {
     private static ExpenseService expenseService;
 
     @BeforeAll
-    public static void setUp() {
+    static void setUp() {
         // Configure JDBC properties dynamically based on Testcontainers
         Map<String, String> overrides = new HashMap<>();
         overrides.put("javax.persistence.jdbc.url", mysqlContainer.getJdbcUrl());
@@ -51,7 +51,7 @@ public class ExpenseServiceIT {
     }
 
     @AfterAll
-    public static void tearDown() {
+    static void tearDown() {
         if (emf != null) {
             emf.close();
         }
@@ -59,13 +59,13 @@ public class ExpenseServiceIT {
     }
 
     @AfterEach
-    public void cleanUpDatabase() {
+    void cleanUpDatabase() {
         expenseService.deleteAll();
     }
 
 
     @Test
-    public void testAddAndRetrieveExpense() {
+    void testAddAndRetrieveExpense() {
         // Setup test data
         Category category = new Category("Coffee", "Category about coffee");
         User user = new User("username", "email");
@@ -86,7 +86,7 @@ public class ExpenseServiceIT {
     }
 
     @Test
-    public void testAddExistingExpense() {
+    void testAddExistingExpense() {
         // Setup test data
         Category category = new Category("Coffee", "Category about coffee");
         User user = new User("username", "email");

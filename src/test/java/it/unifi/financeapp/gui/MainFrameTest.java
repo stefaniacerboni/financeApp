@@ -18,7 +18,7 @@ import javax.swing.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class MainFrameTest {
+class MainFrameTest {
 
     private FrameFixture window;
 
@@ -32,7 +32,7 @@ public class MainFrameTest {
     MainFrame mainFrame;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         JFrame frame = GuiActionRunner.execute(() -> {
             mainFrame = new MainFrame(categoryService, userService, expenseService);
             mainFrame.pack();
@@ -46,18 +46,18 @@ public class MainFrameTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         window.cleanUp();
     }
 
     @Test
-    public void shouldContainTabsWithProperTitles() {
+    void shouldContainTabsWithProperTitles() {
         window.tabbedPane().requireVisible();
         window.tabbedPane().requireTabTitles("Categories", "Users", "Expenses");
     }
 
     @Test
-    public void switchingToExpensesTabShouldTriggerDataLoading() {
+    void switchingToExpensesTabShouldTriggerDataLoading() {
         // Reset mocks to clear any interactions during initialization
         Mockito.reset(categoryService, userService, expenseService);
 
@@ -70,7 +70,7 @@ public class MainFrameTest {
     }
 
     @Test
-    public void switchingToCategoriesTabShouldNotTriggerDataLoading() {
+    void switchingToCategoriesTabShouldNotTriggerDataLoading() {
         // Reset mocks to clear any interactions during initialization
         Mockito.reset(categoryService, userService, expenseService);
 

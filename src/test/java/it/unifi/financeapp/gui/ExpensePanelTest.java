@@ -20,7 +20,7 @@ import java.awt.*;
 import static org.assertj.swing.edt.GuiActionRunner.execute;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ExpensePanelTest {
+class ExpensePanelTest {
 
     private FrameFixture window;
     private ExpenseView expenseView;
@@ -102,7 +102,7 @@ public class ExpensePanelTest {
     }
 
     @Test
-    public void testShownExpenseShouldMatchExpenseAdded() {
+    void testShownExpenseShouldMatchExpenseAdded() {
         User user = (User) expenseView.getUserComboBox().getSelectedItem();
         Category category = (Category) expenseView.getCategoryComboBox().getSelectedItem();
         Expense expense = new Expense(category, user, 100.0, "2024-01-01");
@@ -118,7 +118,7 @@ public class ExpensePanelTest {
     }
 
     @Test
-    public void testDeleteButtonShouldBeEnabledOnlyWhenAnExpenseIsSelected() {
+    void testDeleteButtonShouldBeEnabledOnlyWhenAnExpenseIsSelected() {
         testShownExpenseShouldMatchExpenseAdded();
         // Select the first row and assert that the delete button is enabled
         execute(() -> expenseView.getExpenseTable().setRowSelectionInterval(0, 0));
@@ -130,7 +130,7 @@ public class ExpensePanelTest {
     }
 
     @Test
-    public void testDeleteButtonShouldRemoveExpenseFromTable() {
+    void testDeleteButtonShouldRemoveExpenseFromTable() {
         testShownExpenseShouldMatchExpenseAdded();
         JTableFixture tableFixture = window.table("expenseTable");
         tableFixture.requireRowCount(1);

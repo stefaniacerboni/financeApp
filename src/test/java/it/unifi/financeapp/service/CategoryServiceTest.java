@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CategoryServiceTest {
+class CategoryServiceTest {
     @Mock
     private CategoryRepository categoryRepository;
 
@@ -43,7 +43,7 @@ public class CategoryServiceTest {
         }
 
         @Test
-        public void testSaveExistingCategory() {
+        void testSaveExistingCategory() {
             Category existingCategory = new Category("Name", "Description");
             existingCategory.setId(1L); // Simulate an existing category
             when(categoryRepository.save(any(Category.class))).thenReturn(existingCategory);

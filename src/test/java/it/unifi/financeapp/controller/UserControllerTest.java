@@ -16,7 +16,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class UserControllerTest {
+class UserControllerTest {
     @Mock
     private UserService userService;
     @Mock
