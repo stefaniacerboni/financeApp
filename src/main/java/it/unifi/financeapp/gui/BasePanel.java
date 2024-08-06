@@ -59,6 +59,7 @@ public abstract class BasePanel extends JPanel {
             field.getDocument().addDocumentListener(new DocumentListener() {
                 @Generated
                 public void changedUpdate(DocumentEvent e) {
+                    //Not triggered on plain TextFields
                 }
 
                 public void removeUpdate(DocumentEvent e) {
