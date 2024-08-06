@@ -4,29 +4,19 @@ package it.unifi.financeapp.gui;
 import it.unifi.financeapp.model.User;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-public class UserPanel extends JPanel implements UserView {
+public class UserPanel extends BasePanel implements UserView {
     private JTextField usernameField;
     private JTextField nameField;
     private JTextField surnameField;
     private JTextField emailField;
-    private JButton addUserButton;
-    private JButton deleteUserButton;
-    private JTable userTable;
-    private DefaultTableModel tableModel;
-    private JLabel statusLabel;
-
 
     public UserPanel() {
-        setLayout(new BorderLayout());
-        initUI();
     }
 
-    void initUI() {
+    @Override
+    public JPanel createFormPanel() {
         JPanel formPanel = new JPanel(new GridLayout(5, 2));
         formPanel.add(new JLabel("Username:"));
         usernameField = new JTextField();
@@ -48,65 +38,37 @@ public class UserPanel extends JPanel implements UserView {
         emailField.setName("emailField");
         formPanel.add(emailField);
 
-        addUserButton = new JButton("Add User");
-        addUserButton.setEnabled(false);
-        addUserButton.setName("addUserButton");
-        formPanel.add(addUserButton);
+        addButton = new JButton("Add User");
+        addButton.setEnabled(false);
+        addButton.setName("addUserButton");
+        formPanel.add(addButton);
 
-        String[] columnNames = {"Id", "Username", "Name", "Surname", "Email"};
-        tableModel = new DefaultTableModel(null, columnNames);
-        userTable = new JTable(tableModel);
-        userTable.setName("userTable");
-        JScrollPane scrollPane = new JScrollPane(userTable);
-
-        deleteUserButton = new JButton("Delete Selected");
-        deleteUserButton.setEnabled(false);
-        deleteUserButton.setName("deleteUserButton");
-        JPanel southPanel = new JPanel(new FlowLayout());
-        southPanel.add(deleteUserButton);
-
-        statusLabel = new JLabel(" ");
-        statusLabel.setName("statusLabel");
-        statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        southPanel.add(statusLabel);
-
-        add(formPanel, BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.CENTER);
-        add(southPanel, BorderLayout.SOUTH);
-
-        attachDocumentListeners();
+        return formPanel;
     }
 
-    private void attachDocumentListeners() {
-        DocumentListener listener = new DocumentListener() {
-            @Generated
-            public void changedUpdate(DocumentEvent e) {
-                // This method is not used in this context.
-            }
+    @Override
+    protected String[] getColumnNames() {
+        return new String[]{"Id", "Username", "Name", "Surname", "Email"};
+    }
 
-            public void removeUpdate(DocumentEvent e) {
-                checkFields();
-            }
-
-            public void insertUpdate(DocumentEvent e) {
-                checkFields();
-            }
-        };
+    @Override
+    public void attachDocumentListeners() {
         usernameField.getDocument().addDocumentListener(listener);
         emailField.getDocument().addDocumentListener(listener);
 
-        userTable.getSelectionModel().addListSelectionListener(e -> updateDeleteButtonEnabledState());
+        entityTable.getSelectionModel().addListSelectionListener(e -> updateDeleteButtonEnabledState());
     }
 
-    void checkFields() {
+    @Override
+    public void checkFields() {
         boolean enabled = !usernameField.getText().trim().isEmpty() && !emailField.getText().trim().isEmpty();
-        addUserButton.setEnabled(enabled);
+        addButton.setEnabled(enabled);
     }
 
-
-    void updateDeleteButtonEnabledState() {
+    @Override
+    public void updateDeleteButtonEnabledState() {
         boolean isSelected = getSelectedUserIndex() >= 0;
-        deleteUserButton.setEnabled(isSelected);
+        deleteButton.setEnabled(isSelected);
     }
 
     @Override
@@ -174,7 +136,7 @@ public class UserPanel extends JPanel implements UserView {
 
     @Override
     public int getSelectedUserIndex() {
-        return userTable.getSelectedRow();
+        return entityTable.getSelectedRow();
     }
 
     @Override
@@ -184,16 +146,16 @@ public class UserPanel extends JPanel implements UserView {
 
     @Override
     public JButton getAddUserButton() {
-        return addUserButton;
+        return addButton;
     }
 
     @Override
     public JButton getDeleteUserButton() {
-        return deleteUserButton;
+        return deleteButton;
     }
 
     @Override
     public JTable getUserTable() {
-        return userTable;
+        return entityTable;
     }
 }

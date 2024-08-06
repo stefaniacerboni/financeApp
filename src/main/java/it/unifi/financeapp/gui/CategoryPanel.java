@@ -4,29 +4,18 @@ package it.unifi.financeapp.gui;
 import it.unifi.financeapp.model.Category;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-public class CategoryPanel extends JPanel implements CategoryView {
+public class CategoryPanel extends BasePanel implements CategoryView {
     private JTextField nameField;
     private JTextField descriptionField;
-    private JButton addCategoryButton;
-    private JButton deleteCategoryButton;
-    private JTable categoryTable;
-    private DefaultTableModel tableModel;
-    private JLabel statusLabel;
 
     public CategoryPanel() {
-        setLayout(new BorderLayout());
-        initUI();
     }
 
-    void initUI() {
-        // Top Panel for form
+    @Override
+    protected JPanel createFormPanel() {
         JPanel formPanel = new JPanel(new GridLayout(3, 2));
-        formPanel.setName("formPanel");
         formPanel.add(new JLabel("Name:"));
         nameField = new JTextField();
         nameField.setName("nameField");
@@ -37,72 +26,37 @@ public class CategoryPanel extends JPanel implements CategoryView {
         descriptionField.setName("descriptionField");
         formPanel.add(descriptionField);
 
-        //Add Button
-        addCategoryButton = new JButton("Add Category");
-        addCategoryButton.setEnabled(false);
-        addCategoryButton.setName("addCategoryButton");
-        formPanel.add(addCategoryButton);
+        addButton = new JButton("Add Category");
+        addButton.setEnabled(false);
+        formPanel.add(addButton);
 
-        //Table of Categories
-        String[] columnNames = {"Id", "Name", "Description"};
-        tableModel = new DefaultTableModel(null, columnNames);
-        categoryTable = new JTable(tableModel);
-        categoryTable.setName("categoryTable");
-        JScrollPane scrollPane = new JScrollPane(categoryTable);
-
-        //Delete Button
-        deleteCategoryButton = new JButton("Delete Selected");
-        deleteCategoryButton.setEnabled(false);
-        deleteCategoryButton.setName("deleteCategoryButton");
-        JPanel southPanel = new JPanel(new FlowLayout());
-        southPanel.add(deleteCategoryButton);
-
-        //Status Label
-        statusLabel = new JLabel(" ");
-        statusLabel.setName("statusLabel");
-        statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        southPanel.add(statusLabel);
-
-        add(formPanel, BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.CENTER);
-        add(southPanel, BorderLayout.SOUTH);
-
-        attachDocumentListeners();
+        return formPanel;
     }
 
-    private void attachDocumentListeners() {
-        DocumentListener listener = new DocumentListener() {
-            @Generated
-            public void changedUpdate(DocumentEvent e) {
-                // This method is not used in this context.
-            }
+    @Override
+    protected String[] getColumnNames() {
+        return new String[]{"Id", "Name", "Description"};
+    }
 
-            public void removeUpdate(DocumentEvent e) {
-                checkFields();
-            }
-
-            public void insertUpdate(DocumentEvent e) {
-                checkFields();
-            }
-        };
+    @Override
+    public void attachDocumentListeners() {
         nameField.getDocument().addDocumentListener(listener);
         descriptionField.getDocument().addDocumentListener(listener);
-
-
-        categoryTable.getSelectionModel().addListSelectionListener(e -> updateDeleteButtonEnabledState());
     }
 
     /**
      * Enables the Add button only if both name and description fields are not empty.
      */
-    void checkFields() {
+    @Override
+    public void checkFields() {
         boolean enabled = !nameField.getText().trim().isEmpty() && !descriptionField.getText().trim().isEmpty();
-        addCategoryButton.setEnabled(enabled);
+        addButton.setEnabled(enabled);
     }
 
-    void updateDeleteButtonEnabledState() {
+    @Override
+    public void updateDeleteButtonEnabledState() {
         boolean isSelected = getSelectedCategoryIndex() >= 0;
-        deleteCategoryButton.setEnabled(isSelected);
+        deleteButton.setEnabled(isSelected);
     }
 
     @Override
@@ -148,7 +102,7 @@ public class CategoryPanel extends JPanel implements CategoryView {
 
     @Override
     public int getSelectedCategoryIndex() {
-        return categoryTable.getSelectedRow();
+        return entityTable.getSelectedRow();
     }
 
     @Override
@@ -158,16 +112,16 @@ public class CategoryPanel extends JPanel implements CategoryView {
 
     @Override
     public JButton getAddCategoryButton() {
-        return addCategoryButton;
+        return addButton;
     }
 
     @Override
     public JButton getDeleteCategoryButton() {
-        return deleteCategoryButton;
+        return deleteButton;
     }
 
     public JTable getCategoryTable() {
-        return categoryTable;
+        return entityTable;
     }
 }
 
