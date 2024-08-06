@@ -24,6 +24,7 @@ public class CategoryPanel extends BasePanel implements CategoryView {
         formPanel.add(descriptionField);
 
         addButton = createAddButton("Category");
+        formPanel.add(addButton);
 
         return formPanel;
     }
