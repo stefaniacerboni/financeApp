@@ -10,8 +10,12 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class UserPanel extends JPanel implements UserView {
-    private JTextField usernameField, nameField, surnameField, emailField;
-    private JButton addUserButton, deleteUserButton;
+    private JTextField usernameField;
+    private JTextField nameField;
+    private JTextField surnameField;
+    private JTextField emailField;
+    private JButton addUserButton;
+    private JButton deleteUserButton;
     private JTable userTable;
     private DefaultTableModel tableModel;
     private JLabel statusLabel;

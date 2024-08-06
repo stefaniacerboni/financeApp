@@ -10,8 +10,10 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class CategoryPanel extends JPanel implements CategoryView {
-    private JTextField nameField, descriptionField;
-    private JButton addCategoryButton, deleteCategoryButton;
+    private JTextField nameField;
+    private JTextField descriptionField;
+    private JButton addCategoryButton;
+    private JButton deleteCategoryButton;
     private JTable categoryTable;
     private DefaultTableModel tableModel;
     private JLabel statusLabel;

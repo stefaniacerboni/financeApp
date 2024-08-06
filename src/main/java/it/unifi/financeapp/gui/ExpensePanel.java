@@ -13,8 +13,10 @@ import java.awt.*;
 public class ExpensePanel extends JPanel implements ExpenseView {
     private JComboBox<User> userComboBox;
     private JComboBox<Category> categoryComboBox;
-    private JTextField amountField, dateField;
-    private JButton addExpenseButton, deleteExpenseButton;
+    private JTextField amountField;
+    private JTextField dateField;
+    private JButton addExpenseButton;
+    private JButton deleteExpenseButton;
     private JTable expenseTable;
     private JLabel statusLabel;
     private DefaultTableModel tableModel;
