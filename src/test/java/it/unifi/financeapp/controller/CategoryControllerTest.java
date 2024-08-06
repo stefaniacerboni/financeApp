@@ -47,7 +47,7 @@ class CategoryControllerTest {
     void shouldInitializeView() {
         verify(categoryView).getAddCategoryButton();
         verify(categoryView).getDeleteCategoryButton();
-        verify(categoryService).getAllCategories();  // Assuming that loadCategories() is called in initView()
+        verify(categoryService).getAllCategories();  // loadCategories() is called in initView()
     }
 
     @Test

@@ -209,7 +209,7 @@ class UserServiceTest {
         void testDeleteNonExistentUser() {
             Long userId = 1L;
 
-            // Assuming findById will return null indicating no user found
+            // findById return null if no user found
             when(userService.findUserById(userId)).thenReturn(null);
 
             assertThrows(IllegalArgumentException.class, () -> userService.deleteUser(userId));

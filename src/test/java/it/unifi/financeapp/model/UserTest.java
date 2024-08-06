@@ -71,7 +71,7 @@ class UserTest {
     @Test
     void testEqualsAgainstNull() {
         User user = new User("Username", "Name", "Surname", "Email");
-        assertNotEquals(user, null);
+        assertNotEquals(null, user);
     }
 
     @Test

@@ -128,7 +128,7 @@ class ExpenseServiceTest {
         @Test
         void testDeleteExpenseNull() {
             Exception exception = assertThrows(IllegalArgumentException.class, () -> expenseService.deleteExpense(1L));
-            assertEquals(exception.getMessage(), "Cannot delete a null expense.");
+            assertEquals("Cannot delete a null expense.", exception.getMessage());
         }
 
 
@@ -278,7 +278,7 @@ class ExpenseServiceTest {
         void testDeleteNonExistentExpense() {
             Long expenseId = 1L;
 
-            // Assuming findById will return null indicating no expense found
+            // findById returns null indicating no expense found
             when(expenseRepository.findById(expenseId)).thenReturn(null);
 
             assertThrows(IllegalArgumentException.class, () -> expenseService.deleteExpense(expenseId));

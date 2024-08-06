@@ -48,7 +48,7 @@ class UserControllerTest {
     void shouldInitializeView() {
         verify(userView).getAddUserButton();
         verify(userView).getDeleteUserButton();
-        verify(userService).getAllUsers();  // Assuming loadUsers() is called in initView()
+        verify(userService).getAllUsers();  // loadUsers() is called in initView()
     }
 
     @Test

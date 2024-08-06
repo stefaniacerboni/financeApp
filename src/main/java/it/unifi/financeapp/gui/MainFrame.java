@@ -15,10 +15,9 @@ import java.util.Map;
 
 public class MainFrame extends JFrame {
 
-    // Assuming these are your service classes
-    private final CategoryService categoryService;
-    private final UserService userService;
-    private final ExpenseService expenseService;
+    private transient final CategoryService categoryService;
+    private transient final UserService userService;
+    private transient final ExpenseService expenseService;
     JTabbedPane tabbedPane;
 
     MainFrame(CategoryService categoryService, UserService userService, ExpenseService expenseService) {
@@ -28,7 +27,7 @@ public class MainFrame extends JFrame {
 
         setTitle("Expense Management System");
         setSize(600, 400);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         initUI();
     }
 
