@@ -71,14 +71,14 @@ class UserTest {
     @Test
     void testEqualsAgainstNull() {
         User user = new User("Username", "Name", "Surname", "Email");
-        assertNotEquals(null, user);
+        assertNotEquals(user, null);
     }
 
     @Test
     void testEqualsAgainstDifferentClass() {
         User user = new User("Username", "Name", "Surname", "Email");
         Object other = new Object();
-        assertNotEquals(other, user);
+        assertNotEquals(user, other);
     }
 
 

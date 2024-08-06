@@ -57,7 +57,7 @@ class CategoryTest {
     void testEqualsAgainstDifferentClass() {
         Category category = new Category("Travel", "Expenses for travel");
         Object other = new Object();
-        assertNotEquals(other, category);
+        assertNotEquals(category, other);
     }
 
 
