@@ -176,7 +176,7 @@
                 <version>0.8.7</version>
                 <configuration>
                     <excludes>
-                        <exclude>it.unifi.financeapp.model</exclude>
+                        <exclude>**/model/*.*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
