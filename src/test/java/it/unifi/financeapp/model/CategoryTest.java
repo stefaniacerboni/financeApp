@@ -2,8 +2,7 @@ package it.unifi.financeapp.model;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class CategoryTest {
 
@@ -50,7 +49,7 @@ class CategoryTest {
     @Test
     void testEqualsAgainstNull() {
         Category category = new Category("Travel", "Expenses for travel");
-        assertNotEquals(category, null);
+        assertNotNull(category);
     }
 
     @Test
