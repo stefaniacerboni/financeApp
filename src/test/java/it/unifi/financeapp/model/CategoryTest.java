@@ -50,7 +50,7 @@ class CategoryTest {
     @Test
     void testEqualsAgainstNull() {
         Category category = new Category("Travel", "Expenses for travel");
-        assertNotEquals(null, category);
+        assertNotEquals(category, null);
     }
 
     @Test
