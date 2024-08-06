@@ -57,8 +57,8 @@ public abstract class BasePanel extends JPanel {
     protected void attachDocumentListeners(JTextField... fields) {
         for (JTextField field : fields) {
             field.getDocument().addDocumentListener(new DocumentListener() {
+                @Generated
                 public void changedUpdate(DocumentEvent e) {
-                    checkFields();
                 }
 
                 public void removeUpdate(DocumentEvent e) {
