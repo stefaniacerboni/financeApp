@@ -13,7 +13,7 @@ public abstract class BasePanel extends JPanel {
     protected JButton deleteButton;
     protected JLabel statusLabel;
     protected DefaultTableModel tableModel;
-    DocumentListener listener = new DocumentListener() {
+    protected transient DocumentListener listener = new DocumentListener() {
         @Generated
         public void changedUpdate(DocumentEvent e) {
             // This method is not used in this context.

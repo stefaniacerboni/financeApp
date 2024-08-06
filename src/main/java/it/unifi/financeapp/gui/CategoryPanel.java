@@ -10,9 +10,6 @@ public class CategoryPanel extends BasePanel implements CategoryView {
     private JTextField nameField;
     private JTextField descriptionField;
 
-    public CategoryPanel() {
-    }
-
     @Override
     protected JPanel createFormPanel() {
         JPanel formPanel = new JPanel(new GridLayout(3, 2));

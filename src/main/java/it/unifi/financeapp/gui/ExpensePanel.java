@@ -13,9 +13,7 @@ public class ExpensePanel extends BasePanel implements ExpenseView {
     private JTextField amountField;
     private JTextField dateField;
 
-    public ExpensePanel() {
-    }
-
+    @Override
     protected JPanel createFormPanel() {
         // Top Panel for form
         JPanel formPanel = new JPanel(new GridLayout(5, 2));
