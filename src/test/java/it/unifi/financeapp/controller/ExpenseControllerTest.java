@@ -22,7 +22,6 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,10 +38,6 @@ class ExpenseControllerTest {
     private JButton addExpenseButton;
     @Mock
     private JButton deleteExpenseButton;
-    @Mock
-    private JTable expenseTable;
-    @Mock
-    private ListSelectionModel selectionModel;
     @Mock
     private JComboBox<User> userComboBox;
     @Mock
@@ -185,7 +180,8 @@ class ExpenseControllerTest {
 
         controller.updateUsers();
 
-        verify(userComboBox).setModel(any(DefaultComboBoxModel.class));
+        verify(userService).getAllUsers();
+        verify(userComboBox).setModel(any());
     }
 
     @Test
@@ -196,6 +192,7 @@ class ExpenseControllerTest {
 
         controller.updateCategories();
 
-        verify(categoryComboBox).setModel(any(DefaultComboBoxModel.class));
+        verify(categoryService).getAllCategories();
+        verify(categoryComboBox).setModel(any());
     }
 }

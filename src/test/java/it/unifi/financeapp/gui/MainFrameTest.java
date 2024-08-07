@@ -20,16 +20,14 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class MainFrameTest {
 
+    MainFrame mainFrame;
     private FrameFixture window;
-
     @Mock
     private CategoryService categoryService;
     @Mock
     private UserService userService;
     @Mock
     private ExpenseService expenseService;
-
-    MainFrame mainFrame;
 
     @BeforeEach
     void setUp() {

@@ -18,7 +18,6 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,10 +30,6 @@ class CategoryControllerTest {
     private JButton addCategoryButton;
     @Mock
     private JButton deleteCategoryButton;
-    @Mock
-    private JTable categoryTable;
-    @Mock
-    private ListSelectionModel selectionModel;
 
     @InjectMocks
     private CategoryController controller;

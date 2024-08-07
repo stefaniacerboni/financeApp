@@ -57,7 +57,7 @@ class ExpensePanelTest {
     }
 
     @Test
-    void testTextFieldContentIsMatching(){
+    void testTextFieldContentIsMatching() {
         JTextComponentFixture amountField = window.textBox("amountField");
         JTextComponentFixture dateField = window.textBox("dateField");
         JTableFixture entityTable = window.table("entityTable");

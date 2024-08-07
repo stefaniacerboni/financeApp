@@ -59,7 +59,7 @@ public class ExpenseService {
         if (expense.getCategory() == null) {
             throw new InvalidExpenseException("Category cannot be null.");
         }
-        if (expense.getUser() == null){
+        if (expense.getUser() == null) {
             throw new InvalidExpenseException("User cannot be null.");
         }
         if (expense.getAmount() <= 0) {
