@@ -69,7 +69,6 @@ class UserServiceIT {
         // Retrieve from service
         User retrievedUser = userService.findUserById(savedUser.getId());
 
-        // Assertions
         assertNotNull(retrievedUser);
         Assertions.assertEquals(user.getUsername(), retrievedUser.getUsername());
         Assertions.assertEquals(user.getName(), retrievedUser.getName());
@@ -85,7 +84,6 @@ class UserServiceIT {
         user.setId(100L);
         User savedUser = userService.addUser(user);
 
-        // Assertions
         assertNotNull(savedUser);
         Assertions.assertEquals(user.getUsername(), savedUser.getUsername());
         Assertions.assertEquals(user.getName(), savedUser.getName());

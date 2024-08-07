@@ -10,12 +10,15 @@ import it.unifi.financeapp.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 
@@ -62,6 +65,31 @@ class ExpenseControllerTest {
         verify(expenseService).getAllExpenses();
         verify(expenseView).getAddExpenseButton();
         verify(expenseView).getDeleteExpenseButton();
+    }
+
+    @Test
+    void testAddExpenseActionListener() {
+        when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
+        when(expenseView.getUserComboBox()).thenReturn(userComboBox);
+        when(expenseView.getAmount()).thenReturn(String.valueOf(30));
+        ArgumentCaptor<ActionListener> captor = ArgumentCaptor.forClass(ActionListener.class);
+        verify(addExpenseButton).addActionListener(captor.capture());
+        ActionListener listener = captor.getValue();
+
+        // Simulate the button click
+        listener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
+        verify(expenseService).addExpense(any(Expense.class));
+    }
+
+    @Test
+    void testDeleteExpenseActionListener() {
+        ArgumentCaptor<ActionListener> captor = ArgumentCaptor.forClass(ActionListener.class);
+        verify(deleteExpenseButton).addActionListener(captor.capture());
+        ActionListener listener = captor.getValue();
+
+        // Simulate the button click
+        listener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
+        verify(expenseService).deleteExpense(any(Long.class));
     }
 
     @Test

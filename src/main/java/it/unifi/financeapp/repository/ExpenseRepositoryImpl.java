@@ -63,7 +63,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
         entityManager.getTransaction().commit();
     }
 
-    private void manageDependencies(Expense expense) {
+    void manageDependencies(Expense expense) {
         expense.setUser(entityManager.merge(expense.getUser()));
         expense.setCategory(entityManager.merge(expense.getCategory()));
     }

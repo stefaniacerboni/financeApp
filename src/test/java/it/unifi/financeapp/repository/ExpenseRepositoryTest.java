@@ -17,8 +17,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class ExpenseRepositoryTest {
     @Mock
@@ -44,11 +43,17 @@ class ExpenseRepositoryTest {
         Category category = new Category("Travel", "Expenses for travel");
         User user = new User("john.doe", "john.doe@example.com");
         Expense newExpense = new Expense(category, user, 100.0, "2021-07-16");
+        when(entityManager.merge(user)).thenReturn(user);
+        when(entityManager.merge(category)).thenReturn(category);
 
         expenseRepository.save(newExpense);
 
         verify(entityManager).persist(newExpense);
         verify(transaction).begin();
+        verify(entityManager).merge(user);
+        verify(entityManager).merge(category);
+        assertEquals(user, newExpense.getUser());
+        assertEquals(category, newExpense.getCategory());
         verify(transaction).commit();
     }
 
@@ -87,13 +92,35 @@ class ExpenseRepositoryTest {
 
     @Test
     void testUpdateExpense() {
-        Expense existingExpense = new Expense(new Category("Meals", "Meals and Entertainment"), new User("jane.doe", "jane@example.com"), 100.00, "2022-01-02");
+        Category category = new Category("Meals", "Meals and Entertainment");
+        User user = new User("jane.doe", "jane@example.com");
+        Expense existingExpense = new Expense(category, user, 100.00, "2022-01-02");
+        when(entityManager.merge(user)).thenReturn(user);
+        when(entityManager.merge(category)).thenReturn(category);
         when(entityManager.merge(existingExpense)).thenReturn(existingExpense);
         Expense updatedExpense = expenseRepository.update(existingExpense);
         assertEquals(existingExpense, updatedExpense);
         verify(entityManager).merge(existingExpense);
         verify(transaction).begin();
+        verify(entityManager).merge(user);
+        verify(entityManager).merge(category);
+        assertEquals(user, updatedExpense.getUser());
+        assertEquals(category, updatedExpense.getCategory());
         verify(transaction).commit();
+    }
+
+    @Test
+    void testManageDependencies() {
+        Category category = new Category("Meals", "Meals and Entertainment");
+        User user = new User("jane.doe", "jane@example.com");
+        Expense expense = spy(new Expense(category, user, 100.00, "2022-01-02"));
+        when(entityManager.merge(user)).thenReturn(user);
+        when(entityManager.merge(category)).thenReturn(category);
+
+        expenseRepository.manageDependencies(expense);
+
+        verify(expense).setUser(user);
+        verify(expense).setCategory(category);
     }
 
     @Test

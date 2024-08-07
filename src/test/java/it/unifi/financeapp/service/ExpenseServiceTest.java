@@ -51,17 +51,14 @@ class ExpenseServiceTest {
 
         @Test
         void testSaveExistingExpense() {
-            // Arrange
             Category existingCategory = new Category("name", "description");
             User existingUser = new User("username", "name", "surname", "email");
             Expense existingExpense = new Expense(existingCategory, existingUser, 9.99, "2024-07-15");
             existingExpense.setId(1L); // Simulate an existing expense
             when(expenseRepository.save(existingExpense)).thenReturn(existingExpense);
 
-            // Act
             Expense updatedExpense = expenseService.addExpense(existingExpense);
 
-            // Assert
             assertNotNull(updatedExpense);
             assertEquals(existingExpense.getId(), updatedExpense.getId());
             verify(expenseRepository).save(existingExpense);

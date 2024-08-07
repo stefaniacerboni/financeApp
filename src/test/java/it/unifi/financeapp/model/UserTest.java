@@ -149,4 +149,11 @@ class UserTest {
         User user2 = new User("Username", "Name", "Surname", "Email");
         assertEquals(user1.hashCode(), user2.hashCode());
     }
+
+    @Test
+    public void testToString() {
+        User user = new User("Username", "Name", "Surname", "Email");
+        String expected = "username='Username', email='Email'";
+        assertEquals(expected, user.toString(), "The toString method should return the correct representation");
+    }
 }

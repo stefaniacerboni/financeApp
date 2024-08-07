@@ -97,9 +97,10 @@ class UserRepositoryTest {
         when(entityManager.merge(user)).thenReturn(user);
 
         User updated = userRepository.update(user);
-
+        verify(transaction).begin();
         verify(entityManager).merge(user);
         assertEquals("Existing", updated.getUsername());
+        verify(transaction).commit();
     }
 
     @Test
@@ -108,8 +109,10 @@ class UserRepositoryTest {
         user.setId(1L);
 
         userRepository.delete(user);
-
+        verify(transaction).begin();
         verify(entityManager).remove(user);
+        verify(transaction).commit();
+
     }
 
     @Test
@@ -119,5 +122,8 @@ class UserRepositoryTest {
         userRepository.deleteAll();
 
         verify(entityManager).createNativeQuery("DELETE u FROM users u");
+        verify(nativeQuery).executeUpdate();
+        verify(transaction).begin();
+        verify(transaction).commit();
     }
 }

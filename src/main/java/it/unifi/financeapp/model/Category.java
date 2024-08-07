@@ -61,6 +61,6 @@ public class Category {
     @Override
     public String toString() {
         return "name='" + name + '\'' +
-                ", description='" + description;
+                ", description='" + description + "'";
     }
 }
