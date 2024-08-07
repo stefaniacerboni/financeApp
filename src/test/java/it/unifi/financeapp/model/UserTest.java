@@ -151,7 +151,7 @@ class UserTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         User user = new User("Username", "Name", "Surname", "Email");
         String expected = "username='Username', email='Email'";
         assertEquals(expected, user.toString(), "The toString method should return the correct representation");

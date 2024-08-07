@@ -119,7 +119,7 @@ class CategoryTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         Category category = new Category("Travel", "Expenses for travel");
         String expected = "name='Travel', description='Expenses for travel'";
         assertEquals(expected, category.toString(), "The toString method should return the correct representation");

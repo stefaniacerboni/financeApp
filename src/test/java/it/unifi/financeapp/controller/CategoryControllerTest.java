@@ -82,7 +82,6 @@ class CategoryControllerTest {
         List<Category> mockCategories = Arrays.asList(new Category("1", "Food"), new Category("2", "Utilities"));
         when(categoryService.getAllCategories()).thenReturn(mockCategories);
 
-        CategoryController controller = new CategoryController(categoryService, categoryView);
         controller.initView();
 
         // Verify each category is added to the view
