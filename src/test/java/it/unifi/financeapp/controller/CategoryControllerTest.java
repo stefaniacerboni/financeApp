@@ -6,12 +6,17 @@ import it.unifi.financeapp.service.CategoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -48,6 +53,41 @@ class CategoryControllerTest {
         verify(categoryView).getAddCategoryButton();
         verify(categoryView).getDeleteCategoryButton();
         verify(categoryService).getAllCategories();  // loadCategories() is called in initView()
+    }
+
+    @Test
+    void testAddCategoryActionListener() {
+        ArgumentCaptor<ActionListener> captor = ArgumentCaptor.forClass(ActionListener.class);
+        verify(addCategoryButton).addActionListener(captor.capture());
+        ActionListener listener = captor.getValue();
+
+        // Simulate the button click
+        listener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
+        verify(categoryService).addCategory(any(Category.class));
+    }
+
+    @Test
+    void testDeleteCategoryActionListener() {
+        ArgumentCaptor<ActionListener> captor = ArgumentCaptor.forClass(ActionListener.class);
+        verify(deleteCategoryButton).addActionListener(captor.capture());
+        ActionListener listener = captor.getValue();
+
+        // Simulate the button click
+        listener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
+        verify(categoryService).deleteCategory(any(Long.class));
+    }
+
+    @Test
+    void testLoadCategoriesOnInit() {
+        List<Category> mockCategories = Arrays.asList(new Category("1", "Food"), new Category("2", "Utilities"));
+        when(categoryService.getAllCategories()).thenReturn(mockCategories);
+
+        controller.initView();
+
+        // Verify each category is added to the view
+        mockCategories.forEach(category ->
+                verify(categoryView).addCategoryToTable(category)
+        );
     }
 
     @Test

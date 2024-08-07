@@ -97,8 +97,10 @@ class CategoryRepositoryTest {
 
         Category updated = categoryRepository.update(category);
 
+        verify(transaction).begin();
         verify(entityManager).merge(category);
         assertEquals("Existing", updated.getName());
+        verify(transaction).commit();
     }
 
     @Test
@@ -107,8 +109,9 @@ class CategoryRepositoryTest {
         category.setId(1L);
 
         categoryRepository.delete(category);
-
+        verify(transaction).begin();
         verify(entityManager).remove(category);
+        verify(transaction).commit();
     }
 
     @Test
@@ -116,6 +119,8 @@ class CategoryRepositoryTest {
         when(entityManager.createNativeQuery("DELETE c FROM categories c")).thenReturn(nativeQuery);
 
         categoryRepository.deleteAll();
+        verify(transaction).begin();
+        verify(transaction).commit();
 
         verify(entityManager).createNativeQuery("DELETE c FROM categories c");
     }

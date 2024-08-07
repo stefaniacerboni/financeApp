@@ -126,6 +126,7 @@
                         <param>it.unifi.financeapp.model.*</param>
                         <param>it.unifi.financeapp.controller.*</param>
                         <param>it.unifi.financeapp.service.*</param>
+                        <param>it.unifi.financeapp.repository.*</param>
                     </targetTests>
                     <withHistory>true</withHistory>
                     <excludedMethods>

@@ -75,7 +75,6 @@ class ExpenseServiceIT {
         // Retrieve from service
         Expense retrievedExpense = expenseService.findExpenseById(savedExpense.getId());
 
-        // Assertions
         assertNotNull(retrievedExpense);
         Assertions.assertEquals(category.getName(), retrievedExpense.getCategory().getName());
         Assertions.assertEquals(category.getDescription(), retrievedExpense.getCategory().getDescription());
@@ -94,7 +93,6 @@ class ExpenseServiceIT {
         expense.setId(100L);
         Expense savedExpense = expenseService.addExpense(expense);
 
-        // Assertions
         assertNotNull(savedExpense);
         Assertions.assertEquals(category.getName(), savedExpense.getCategory().getName());
         Assertions.assertEquals(category.getDescription(), savedExpense.getCategory().getDescription());

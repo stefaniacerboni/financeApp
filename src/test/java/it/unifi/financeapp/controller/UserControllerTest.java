@@ -5,11 +5,14 @@ import it.unifi.financeapp.model.User;
 import it.unifi.financeapp.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 
@@ -49,6 +52,28 @@ class UserControllerTest {
         verify(userView).getAddUserButton();
         verify(userView).getDeleteUserButton();
         verify(userService).getAllUsers();  // loadUsers() is called in initView()
+    }
+
+    @Test
+    void testAddUserActionListener() {
+        ArgumentCaptor<ActionListener> captor = ArgumentCaptor.forClass(ActionListener.class);
+        verify(addUserButton).addActionListener(captor.capture());
+        ActionListener listener = captor.getValue();
+
+        // Simulate the button click
+        listener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
+        verify(userService).addUser(any(User.class));
+    }
+
+    @Test
+    void testDeleteUserActionListener() {
+        ArgumentCaptor<ActionListener> captor = ArgumentCaptor.forClass(ActionListener.class);
+        verify(deleteUserButton).addActionListener(captor.capture());
+        ActionListener listener = captor.getValue();
+
+        // Simulate the button click
+        listener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
+        verify(userService).deleteUser(any(Long.class));
     }
 
     @Test
