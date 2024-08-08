@@ -20,7 +20,7 @@ public class MainFrame extends JFrame {
     private final transient ExpenseService expenseService;
     JTabbedPane tabbedPane;
 
-    MainFrame(CategoryService categoryService, UserService userService, ExpenseService expenseService) {
+    public MainFrame(CategoryService categoryService, UserService userService, ExpenseService expenseService) {
         this.categoryService = categoryService;
         this.userService = userService;
         this.expenseService = expenseService;
