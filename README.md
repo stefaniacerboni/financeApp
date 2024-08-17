@@ -13,11 +13,13 @@ FinanceApp is a comprehensive financial management application designed using Te
 - Java 11
 - Maven for dependency management
 - JUnit 5 for unit testing
+- Cucumber for End2End testing
 - AssertJ for fluent assertion library
 - Hibernate for ORM
 - MySQL for database
 - TestContainers for integration tests
 - Swing for the user interface
+
 
 ## Getting Started
 
