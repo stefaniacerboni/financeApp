@@ -5,74 +5,35 @@ import it.unifi.financeapp.model.User;
 import it.unifi.financeapp.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class UserControllerTest {
     @Mock
     private UserService userService;
     @Mock
     private UserView userView;
-    @Mock
-    private JButton addUserButton;
-    @Mock
-    private JButton deleteUserButton;
-    @Mock
-    private JTable userTable;
-    @Mock
-    private ListSelectionModel selectionModel;
 
     @InjectMocks
     private UserController controller;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.initMocks(this);
-        when(userView.getAddUserButton()).thenReturn(addUserButton);
-        when(userView.getDeleteUserButton()).thenReturn(deleteUserButton);
-        when(userView.getUserTable()).thenReturn(userTable);
-        when(userTable.getSelectionModel()).thenReturn(selectionModel);
         controller = new UserController(userService, userView);
         controller.initView();
     }
 
     @Test
     void shouldInitializeView() {
-        verify(userView).getAddUserButton();
-        verify(userView).getDeleteUserButton();
         verify(userService).getAllUsers();  // loadUsers() is called in initView()
-    }
-
-    @Test
-    void testAddUserActionListener() {
-        ArgumentCaptor<ActionListener> captor = ArgumentCaptor.forClass(ActionListener.class);
-        verify(addUserButton).addActionListener(captor.capture());
-        ActionListener listener = captor.getValue();
-
-        // Simulate the button click
-        listener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
-        verify(userService).addUser(any(User.class));
-    }
-
-    @Test
-    void testDeleteUserActionListener() {
-        ArgumentCaptor<ActionListener> captor = ArgumentCaptor.forClass(ActionListener.class);
-        verify(deleteUserButton).addActionListener(captor.capture());
-        ActionListener listener = captor.getValue();
-
-        // Simulate the button click
-        listener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
-        verify(userService).deleteUser(any(Long.class));
     }
 
     @Test
@@ -86,7 +47,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldAddUserSuccessfully() {
+    void testAddUserSuccessfully() {
         when(userView.getUsername()).thenReturn("JohnDoe");
         when(userView.getName()).thenReturn("John");
         when(userView.getSurname()).thenReturn("Doe");
@@ -103,7 +64,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldHandleAddUserFailure() {
+    void testAddUserFailure() {
         when(userView.getUsername()).thenReturn("JohnDoe");
         when(userView.getName()).thenReturn("John");
         when(userView.getSurname()).thenReturn("Doe");
@@ -116,7 +77,18 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldDeleteSelectedUser() {
+    void testNotDeleteIfNoUserSelected() {
+        when(userView.getSelectedUserIndex()).thenReturn(-1);
+
+        controller.deleteUser();
+
+        verify(userView, never()).getUserIdFromTable(anyInt());
+        verify(userService, never()).deleteUser(anyLong());
+        verify(userView).setStatus("No user selected for deletion.");
+    }
+
+    @Test
+    void testDeleteSelectedUser() {
         when(userView.getSelectedUserIndex()).thenReturn(0);
         when(userView.getUserIdFromTable(0)).thenReturn(1L);
 
@@ -125,16 +97,5 @@ class UserControllerTest {
         verify(userService).deleteUser(1L);
         verify(userView).removeUserFromTable(0);
         verify(userView).setStatus("User deleted successfully.");
-    }
-
-    @Test
-    void shouldNotDeleteIfNoUserSelected() {
-        when(userView.getSelectedUserIndex()).thenReturn(-1);
-
-        controller.deleteUser();
-
-        verify(userView, never()).getUserIdFromTable(anyInt());
-        verify(userService, never()).deleteUser(anyLong());
-        verify(userView).setStatus("No user selected for deletion.");
     }
 }

@@ -21,9 +21,6 @@ public abstract class BasePanel extends JPanel {
     private void initUI() {
         setLayout(new BorderLayout());
 
-        // Form Panel (Abstract - defined by subclasses)
-        JPanel formPanel = createFormPanel();
-
         // Table
         String[] columnNames = getColumnNames(); // Abstract method to get column names
         tableModel = new DefaultTableModel(null, columnNames);
@@ -43,6 +40,9 @@ public abstract class BasePanel extends JPanel {
         JPanel southPanel = new JPanel(new FlowLayout());
         southPanel.add(deleteButton);
         southPanel.add(statusLabel);
+
+        // Form Panel (Abstract - defined by subclasses)
+        JPanel formPanel = createFormPanel();
 
         // Add components to the panel
         add(formPanel, BorderLayout.NORTH);

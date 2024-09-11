@@ -10,15 +10,11 @@ import it.unifi.financeapp.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,10 +31,6 @@ class ExpenseControllerTest {
     @Mock
     private ExpenseView expenseView;
     @Mock
-    private JButton addExpenseButton;
-    @Mock
-    private JButton deleteExpenseButton;
-    @Mock
     private JComboBox<User> userComboBox;
     @Mock
     private JComboBox<Category> categoryComboBox;
@@ -48,9 +40,6 @@ class ExpenseControllerTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.initMocks(this);
-        when(expenseView.getAddExpenseButton()).thenReturn(addExpenseButton);
-        when(expenseView.getDeleteExpenseButton()).thenReturn(deleteExpenseButton);
         controller = new ExpenseController(expenseService, categoryService, userService, expenseView);
         controller.initView();
     }
@@ -58,33 +47,6 @@ class ExpenseControllerTest {
     @Test
     void shouldInitializeView() {
         verify(expenseService).getAllExpenses();
-        verify(expenseView).getAddExpenseButton();
-        verify(expenseView).getDeleteExpenseButton();
-    }
-
-    @Test
-    void testAddExpenseActionListener() {
-        when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
-        when(expenseView.getUserComboBox()).thenReturn(userComboBox);
-        when(expenseView.getAmount()).thenReturn(String.valueOf(30));
-        ArgumentCaptor<ActionListener> captor = ArgumentCaptor.forClass(ActionListener.class);
-        verify(addExpenseButton).addActionListener(captor.capture());
-        ActionListener listener = captor.getValue();
-
-        // Simulate the button click
-        listener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
-        verify(expenseService).addExpense(any(Expense.class));
-    }
-
-    @Test
-    void testDeleteExpenseActionListener() {
-        ArgumentCaptor<ActionListener> captor = ArgumentCaptor.forClass(ActionListener.class);
-        verify(deleteExpenseButton).addActionListener(captor.capture());
-        ActionListener listener = captor.getValue();
-
-        // Simulate the button click
-        listener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
-        verify(expenseService).deleteExpense(any(Long.class));
     }
 
     @Test
@@ -102,7 +64,7 @@ class ExpenseControllerTest {
     }
 
     @Test
-    void shouldAddExpense() {
+    void testAddExpenseSuccessfully() {
         User user = new User("JohnDoe", "John", "Doe", "john.doe@example.com");
         Category category = new Category("Travel", "Travel expenses");
         when(expenseView.getUserComboBox()).thenReturn(userComboBox);
@@ -123,7 +85,7 @@ class ExpenseControllerTest {
     }
 
     @Test
-    void shouldHandleAddExpenseFailure() {
+    void testAddExpenseFailure() {
         User user = new User("JohnDoe", "John", "Doe", "john.doe@example.com");
         Category category = new Category("Travel", "Travel expenses");
         when(expenseView.getUserComboBox()).thenReturn(userComboBox);
@@ -140,7 +102,7 @@ class ExpenseControllerTest {
     }
 
     @Test
-    void shouldDeleteExpense() {
+    void testDeleteExpense() {
         when(expenseView.getSelectedExpenseIndex()).thenReturn(0);
         when(expenseView.getExpenseIdFromTable(0)).thenReturn(1L);
 
@@ -152,7 +114,7 @@ class ExpenseControllerTest {
     }
 
     @Test
-    void shouldNotDeleteExpenseWhenNoneSelected() {
+    void testNotDeleteExpenseWhenNoneSelected() {
         when(expenseView.getSelectedExpenseIndex()).thenReturn(-1);
 
         controller.deleteExpense();
@@ -163,7 +125,7 @@ class ExpenseControllerTest {
     }
 
     @Test
-    void shouldUpdateData() {
+    void testUpdateData() {
         when(expenseView.getUserComboBox()).thenReturn(userComboBox);
         when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
         controller.updateData();
@@ -172,7 +134,7 @@ class ExpenseControllerTest {
     }
 
     @Test
-    void shouldPopulateUserComboBoxWhenUsersAreUpdated() {
+    void testPopulateUserComboBoxWhenUsersAreUpdated() {
         when(expenseView.getUserComboBox()).thenReturn(userComboBox);
 
         List<User> users = List.of(new User("User1", "Email1"), new User("User2", "Email2"));
@@ -185,7 +147,7 @@ class ExpenseControllerTest {
     }
 
     @Test
-    void shouldPopulateCategoryComboBoxWhenCategoriesAreUpdated() {
+    void testPopulateCategoryComboBoxWhenCategoriesAreUpdated() {
         when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
         List<Category> categories = List.of(new Category("Category1", "Description1"), new Category("Category2", "Description2"));
         when(categoryService.getAllCategories()).thenReturn(categories);

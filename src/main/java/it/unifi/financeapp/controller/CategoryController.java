@@ -14,8 +14,6 @@ public class CategoryController {
     }
 
     public void initView() {
-        categoryView.getAddCategoryButton().addActionListener(e -> addCategory());
-        categoryView.getDeleteCategoryButton().addActionListener(e -> deleteCategory());
         loadCategories();
     }
 

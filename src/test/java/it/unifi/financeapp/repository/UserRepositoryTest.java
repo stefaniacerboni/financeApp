@@ -2,65 +2,56 @@ package it.unifi.financeapp.repository;
 
 
 import it.unifi.financeapp.model.User;
-import org.hibernate.query.NativeQuery;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.TypedQuery;
-import java.util.Arrays;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 class UserRepositoryTest {
 
-    @Mock
-    EntityManager entityManager;
-    UserRepositoryImpl userRepository;
-    @Mock
-    private TypedQuery<User> typedQuery;
-    @Mock
-    private NativeQuery<User> nativeQuery;
-    @Mock
-    private EntityTransaction transaction;
+    UserRepository userRepository;
+    private EntityManagerFactory emf;
+    private EntityManager em;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.initMocks(this);
-        when(entityManager.getTransaction()).thenReturn(transaction);
-        userRepository = new UserRepositoryImpl(entityManager);
+        emf = Persistence.createEntityManagerFactory("TestFinanceAppH2PU");
+        em = emf.createEntityManager();
+        userRepository = new UserRepositoryImpl(em);
     }
 
     @Test
-    void testFindById() {
-        Long id = 1L;
-        User mockUser = new User("Username", "Email");
-        when(entityManager.find(User.class, id)).thenReturn(mockUser);
+    public void testFindById() {
+        User newUser = new User("Username", "Email");
+        em.getTransaction().begin();
+        em.persist(newUser);
+        em.getTransaction().commit();
 
-        User result = userRepository.findById(id);
-        verify(entityManager).find(User.class, id);
-        assertEquals("Username", result.getUsername());
-        assertEquals("Email", result.getEmail());
+        User foundUser = userRepository.findById(newUser.getId());
+        assertNotNull(foundUser);
+        assertEquals("Username", foundUser.getUsername());
+        assertEquals("Email", foundUser.getEmail());
     }
+
 
     @Test
     void testFindAll() {
-        User user1 = new User("Username", "Email");
-        User user2 = new User("Username1", "Email1");
-        when(entityManager.createQuery("SELECT u FROM User u", User.class)).thenReturn(typedQuery);
-        when(typedQuery.getResultList()).thenReturn(Arrays.asList(user1, user2));
+        em.getTransaction().begin();
+        User usr1 = new User("UserName1", "Email1");
+        User usr2 = new User("UserName2", "Email2");
+        em.persist(usr1);
+        em.persist(usr2);
+        em.getTransaction().commit();
 
         List<User> users = userRepository.findAll();
 
         assertNotNull(users);
         assertEquals(2, users.size());
-        verify(entityManager).createQuery("SELECT u FROM User u", User.class);
     }
 
     @Test
@@ -69,61 +60,60 @@ class UserRepositoryTest {
 
         userRepository.save(newUser);
 
-        verify(entityManager).persist(newUser);
-        verify(transaction).begin();
-        verify(transaction).commit();
+        User retrieved = em.find(User.class, newUser.getId());
+        assertNotNull(retrieved);
+        assertEquals("New", retrieved.getUsername());
     }
 
     @Test
     void testSaveExistingUser() {
         User existingUser = new User("Existing", "Existing User Email");
-        existingUser.setId(1L);  // Simulate an existing user
+        em.getTransaction().begin();
+        em.persist(existingUser);
+        em.getTransaction().commit();
 
-        when(entityManager.merge(existingUser)).thenReturn(existingUser);
-
+        existingUser.setEmail("Updated Email");
         User updatedUser = userRepository.save(existingUser);
 
-        verify(entityManager).merge(existingUser);
-        verify(entityManager, never()).persist(existingUser);
-        assertNotNull(updatedUser);
-        assertEquals(Long.valueOf(1), updatedUser.getId());
+        User retrieved = em.find(User.class, existingUser.getId());
+
+        assertNotNull(retrieved);
+        assertEquals("Updated Email", retrieved.getEmail());
     }
 
     @Test
     void testUpdateUser() {
-        User user = new User("Existing", "Existing User Email");
-        user.setId(1L);
+        User user = new User("Existing", "Existing User Description");
+        em.getTransaction().begin();
+        em.persist(user);
+        em.getTransaction().commit();
 
-        when(entityManager.merge(user)).thenReturn(user);
-
+        user.setName("Updated Name");
         User updated = userRepository.update(user);
-        verify(transaction).begin();
-        verify(entityManager).merge(user);
-        assertEquals("Existing", updated.getUsername());
-        verify(transaction).commit();
+
+        User retrieved = em.find(User.class, user.getId());
+        assertEquals("Updated Name", retrieved.getName());
     }
 
     @Test
     void testDeleteUser() {
         User user = new User("To Be Deleted", "To be deleted Email");
-        user.setId(1L);
+        em.getTransaction().begin();
+        em.persist(user);
+        em.getTransaction().commit();
 
         userRepository.delete(user);
-        verify(transaction).begin();
-        verify(entityManager).remove(user);
-        verify(transaction).commit();
 
+        User retrieved = em.find(User.class, user.getId());
+        assertNull(retrieved);
     }
 
     @Test
     void testDeleteAllUsers() {
-        when(entityManager.createNativeQuery("DELETE u FROM users u")).thenReturn(nativeQuery);
-
+        testSaveNewUser();
         userRepository.deleteAll();
 
-        verify(entityManager).createNativeQuery("DELETE u FROM users u");
-        verify(nativeQuery).executeUpdate();
-        verify(transaction).begin();
-        verify(transaction).commit();
+        List<User> users = userRepository.findAll();
+        assertTrue(users.isEmpty());
     }
 }

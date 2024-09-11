@@ -39,7 +39,6 @@ public class ExpenseSteps {
     public void iSelectTheExpense(String amount) {
         assertEquals(amount, TestConfig.window.table("entityTable").target().getModel().getValueAt(0, 3).toString());
         TestConfig.window.table("entityTable").target().setRowSelectionInterval(0, 0);
-
     }
 
     @Then("I should not see any expense in the expense list")

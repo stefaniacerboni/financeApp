@@ -1,6 +1,7 @@
 package it.unifi.financeapp.gui;
 
 
+import it.unifi.financeapp.controller.UserController;
 import it.unifi.financeapp.model.User;
 
 import javax.swing.*;
@@ -11,6 +12,7 @@ public class UserPanel extends BasePanel implements UserView {
     private JTextField nameField;
     private JTextField surnameField;
     private JTextField emailField;
+    private UserController userController;
 
     @Override
     protected JPanel createFormPanel() {
@@ -38,7 +40,15 @@ public class UserPanel extends BasePanel implements UserView {
         addButton = createAddButton("User");
         formPanel.add(addButton);
 
+        addButton.addActionListener(e -> userController.addUser());
+        deleteButton.addActionListener(e -> userController.deleteUser());
+
+
         return formPanel;
+    }
+
+    public void setUserController(UserController userController) {
+        this.userController = userController;
     }
 
     @Override

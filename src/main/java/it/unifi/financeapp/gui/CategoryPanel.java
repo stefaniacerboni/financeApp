@@ -1,6 +1,7 @@
 package it.unifi.financeapp.gui;
 
 
+import it.unifi.financeapp.controller.CategoryController;
 import it.unifi.financeapp.model.Category;
 
 import javax.swing.*;
@@ -9,6 +10,7 @@ import java.awt.*;
 public class CategoryPanel extends BasePanel implements CategoryView {
     private JTextField nameField;
     private JTextField descriptionField;
+    private CategoryController categoryController;
 
     @Override
     protected JPanel createFormPanel() {
@@ -26,7 +28,14 @@ public class CategoryPanel extends BasePanel implements CategoryView {
         addButton = createAddButton("Category");
         formPanel.add(addButton);
 
+        addButton.addActionListener(e -> categoryController.addCategory());
+        deleteButton.addActionListener(e -> categoryController.deleteCategory());
+
         return formPanel;
+    }
+
+    public void setCategoryController(CategoryController categoryController) {
+        this.categoryController = categoryController;
     }
 
     @Override

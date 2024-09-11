@@ -27,8 +27,6 @@ public class ExpenseController {
     }
 
     public void initView() {
-        expenseView.getAddExpenseButton().addActionListener(e -> addExpense());
-        expenseView.getDeleteExpenseButton().addActionListener(e -> deleteExpense());
         loadExpenses();
     }
 

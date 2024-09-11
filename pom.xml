@@ -16,6 +16,13 @@
             <version>8.0.29</version>
         </dependency>
 
+        <!-- In Memory DB -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.200</version>
+            <scope>test</scope>
+        </dependency>
         <!-- JPA and Hibernate -->
         <dependency>
             <groupId>org.hibernate</groupId>

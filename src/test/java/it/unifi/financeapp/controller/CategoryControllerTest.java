@@ -6,15 +6,10 @@ import it.unifi.financeapp.service.CategoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,50 +21,19 @@ class CategoryControllerTest {
     private CategoryService categoryService;
     @Mock
     private CategoryView categoryView;
-    @Mock
-    private JButton addCategoryButton;
-    @Mock
-    private JButton deleteCategoryButton;
 
     @InjectMocks
     private CategoryController controller;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.initMocks(this);
-        when(categoryView.getAddCategoryButton()).thenReturn(addCategoryButton);
-        when(categoryView.getDeleteCategoryButton()).thenReturn(deleteCategoryButton);
         controller = new CategoryController(categoryService, categoryView);
         controller.initView();
     }
 
     @Test
     void shouldInitializeView() {
-        verify(categoryView).getAddCategoryButton();
-        verify(categoryView).getDeleteCategoryButton();
         verify(categoryService).getAllCategories();  // loadCategories() is called in initView()
-    }
-
-    @Test
-    void testAddCategoryActionListener() {
-        ArgumentCaptor<ActionListener> captor = ArgumentCaptor.forClass(ActionListener.class);
-        verify(addCategoryButton).addActionListener(captor.capture());
-        ActionListener listener = captor.getValue();
-
-        // Simulate the button click
-        listener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
-        verify(categoryService).addCategory(any(Category.class));
-    }
-
-    @Test
-    void testDeleteCategoryActionListener() {
-        ArgumentCaptor<ActionListener> captor = ArgumentCaptor.forClass(ActionListener.class);
-        verify(deleteCategoryButton).addActionListener(captor.capture());
-        ActionListener listener = captor.getValue();
-
-        // Simulate the button click
-        listener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
-        verify(categoryService).deleteCategory(any(Long.class));
     }
 
     @Test
@@ -86,7 +50,7 @@ class CategoryControllerTest {
     }
 
     @Test
-    void shouldAddCategorySuccessfully() {
+    void testAddCategorySuccessfully() {
         when(categoryView.getName()).thenReturn("New Category");
         when(categoryView.getDescription()).thenReturn("New Description");
         Category newCategory = new Category("New Category", "New Description");
@@ -101,7 +65,7 @@ class CategoryControllerTest {
     }
 
     @Test
-    void shouldHandleAddCategoryFailure() {
+    void testAddCategoryFailure() {
         when(categoryView.getName()).thenReturn("New Category");
         when(categoryView.getDescription()).thenReturn("New Description");
         when(categoryService.addCategory(any(Category.class))).thenReturn(null);
@@ -112,7 +76,7 @@ class CategoryControllerTest {
     }
 
     @Test
-    void shouldNotDeleteIfNoCategorySelected() {
+    void testNotDeleteIfNoCategorySelected() {
         when(categoryView.getSelectedCategoryIndex()).thenReturn(-1);
 
         controller.deleteCategory();
@@ -123,7 +87,7 @@ class CategoryControllerTest {
     }
 
     @Test
-    void shouldDeleteSelectedCategory() {
+    void testDeleteSelectedCategory() {
         when(categoryView.getSelectedCategoryIndex()).thenReturn(0);
         when(categoryView.getCategoryIdFromTable(0)).thenReturn(1L);
 
