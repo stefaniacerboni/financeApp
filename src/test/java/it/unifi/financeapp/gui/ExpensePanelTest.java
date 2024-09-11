@@ -21,7 +21,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import static org.assertj.swing.edt.GuiActionRunner.execute;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -90,6 +90,7 @@ class ExpensePanelTest {
         window.textBox("amountField").setText("100");
         window.textBox("dateField").setText("2024-01-01");
         window.button("addButton").requireEnabled();
+        assertTrue(expenseView.getAddExpenseButton().isEnabled());
     }
 
     @Test
@@ -136,10 +137,12 @@ class ExpensePanelTest {
         // Select the first row and assert that the delete button is enabled
         execute(() -> expenseView.getExpenseTable().setRowSelectionInterval(0, 0));
         window.button("deleteButton").requireEnabled();
+        assertTrue(expenseView.getDeleteExpenseButton().isEnabled());
 
         // Clear selection and assert that the delete button is disabled
         execute(() -> expenseView.getExpenseTable().clearSelection());
         window.button("deleteButton").requireDisabled();
+        assertFalse(expenseView.getDeleteExpenseButton().isEnabled());
     }
 
     @Test

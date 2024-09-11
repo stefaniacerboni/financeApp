@@ -13,7 +13,7 @@ public class ExpensePanel extends BasePanel implements ExpenseView {
     private JComboBox<Category> categoryComboBox;
     private JTextField amountField;
     private JTextField dateField;
-    private ExpenseController expenseController;
+    private transient ExpenseController expenseController;
 
     @Override
     protected JPanel createFormPanel() {

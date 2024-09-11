@@ -26,7 +26,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    public void testFindById() {
+    void testFindById() {
         User newUser = new User("Username", "Email");
         em.getTransaction().begin();
         em.persist(newUser);
@@ -73,7 +73,7 @@ class UserRepositoryTest {
         em.getTransaction().commit();
 
         existingUser.setEmail("Updated Email");
-        User updatedUser = userRepository.save(existingUser);
+        userRepository.save(existingUser);
 
         User retrieved = em.find(User.class, existingUser.getId());
 
@@ -89,7 +89,7 @@ class UserRepositoryTest {
         em.getTransaction().commit();
 
         user.setName("Updated Name");
-        User updated = userRepository.update(user);
+        userRepository.update(user);
 
         User retrieved = em.find(User.class, user.getId());
         assertEquals("Updated Name", retrieved.getName());

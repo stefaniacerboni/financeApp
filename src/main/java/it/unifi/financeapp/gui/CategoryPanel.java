@@ -10,7 +10,7 @@ import java.awt.*;
 public class CategoryPanel extends BasePanel implements CategoryView {
     private JTextField nameField;
     private JTextField descriptionField;
-    private CategoryController categoryController;
+    private transient CategoryController categoryController;
 
     @Override
     protected JPanel createFormPanel() {

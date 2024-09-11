@@ -20,7 +20,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import static org.assertj.swing.edt.GuiActionRunner.execute;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -62,10 +62,12 @@ class UserPanelTest {
         JTextComponentFixture surnameField = window.textBox("surnameField");
         JTextComponentFixture emailField = window.textBox("emailField");
         JTableFixture entityTable = window.table("entityTable");
+        assertFalse(userView.getAddUserButton().isEnabled());
         usernameField.setText("Username");
         nameField.setText("Name");
         surnameField.setText("Surname");
         emailField.setText("Email");
+        assertTrue(userView.getAddUserButton().isEnabled());
         usernameField.requireText(userView.getUsername());
         nameField.requireText(userView.getName());
         surnameField.requireText(userView.getSurname());
@@ -133,6 +135,8 @@ class UserPanelTest {
         // Select the first row and assert that the delete button is enabled
         execute(() -> userView.getUserTable().setRowSelectionInterval(0, 0));
         window.button("deleteButton").requireEnabled();
+        assertTrue(userView.getDeleteUserButton().isEnabled());
+
 
         // Clear selection and assert that the delete button is disabled
         execute(() -> userView.getUserTable().clearSelection());

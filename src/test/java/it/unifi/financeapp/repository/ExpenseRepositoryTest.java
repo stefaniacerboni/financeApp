@@ -50,7 +50,7 @@ class ExpenseRepositoryTest {
     }
 
     @Test
-    public void testFindById() {
+    void testFindById() {
         Expense newExpense = new Expense(category, user, 100.0, "2021-07-16");
 
         em.getTransaction().begin();
@@ -89,7 +89,7 @@ class ExpenseRepositoryTest {
         em.getTransaction().commit();
 
         existingExpense.setDate("2024-01-01");
-        Expense updated = expenseRepository.update(existingExpense);
+        expenseRepository.update(existingExpense);
 
         Expense retrieved = em.find(Expense.class, existingExpense.getId());
         assertEquals("2024-01-01", retrieved.getDate());
@@ -127,7 +127,7 @@ class ExpenseRepositoryTest {
         em.getTransaction().commit();
 
         existingExpense.setDate("2024-01-01");
-        Expense updatedExpense = expenseRepository.save(existingExpense);
+        expenseRepository.save(existingExpense);
 
         Expense retrieved = em.find(Expense.class, existingExpense.getId());
 

@@ -32,7 +32,7 @@ class CategoryRepositoryTest {
     }
 
     @Test
-    public void testFindById() {
+    void testFindById() {
         Category newCategory = new Category("Utilities", "Utility bills");
         em.getTransaction().begin();
         em.persist(newCategory);
@@ -77,7 +77,7 @@ class CategoryRepositoryTest {
         em.getTransaction().commit();
 
         existingCategory.setDescription("Updated Description");
-        Category updatedCategory = categoryRepository.save(existingCategory);
+        categoryRepository.save(existingCategory);
 
         Category retrieved = em.find(Category.class, existingCategory.getId());
         assertNotNull(retrieved);
@@ -92,7 +92,7 @@ class CategoryRepositoryTest {
         em.getTransaction().commit();
 
         category.setName("Updated Name");
-        Category updated = categoryRepository.update(category);
+        categoryRepository.update(category);
 
         Category retrieved = em.find(Category.class, category.getId());
         assertEquals("Updated Name", retrieved.getName());

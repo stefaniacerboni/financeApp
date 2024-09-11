@@ -19,7 +19,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import static org.assertj.swing.edt.GuiActionRunner.execute;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -117,11 +117,13 @@ class CategoryPanelTest {
     void testFieldContentIsMatching() {
         JTextComponentFixture nameField = window.textBox("nameField");
         JTextComponentFixture descriptionField = window.textBox("descriptionField");
+        assertFalse(categoryView.getAddCategoryButton().isEnabled());
         JTableFixture entityTable = window.table("entityTable");
         nameField.setText("Name");
         descriptionField.setText("Description");
         nameField.requireText(categoryView.getName());
         descriptionField.requireText(categoryView.getDescription());
+        assertTrue(categoryView.getAddCategoryButton().isEnabled());
         categoryView.setName("New Name");
         categoryView.setDescription("New Description");
         nameField.requireText(categoryView.getName());
@@ -138,6 +140,7 @@ class CategoryPanelTest {
         // Select the first row and assert that the delete button is enabled
         execute(() -> categoryView.getCategoryTable().setRowSelectionInterval(0, 0));
         window.button("deleteButton").requireEnabled();
+        assertTrue(categoryView.getDeleteCategoryButton().isEnabled());
         assertEquals(1L, categoryView.getCategoryIdFromTable(0));
         execute(() -> categoryView.removeCategoryFromTable(0));
         tableFixture.requireRowCount(0);

@@ -12,7 +12,7 @@ public class UserPanel extends BasePanel implements UserView {
     private JTextField nameField;
     private JTextField surnameField;
     private JTextField emailField;
-    private UserController userController;
+    private transient UserController userController;
 
     @Override
     protected JPanel createFormPanel() {
