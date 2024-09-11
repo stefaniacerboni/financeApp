@@ -1,5 +1,6 @@
 package it.unifi.financeapp.gui;
 
+import it.unifi.financeapp.controller.ExpenseController;
 import it.unifi.financeapp.model.Category;
 import it.unifi.financeapp.model.Expense;
 import it.unifi.financeapp.model.User;
@@ -12,28 +13,36 @@ import org.assertj.swing.fixture.JTextComponentFixture;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 
 import static org.assertj.swing.edt.GuiActionRunner.execute;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 
+@ExtendWith(MockitoExtension.class)
 class ExpensePanelTest {
+    @Mock
+    private ExpenseController expenseController;
 
     private FrameFixture window;
-    private ExpenseView expenseView;
+
+    private ExpensePanel expenseView;
 
     @BeforeEach
     void setUp() {
         JFrame frame = GuiActionRunner.execute(() -> {
             JFrame f = new JFrame();
             expenseView = new ExpensePanel();
+            expenseView.setExpenseController(expenseController);
             // Mock data for JComboBoxes
             expenseView.getUserComboBox().addItem(new User("User1", "Email1"));  // Mock user
             expenseView.getCategoryComboBox().addItem(new Category("Category1", "Description1"));  // Mock category
-            f.setContentPane((Container) expenseView);
+            f.setContentPane(expenseView);
             f.pack();
             f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             return f;
@@ -81,6 +90,7 @@ class ExpensePanelTest {
         window.textBox("amountField").setText("100");
         window.textBox("dateField").setText("2024-01-01");
         window.button("addButton").requireEnabled();
+        assertTrue(expenseView.getAddExpenseButton().isEnabled());
     }
 
     @Test
@@ -127,10 +137,12 @@ class ExpensePanelTest {
         // Select the first row and assert that the delete button is enabled
         execute(() -> expenseView.getExpenseTable().setRowSelectionInterval(0, 0));
         window.button("deleteButton").requireEnabled();
+        assertTrue(expenseView.getDeleteExpenseButton().isEnabled());
 
         // Clear selection and assert that the delete button is disabled
         execute(() -> expenseView.getExpenseTable().clearSelection());
         window.button("deleteButton").requireDisabled();
+        assertFalse(expenseView.getDeleteExpenseButton().isEnabled());
     }
 
     @Test
@@ -157,5 +169,25 @@ class ExpensePanelTest {
 
         amountField.requireText("");
         dateField.requireText("");
+    }
+
+
+    @Test
+    void testAddExpenseShouldDelegateToExpenseController() {
+        JTextComponentFixture amountField = window.textBox("amountField");
+        JTextComponentFixture dateField = window.textBox("dateField");
+        amountField.setText("100");
+        dateField.setText("2024-01-01");
+        window.button(JButtonMatcher.withName("addButton")).target().doClick();
+        verify(expenseController).addExpense();
+    }
+
+    @Test
+    void testDeleteExpenseShouldDelegateToExpenseController() {
+        testShownExpenseShouldMatchExpenseAdded();
+        execute(() -> expenseView.getExpenseTable().setRowSelectionInterval(0, 0));
+        window.button("deleteButton").requireEnabled();
+        window.button(JButtonMatcher.withName("deleteButton")).target().doClick();
+        verify(expenseController).deleteExpense();
     }
 }

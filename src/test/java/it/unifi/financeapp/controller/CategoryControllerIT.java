@@ -1,7 +1,6 @@
 package it.unifi.financeapp.controller;
 
 import it.unifi.financeapp.gui.CategoryPanel;
-import it.unifi.financeapp.gui.CategoryView;
 import it.unifi.financeapp.repository.CategoryRepository;
 import it.unifi.financeapp.repository.CategoryRepositoryImpl;
 import it.unifi.financeapp.service.CategoryService;
@@ -31,7 +30,7 @@ class CategoryControllerIT {
             .withPassword("test");
 
     private static EntityManagerFactory emf;
-    CategoryView categoryView;
+    CategoryPanel categoryView;
     CategoryService categoryService;
     CategoryController categoryController;
 
@@ -60,6 +59,7 @@ class CategoryControllerIT {
         categoryService.deleteAll();
         categoryView = new CategoryPanel();
         categoryController = new CategoryController(categoryService, categoryView);
+        categoryView.setCategoryController(categoryController);
         categoryController.initView();
     }
 

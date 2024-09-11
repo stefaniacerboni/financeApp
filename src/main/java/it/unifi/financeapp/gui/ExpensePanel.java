@@ -1,5 +1,6 @@
 package it.unifi.financeapp.gui;
 
+import it.unifi.financeapp.controller.ExpenseController;
 import it.unifi.financeapp.model.Category;
 import it.unifi.financeapp.model.Expense;
 import it.unifi.financeapp.model.User;
@@ -12,6 +13,7 @@ public class ExpensePanel extends BasePanel implements ExpenseView {
     private JComboBox<Category> categoryComboBox;
     private JTextField amountField;
     private JTextField dateField;
+    private transient ExpenseController expenseController;
 
     @Override
     protected JPanel createFormPanel() {
@@ -41,7 +43,15 @@ public class ExpensePanel extends BasePanel implements ExpenseView {
         addButton = createAddButton("Expense");
         formPanel.add(addButton);
 
+        addButton.addActionListener(e -> expenseController.addExpense());
+        deleteButton.addActionListener(e -> expenseController.deleteExpense());
+
+
         return formPanel;
+    }
+
+    public void setExpenseController(ExpenseController expenseController) {
+        this.expenseController = expenseController;
     }
 
     @Override

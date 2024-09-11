@@ -14,8 +14,6 @@ public class UserController {
     }
 
     public void initView() {
-        userView.getAddUserButton().addActionListener(e -> addUser());
-        userView.getDeleteUserButton().addActionListener(e -> deleteUser());
         loadUsers();
     }
 

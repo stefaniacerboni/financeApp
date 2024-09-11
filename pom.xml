@@ -16,6 +16,13 @@
             <version>8.0.29</version>
         </dependency>
 
+        <!-- In Memory DB -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.200</version>
+            <scope>test</scope>
+        </dependency>
         <!-- JPA and Hibernate -->
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -92,6 +99,20 @@
             <version>3.17.1</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- Cucumber -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>7.2.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <version>7.2.3</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -143,9 +164,7 @@
                 <version>2.22.2</version>
                 <configuration>
                     <excludes>
-                        <exclude>**/IT*.java</exclude>
                         <exclude>**/*IT.java</exclude>
-                        <exclude>**/*IntegrationTest.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -161,13 +180,28 @@
                             <goal>integration-test</goal>
                             <goal>verify</goal>
                         </goals>
+                        <configuration>
+                            <includes>
+                                <include>**/*IT.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>e2e-tests</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/*IT.java</exclude>
+                            </excludes>
+                            <includes>
+                                <include>**/*E2E.java</include>
+                            </includes>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <includes>
-                        <include>**/*IT.java</include>
-                    </includes>
-                </configuration>
             </plugin>
 
             <!-- JaCoCo plugin to generate coverage reports -->

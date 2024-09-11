@@ -1,5 +1,6 @@
 package it.unifi.financeapp.gui;
 
+import it.unifi.financeapp.controller.CategoryController;
 import it.unifi.financeapp.model.Category;
 import org.assertj.swing.core.matcher.JButtonMatcher;
 import org.assertj.swing.edt.GuiActionRunner;
@@ -10,26 +11,33 @@ import org.assertj.swing.fixture.JTextComponentFixture;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 
 import static org.assertj.swing.edt.GuiActionRunner.execute;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 
+@ExtendWith(MockitoExtension.class)
 class CategoryPanelTest {
+    @Mock
+    private CategoryController categoryController;
 
     private FrameFixture window;
 
-    private CategoryView categoryView;
+    private CategoryPanel categoryView;
 
     @BeforeEach
     void setUp() {
         JFrame frame = GuiActionRunner.execute(() -> {
             JFrame f = new JFrame();
             categoryView = new CategoryPanel(); // Make sure this is the only instance created
-            f.setContentPane((Container) categoryView);
+            categoryView.setCategoryController(categoryController);
+            f.setContentPane(categoryView);
             f.pack();
             f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             return f;
@@ -109,11 +117,13 @@ class CategoryPanelTest {
     void testFieldContentIsMatching() {
         JTextComponentFixture nameField = window.textBox("nameField");
         JTextComponentFixture descriptionField = window.textBox("descriptionField");
+        assertFalse(categoryView.getAddCategoryButton().isEnabled());
         JTableFixture entityTable = window.table("entityTable");
         nameField.setText("Name");
         descriptionField.setText("Description");
         nameField.requireText(categoryView.getName());
         descriptionField.requireText(categoryView.getDescription());
+        assertTrue(categoryView.getAddCategoryButton().isEnabled());
         categoryView.setName("New Name");
         categoryView.setDescription("New Description");
         nameField.requireText(categoryView.getName());
@@ -130,6 +140,7 @@ class CategoryPanelTest {
         // Select the first row and assert that the delete button is enabled
         execute(() -> categoryView.getCategoryTable().setRowSelectionInterval(0, 0));
         window.button("deleteButton").requireEnabled();
+        assertTrue(categoryView.getDeleteCategoryButton().isEnabled());
         assertEquals(1L, categoryView.getCategoryIdFromTable(0));
         execute(() -> categoryView.removeCategoryFromTable(0));
         tableFixture.requireRowCount(0);
@@ -146,5 +157,24 @@ class CategoryPanelTest {
 
         nameField.requireText("");
         descriptionField.requireText("");
+    }
+
+    @Test
+    void testAddCategoryShouldDelegateToCategoryController() {
+        JTextComponentFixture nameField = window.textBox("nameField");
+        JTextComponentFixture descriptionField = window.textBox("descriptionField");
+        nameField.setText("Name");
+        descriptionField.setText("Description");
+        window.button(JButtonMatcher.withName("addButton")).target().doClick();
+        verify(categoryController).addCategory();
+    }
+
+    @Test
+    void testDeleteCategoryShouldDelegateToCategoryController() {
+        testShownCategoryShouldMatchCategoryAdded();
+        execute(() -> categoryView.getCategoryTable().setRowSelectionInterval(0, 0));
+        window.button("deleteButton").requireEnabled();
+        window.button(JButtonMatcher.withName("deleteButton")).target().doClick();
+        verify(categoryController).deleteCategory();
     }
 }

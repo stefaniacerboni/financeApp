@@ -1,6 +1,7 @@
 package it.unifi.financeapp.gui;
 
 
+import it.unifi.financeapp.controller.UserController;
 import it.unifi.financeapp.model.User;
 import org.assertj.swing.core.matcher.JButtonMatcher;
 import org.assertj.swing.edt.GuiActionRunner;
@@ -11,26 +12,33 @@ import org.assertj.swing.fixture.JTextComponentFixture;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 
 import static org.assertj.swing.edt.GuiActionRunner.execute;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 
+@ExtendWith(MockitoExtension.class)
 class UserPanelTest {
+    @Mock
+    private UserController userController;
 
     private FrameFixture window;
 
-    private UserView userView;
+    private UserPanel userView;
 
     @BeforeEach
     void setUp() {
         JFrame frame = GuiActionRunner.execute(() -> {
             JFrame f = new JFrame();
             userView = new UserPanel(); // Make sure this is the only instance created
-            f.setContentPane((Container) userView);
+            userView.setUserController(userController);
+            f.setContentPane(userView);
             f.pack();
             f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             return f;
@@ -54,10 +62,12 @@ class UserPanelTest {
         JTextComponentFixture surnameField = window.textBox("surnameField");
         JTextComponentFixture emailField = window.textBox("emailField");
         JTableFixture entityTable = window.table("entityTable");
+        assertFalse(userView.getAddUserButton().isEnabled());
         usernameField.setText("Username");
         nameField.setText("Name");
         surnameField.setText("Surname");
         emailField.setText("Email");
+        assertTrue(userView.getAddUserButton().isEnabled());
         usernameField.requireText(userView.getUsername());
         nameField.requireText(userView.getName());
         surnameField.requireText(userView.getSurname());
@@ -125,6 +135,8 @@ class UserPanelTest {
         // Select the first row and assert that the delete button is enabled
         execute(() -> userView.getUserTable().setRowSelectionInterval(0, 0));
         window.button("deleteButton").requireEnabled();
+        assertTrue(userView.getDeleteUserButton().isEnabled());
+
 
         // Clear selection and assert that the delete button is disabled
         execute(() -> userView.getUserTable().clearSelection());
@@ -155,5 +167,25 @@ class UserPanelTest {
 
         usernameField.requireText("");
         emailField.requireText("");
+    }
+
+
+    @Test
+    void testAddUserShouldDelegateToUserController() {
+        JTextComponentFixture usernameField = window.textBox("usernameField");
+        JTextComponentFixture emailField = window.textBox("emailField");
+        usernameField.setText("Username");
+        emailField.setText("Email");
+        window.button(JButtonMatcher.withName("addButton")).target().doClick();
+        verify(userController).addUser();
+    }
+
+    @Test
+    void testDeleteUserShouldDelegateToUserController() {
+        testShownUserShouldMatchUserAdded();
+        execute(() -> userView.getUserTable().setRowSelectionInterval(0, 0));
+        window.button("deleteButton").requireEnabled();
+        window.button(JButtonMatcher.withName("deleteButton")).target().doClick();
+        verify(userController).deleteUser();
     }
 }

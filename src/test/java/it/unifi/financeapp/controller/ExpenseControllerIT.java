@@ -1,7 +1,6 @@
 package it.unifi.financeapp.controller;
 
 import it.unifi.financeapp.gui.ExpensePanel;
-import it.unifi.financeapp.gui.ExpenseView;
 import it.unifi.financeapp.model.Category;
 import it.unifi.financeapp.model.User;
 import it.unifi.financeapp.repository.*;
@@ -33,7 +32,7 @@ class ExpenseControllerIT {
             .withUsername("test")
             .withPassword("test");
     private static EntityManagerFactory emf;
-    ExpenseView expenseView;
+    ExpensePanel expenseView;
     ExpenseService expenseService;
     UserService userService;
     CategoryService categoryService;
@@ -74,6 +73,7 @@ class ExpenseControllerIT {
 
         expenseView = new ExpensePanel();
         expenseController = new ExpenseController(expenseService, categoryService, userService, expenseView);
+        expenseView.setExpenseController(expenseController);
         expenseController.initView();
         expenseController.updateData();
     }

@@ -1,7 +1,6 @@
 package it.unifi.financeapp.controller;
 
 import it.unifi.financeapp.gui.UserPanel;
-import it.unifi.financeapp.gui.UserView;
 import it.unifi.financeapp.repository.UserRepository;
 import it.unifi.financeapp.repository.UserRepositoryImpl;
 import it.unifi.financeapp.service.UserService;
@@ -31,7 +30,7 @@ class UserControllerIT {
             .withUsername("test")
             .withPassword("test");
     private static EntityManagerFactory emf;
-    UserView userView;
+    UserPanel userView;
     UserService userService;
     UserController userController;
 
@@ -59,6 +58,7 @@ class UserControllerIT {
         userService.deleteAll();
         userView = new UserPanel();
         userController = new UserController(userService, userView);
+        userView.setUserController(userController);
         userController.initView();
     }
 
