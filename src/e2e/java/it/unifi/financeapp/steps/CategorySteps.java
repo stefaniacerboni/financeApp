@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CategorySteps {
 
-
     @Given("I am on the Category Management page")
     public void iAmOnTheCategoryManagementPage() {
         TestConfig.window.tabbedPane().selectTab(0);

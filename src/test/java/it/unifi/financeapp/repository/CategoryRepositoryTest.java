@@ -67,6 +67,7 @@ class CategoryRepositoryTest {
         Category retrieved = em.find(Category.class, newCategory.getId());
         assertNotNull(retrieved);
         assertEquals("New", retrieved.getName());
+        assertEquals("New Category Description", retrieved.getDescription());
     }
 
     @Test
