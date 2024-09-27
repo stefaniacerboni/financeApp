@@ -3,6 +3,7 @@ package it.unifi.financeapp.controller;
 import it.unifi.financeapp.gui.CategoryView;
 import it.unifi.financeapp.model.Category;
 import it.unifi.financeapp.service.CategoryService;
+import it.unifi.financeapp.service.exceptions.InvalidCategoryException;
 
 public class CategoryController {
     private final CategoryService categoryService;
@@ -38,9 +39,13 @@ public class CategoryController {
         int selectedRow = categoryView.getSelectedCategoryIndex();
         if (selectedRow >= 0) {
             Long categoryId = categoryView.getCategoryIdFromTable(selectedRow);
-            categoryService.deleteCategory(categoryId);
-            categoryView.removeCategoryFromTable(selectedRow);
-            categoryView.setStatus("Category deleted successfully.");
+            try {
+                categoryService.deleteCategory(categoryId);
+                categoryView.removeCategoryFromTable(selectedRow);
+                categoryView.setStatus("Category deleted successfully.");
+            } catch (InvalidCategoryException categoryException) {
+                categoryView.setStatus(categoryException.getMessage());
+            }
         } else {
             categoryView.setStatus("No category selected for deletion.");
         }

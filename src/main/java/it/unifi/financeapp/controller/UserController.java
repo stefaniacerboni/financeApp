@@ -3,6 +3,7 @@ package it.unifi.financeapp.controller;
 import it.unifi.financeapp.gui.UserView;
 import it.unifi.financeapp.model.User;
 import it.unifi.financeapp.service.UserService;
+import it.unifi.financeapp.service.exceptions.InvalidUserException;
 
 public class UserController {
     private final UserService userService;
@@ -38,9 +39,13 @@ public class UserController {
         int selectedRow = userView.getSelectedUserIndex();
         if (selectedRow >= 0) {
             Long userId = userView.getUserIdFromTable(selectedRow);
-            userService.deleteUser(userId);
-            userView.removeUserFromTable(selectedRow);
-            userView.setStatus("User deleted successfully.");
+            try {
+                userService.deleteUser(userId);
+                userView.removeUserFromTable(selectedRow);
+                userView.setStatus("User deleted successfully.");
+            } catch (InvalidUserException userException) {
+                userView.setStatus(userException.getMessage());
+            }
         } else {
             userView.setStatus("No user selected for deletion.");
         }

@@ -3,6 +3,7 @@ package it.unifi.financeapp.controller;
 import it.unifi.financeapp.gui.UserView;
 import it.unifi.financeapp.model.User;
 import it.unifi.financeapp.service.UserService;
+import it.unifi.financeapp.service.exceptions.InvalidUserException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -85,6 +86,19 @@ class UserControllerTest {
         verify(userView, never()).getUserIdFromTable(anyInt());
         verify(userService, never()).deleteUser(anyLong());
         verify(userView).setStatus("No user selected for deletion.");
+    }
+
+    @Test
+    void testNotDeleteIfUserHasDependencies() {
+        Long id = 1L;
+        when(userView.getSelectedUserIndex()).thenReturn(0);
+        when(userView.getUserIdFromTable(0)).thenReturn(id);
+        doThrow(new InvalidUserException("Cannot delete user with existing expenses"))
+                .when(userService).deleteUser(id);
+
+        controller.deleteUser();
+
+        verify(userView).setStatus("Cannot delete user with existing expenses");
     }
 
     @Test

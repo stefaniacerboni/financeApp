@@ -42,7 +42,11 @@ public class UserService {
     public void deleteUser(Long id) {
         User user = userRepository.findById(id);
         if (user != null) {
-            userRepository.delete(user);
+            try {
+                userRepository.delete(user);
+            } catch (IllegalStateException e) {
+                throw new InvalidUserException("Cannot delete user with existing expenses");
+            }
         } else
             throw new IllegalArgumentException("Cannot delete a null expense.");
 

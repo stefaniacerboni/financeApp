@@ -45,6 +45,16 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
     @Override
     public void delete(Category category) {
+        // Check if any expenses reference this category
+        Long expenseCount = entityManager.createQuery(
+                        "SELECT COUNT(e) FROM Expense e WHERE e.category = :category", Long.class)
+                .setParameter("category", category)
+                .getSingleResult();
+
+        if (expenseCount > 0) {
+            System.err.println("Cannot delete category with existing expenses.");
+            throw new IllegalStateException("Cannot delete category with existing expenses.");
+        }
         entityManager.getTransaction().begin();
         entityManager.remove(category);
         entityManager.getTransaction().commit();
