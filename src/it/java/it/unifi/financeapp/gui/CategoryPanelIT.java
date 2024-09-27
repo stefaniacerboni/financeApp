@@ -1,12 +1,10 @@
-package it.unifi.financeapp.controller;
+package it.unifi.financeapp.gui;
 
-import it.unifi.financeapp.gui.CategoryPanel;
+import it.unifi.financeapp.controller.CategoryController;
 import it.unifi.financeapp.repository.CategoryRepository;
 import it.unifi.financeapp.repository.CategoryRepositoryImpl;
 import it.unifi.financeapp.service.CategoryService;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -22,7 +20,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
-class CategoryControllerIT {
+class CategoryPanelIT {
     @Container
     public static final MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:5.7")
             .withDatabaseName("testdb")
@@ -46,6 +44,14 @@ class CategoryControllerIT {
         // Create EntityManagerFactory with these properties
         emf = Persistence.createEntityManagerFactory("TestFinanceAppPU", overrides);
 
+    }
+
+    @AfterAll
+    static void tearDown() {
+        if (emf != null) {
+            emf.close();
+        }
+        mysqlContainer.stop();
     }
 
     @BeforeEach
@@ -104,4 +110,10 @@ class CategoryControllerIT {
         // Assert the delete button is enabled
         assertTrue(categoryView.getDeleteCategoryButton().isEnabled(), "Delete button should be enabled when a row is selected.");
     }
+
+    @AfterEach
+    void cleanUpDatabase() {
+        categoryService.deleteAll();
+    }
+
 }

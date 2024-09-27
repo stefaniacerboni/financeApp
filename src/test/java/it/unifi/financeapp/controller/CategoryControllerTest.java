@@ -3,6 +3,7 @@ package it.unifi.financeapp.controller;
 import it.unifi.financeapp.gui.CategoryView;
 import it.unifi.financeapp.model.Category;
 import it.unifi.financeapp.service.CategoryService;
+import it.unifi.financeapp.service.exceptions.InvalidCategoryException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -84,6 +85,19 @@ class CategoryControllerTest {
         verify(categoryView, never()).getCategoryIdFromTable(anyInt());
         verify(categoryService, never()).deleteCategory(anyLong());
         verify(categoryView).setStatus("No category selected for deletion.");
+    }
+
+    @Test
+    void testNotDeleteIfCategoryHasDependencies() {
+        Long id = 1L;
+        when(categoryView.getSelectedCategoryIndex()).thenReturn(0);
+        when(categoryView.getCategoryIdFromTable(0)).thenReturn(id);
+        doThrow(new InvalidCategoryException("Cannot delete category with existing expenses"))
+                .when(categoryService).deleteCategory(id);
+
+        controller.deleteCategory();
+
+        verify(categoryView).setStatus("Cannot delete category with existing expenses");
     }
 
     @Test

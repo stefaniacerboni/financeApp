@@ -11,11 +11,11 @@ public class Expense {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_id", nullable = false, foreignKey = @ForeignKey(name = "FK_expense_category"))
     private Category category;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "FK_expense_user"))
     private User user;
     private double amount;
     private String date;

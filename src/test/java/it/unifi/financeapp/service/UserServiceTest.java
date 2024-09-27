@@ -16,8 +16,7 @@ import javax.persistence.PersistenceException;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -218,6 +217,16 @@ class UserServiceTest {
 
             // Verify delete was never called since no user was found
             verify(userRepository, never()).delete(any(User.class));
+        }
+
+        @Test
+        void testDeleteUserWithDependencies() {
+            User user = new User("Username", "Email");
+            when(userRepository.findById(user.getId())).thenReturn(user);
+            doThrow(IllegalStateException.class).when(userRepository).delete(user);
+            Long id = user.getId();
+            Exception ex = assertThrows(InvalidUserException.class, () -> userService.deleteUser(id));
+            assertEquals("Cannot delete user with existing expenses", ex.getMessage());
         }
     }
 }

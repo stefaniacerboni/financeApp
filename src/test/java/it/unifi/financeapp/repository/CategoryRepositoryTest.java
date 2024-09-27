@@ -1,6 +1,8 @@
 package it.unifi.financeapp.repository;
 
 import it.unifi.financeapp.model.Category;
+import it.unifi.financeapp.model.Expense;
+import it.unifi.financeapp.model.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -110,6 +112,20 @@ class CategoryRepositoryTest {
 
         Category retrieved = em.find(Category.class, category.getId());
         assertNull(retrieved);
+    }
+
+    @Test
+    void testDeleteCategoryWithDependencies() {
+        Category category = new Category("To Be Deleted", "To be deleted description");
+        User user = new User("username", "email");
+        em.getTransaction().begin();
+        em.persist(category);
+        em.persist(user);
+        em.persist(new Expense(category, user, 0.0, "2024-12-12"));
+        em.getTransaction().commit();
+        assertThrows(IllegalStateException.class, () -> categoryRepository.delete(category));
+        Category retrieved = em.find(Category.class, category.getId());
+        assertNotNull(retrieved);
     }
 
     @Test

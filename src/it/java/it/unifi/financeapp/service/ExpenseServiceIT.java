@@ -72,7 +72,7 @@ class ExpenseServiceIT {
         Expense expense = new Expense(category, user, 3.50, "2024-07-15");
         Expense savedExpense = expenseService.addExpense(expense);
 
-        // Retrieve from service
+        // Retrieve from it.unifi.financeapp.service
         Expense retrievedExpense = expenseService.findExpenseById(savedExpense.getId());
 
         assertNotNull(retrievedExpense);

@@ -72,7 +72,7 @@ class CategoryServiceIT {
         Category category = new Category("Coffee", "Category about coffee");
         Category savedCategory = categoryService.addCategory(category);
 
-        // Retrieve from service
+        // Retrieve from it.unifi.financeapp.service
         Category retrievedCategory = categoryService.findCategoryById(savedCategory.getId());
 
         // Assertions

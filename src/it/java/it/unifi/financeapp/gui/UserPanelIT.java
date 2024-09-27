@@ -1,12 +1,10 @@
-package it.unifi.financeapp.controller;
+package it.unifi.financeapp.gui;
 
-import it.unifi.financeapp.gui.UserPanel;
+import it.unifi.financeapp.controller.UserController;
 import it.unifi.financeapp.repository.UserRepository;
 import it.unifi.financeapp.repository.UserRepositoryImpl;
 import it.unifi.financeapp.service.UserService;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -22,7 +20,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
-class UserControllerIT {
+class UserPanelIT {
 
     @Container
     public static final MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:5.7")
@@ -45,6 +43,14 @@ class UserControllerIT {
         overrides.put("hibernate.hbm2ddl.auto", "create-drop");
         // Create EntityManagerFactory with these properties
         emf = Persistence.createEntityManagerFactory("TestFinanceAppPU", overrides);
+    }
+
+    @AfterAll
+    static void tearDown() {
+        if (emf != null) {
+            emf.close();
+        }
+        mysqlContainer.stop();
     }
 
     @BeforeEach
@@ -113,4 +119,10 @@ class UserControllerIT {
         // Assert the delete button is enabled
         assertTrue(userView.getDeleteUserButton().isEnabled(), "Delete button should be enabled when a row is selected.");
     }
+
+    @AfterEach
+    void cleanUpDatabase() {
+        userService.deleteAll();
+    }
+
 }

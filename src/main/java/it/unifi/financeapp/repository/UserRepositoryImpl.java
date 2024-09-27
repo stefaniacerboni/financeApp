@@ -46,6 +46,15 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void delete(User user) {
+        // Check if any expenses reference this user
+        Long expenseCount = entityManager.createQuery(
+                        "SELECT COUNT(e) FROM Expense e WHERE e.user = :user", Long.class)
+                .setParameter("user", user)
+                .getSingleResult();
+
+        if (expenseCount > 0) {
+            throw new IllegalStateException("Cannot delete user with existing expenses.");
+        }
         entityManager.getTransaction().begin();
         entityManager.remove(user);
         entityManager.getTransaction().commit();

@@ -105,6 +105,16 @@ class CategoryServiceTest {
         }
 
         @Test
+        void testDeleteCategoryWithDependencies() {
+            Category category = new Category("name", "description");
+            when(categoryRepository.findById(category.getId())).thenReturn(category);
+            doThrow(IllegalStateException.class).when(categoryRepository).delete(category);
+            Long id = category.getId();
+            Exception ex = assertThrows(InvalidCategoryException.class, () -> categoryService.deleteCategory(id));
+            assertEquals("Cannot delete category with existing expenses", ex.getMessage());
+        }
+
+        @Test
         void testDeleteNonExistentCategory() {
             Long categoryId = 1L;
             when(categoryRepository.findById(categoryId)).thenReturn(null);

@@ -44,9 +44,13 @@ public class CategoryService {
     @Transactional
     public void deleteCategory(Long id) {
         Category category = categoryRepository.findById(id);
-        if (category != null)
-            categoryRepository.delete(category);
-        else
+        if (category != null) {
+            try {
+                categoryRepository.delete(category);
+            } catch (IllegalStateException e) {
+                throw new InvalidCategoryException("Cannot delete category with existing expenses");
+            }
+        } else
             throw new IllegalArgumentException("Cannot delete a null expense.");
 
     }

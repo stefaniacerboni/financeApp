@@ -66,7 +66,7 @@ class UserServiceIT {
         User user = new User("username", "name", "surname", "email");
         User savedUser = userService.addUser(user);
 
-        // Retrieve from service
+        // Retrieve from it.unifi.financeapp.service
         User retrievedUser = userService.findUserById(savedUser.getId());
 
         assertNotNull(retrievedUser);
