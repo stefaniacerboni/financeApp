@@ -224,7 +224,8 @@ class UserServiceTest {
             User user = new User("Username", "Email");
             when(userRepository.findById(user.getId())).thenReturn(user);
             doThrow(IllegalStateException.class).when(userRepository).delete(user);
-            Exception ex = assertThrows(InvalidUserException.class, () -> userService.deleteUser(user.getId()));
+            Long id = user.getId();
+            Exception ex = assertThrows(InvalidUserException.class, () -> userService.deleteUser(id));
             assertEquals("Cannot delete user with existing expenses", ex.getMessage());
         }
     }

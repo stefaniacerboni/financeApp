@@ -53,7 +53,6 @@ public class UserRepositoryImpl implements UserRepository {
                 .getSingleResult();
 
         if (expenseCount > 0) {
-            System.err.println("Cannot delete user with existing expenses.");
             throw new IllegalStateException("Cannot delete user with existing expenses.");
         }
         entityManager.getTransaction().begin();

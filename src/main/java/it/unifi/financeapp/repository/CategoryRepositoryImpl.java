@@ -52,7 +52,6 @@ public class CategoryRepositoryImpl implements CategoryRepository {
                 .getSingleResult();
 
         if (expenseCount > 0) {
-            System.err.println("Cannot delete category with existing expenses.");
             throw new IllegalStateException("Cannot delete category with existing expenses.");
         }
         entityManager.getTransaction().begin();
