@@ -59,7 +59,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
     @Override
     public void deleteAll() {
         entityManager.getTransaction().begin();
-        entityManager.createNativeQuery("DELETE e FROM expenses e").executeUpdate();
+        entityManager.createQuery("DELETE FROM Expense").executeUpdate();
         entityManager.getTransaction().commit();
     }
 

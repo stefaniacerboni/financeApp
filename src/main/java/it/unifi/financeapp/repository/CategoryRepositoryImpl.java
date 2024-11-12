@@ -3,6 +3,7 @@ package it.unifi.financeapp.repository;
 import it.unifi.financeapp.model.Category;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.util.List;
 
 public class CategoryRepositoryImpl implements CategoryRepository {
@@ -23,6 +24,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         return entityManager.createQuery("SELECT c FROM Category c", Category.class).getResultList();
     }
 
+    @Transactional
     @Override
     public Category save(Category category) {
         entityManager.getTransaction().begin();
@@ -35,6 +37,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         return category;
     }
 
+    @Transactional
     @Override
     public Category update(Category category) {
         entityManager.getTransaction().begin();
@@ -43,6 +46,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         return result;
     }
 
+    @Transactional
     @Override
     public void delete(Category category) {
         // Check if any expenses reference this category
@@ -59,10 +63,11 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         entityManager.getTransaction().commit();
     }
 
+    @Transactional
     @Override
     public void deleteAll() {
         entityManager.getTransaction().begin();
-        entityManager.createNativeQuery("DELETE c FROM categories c").executeUpdate();
+        entityManager.createQuery("DELETE FROM Category").executeUpdate();
         entityManager.getTransaction().commit();
     }
 }

@@ -159,15 +159,15 @@
                     </mutators>
                     <!-- Configuration parameters like target classes and test groups -->
                     <targetClasses>
-                        <param>it.unifi.financeapp.it.unifi.financeapp.controller.*</param>
-                        <param>it.unifi.financeapp.it.unifi.financeapp.service.*</param>
+                        <param>it.unifi.financeapp.controller.*</param>
+                        <param>it.unifi.financeapp.service.*</param>
                         <param>it.unifi.financeapp.model.*</param>
                         <param>it.unifi.financeapp.repository.*</param>
                     </targetClasses>
                     <targetTests>
                         <param>it.unifi.financeapp.model.*</param>
-                        <param>it.unifi.financeapp.it.unifi.financeapp.controller.*</param>
-                        <param>it.unifi.financeapp.it.unifi.financeapp.service.*</param>
+                        <param>it.unifi.financeapp.controller.*</param>
+                        <param>it.unifi.financeapp.service.*</param>
                         <param>it.unifi.financeapp.repository.*</param>
                     </targetTests>
                     <withHistory>true</withHistory>

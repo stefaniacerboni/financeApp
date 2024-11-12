@@ -64,7 +64,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public void deleteAll() {
         entityManager.getTransaction().begin();
-        entityManager.createNativeQuery("DELETE u FROM users u").executeUpdate();
+        entityManager.createQuery("DELETE FROM User").executeUpdate();
         entityManager.getTransaction().commit();
     }
 }

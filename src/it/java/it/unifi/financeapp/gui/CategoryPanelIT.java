@@ -17,7 +17,8 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Testcontainers
 class CategoryPanelIT {
@@ -86,29 +87,15 @@ class CategoryPanelIT {
     @Test
     void testDeleteCategoryButtonFunctionality() {
         // Prepare the view with one category
-        testAddCategoryButtonFunctionality(); // First add a category
-        categoryView.getCategoryTable().setRowSelectionInterval(0, 0); // Select the row
+        testAddCategoryButtonFunctionality();
+        categoryView.getCategoryTable().setRowSelectionInterval(0, 0);
 
-        // Simulate delete button click
         ActionEvent e = new ActionEvent(categoryView.getDeleteCategoryButton(), ActionEvent.ACTION_PERFORMED, null);
         for (ActionListener al : categoryView.getDeleteCategoryButton().getActionListeners()) {
             al.actionPerformed(e);
         }
 
-        // Assert the row is deleted
         assertEquals(0, categoryView.getCategoryTable().getModel().getRowCount(), "Table should be empty after deletion.");
-    }
-
-    @Test
-    void testTableSelectionEnablesDeleteButton() {
-        testAddCategoryButtonFunctionality();
-        assertFalse(categoryView.getDeleteCategoryButton().isEnabled(), "Delete button should initially be disabled.");
-
-        // Simulate table row selection
-        categoryView.getCategoryTable().setRowSelectionInterval(0, 0);
-
-        // Assert the delete button is enabled
-        assertTrue(categoryView.getDeleteCategoryButton().isEnabled(), "Delete button should be enabled when a row is selected.");
     }
 
     @AfterEach

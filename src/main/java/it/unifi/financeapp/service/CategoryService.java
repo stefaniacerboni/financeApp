@@ -6,7 +6,6 @@ import it.unifi.financeapp.service.exceptions.InvalidCategoryException;
 import org.hibernate.service.spi.ServiceException;
 
 import javax.persistence.PersistenceException;
-import javax.transaction.Transactional;
 import java.util.List;
 
 public class CategoryService {
@@ -16,7 +15,6 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    @Transactional
     public Category addCategory(Category category) {
         validateCategory(category);
 
@@ -31,7 +29,6 @@ public class CategoryService {
         return categoryRepository.findById(id);
     }
 
-    @Transactional
     public Category updateCategory(Category category) {
         validateCategory(category);
         return categoryRepository.update(category);
@@ -41,7 +38,6 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
-    @Transactional
     public void deleteCategory(Long id) {
         Category category = categoryRepository.findById(id);
         if (category != null) {

@@ -88,8 +88,10 @@ class ExpenseRepositoryTest {
         em.persist(existingExpense);
         em.getTransaction().commit();
 
+        existingExpense.setCategory(new Category("School", "Expenses for school"));
         existingExpense.setDate("2024-01-01");
         expenseRepository.update(existingExpense);
+        em.clear();
 
         Expense retrieved = em.find(Expense.class, existingExpense.getId());
         assertEquals("2024-01-01", retrieved.getDate());
@@ -114,6 +116,7 @@ class ExpenseRepositoryTest {
         em.getTransaction().commit();
 
         expenseRepository.delete(expenseToDelete);
+        em.clear();
 
         Expense retrieved = em.find(Expense.class, expenseToDelete.getId());
         assertNull(retrieved);
@@ -139,8 +142,14 @@ class ExpenseRepositoryTest {
     void testDeleteAllExpenses() {
         testSaveNewExpense();
         expenseRepository.deleteAll();
+        em.clear();
+        // Use a new EntityManager for verification
+        EntityManager emVerification = emf.createEntityManager();
+        ExpenseRepository expenseRepositoryVerification = new ExpenseRepositoryImpl(emVerification);
 
-        List<Expense> expenses = expenseRepository.findAll();
+        List<Expense> expenses = expenseRepositoryVerification.findAll();
         assertTrue(expenses.isEmpty());
+
+        emVerification.close();
     }
 }

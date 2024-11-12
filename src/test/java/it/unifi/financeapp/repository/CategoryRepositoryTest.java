@@ -65,6 +65,7 @@ class CategoryRepositoryTest {
         Category newCategory = new Category("New", "New Category Description");
 
         categoryRepository.save(newCategory);
+        em.clear();
 
         Category retrieved = em.find(Category.class, newCategory.getId());
         assertNotNull(retrieved);
@@ -97,6 +98,8 @@ class CategoryRepositoryTest {
         category.setName("Updated Name");
         categoryRepository.update(category);
 
+        em.clear();
+
         Category retrieved = em.find(Category.class, category.getId());
         assertEquals("Updated Name", retrieved.getName());
     }
@@ -109,6 +112,8 @@ class CategoryRepositoryTest {
         em.getTransaction().commit();
 
         categoryRepository.delete(category);
+
+        em.clear();
 
         Category retrieved = em.find(Category.class, category.getId());
         assertNull(retrieved);
@@ -132,8 +137,14 @@ class CategoryRepositoryTest {
     void testDeleteAllCategories() {
         testSaveNewCategory();
         categoryRepository.deleteAll();
+        em.clear();
+        // Use a new EntityManager for verification
+        EntityManager emVerification = emf.createEntityManager();
+        CategoryRepository categoryRepositoryVerification = new CategoryRepositoryImpl(emVerification);
 
-        List<Category> categories = categoryRepository.findAll();
+        List<Category> categories = categoryRepositoryVerification.findAll();
         assertTrue(categories.isEmpty());
+
+        emVerification.close();
     }
 }

@@ -92,6 +92,7 @@ class UserRepositoryTest {
 
         user.setName("Updated Name");
         userRepository.update(user);
+        em.clear();
 
         User retrieved = em.find(User.class, user.getId());
         assertEquals("Updated Name", retrieved.getName());
@@ -105,6 +106,7 @@ class UserRepositoryTest {
         em.getTransaction().commit();
 
         userRepository.delete(user);
+        em.clear();
 
         User retrieved = em.find(User.class, user.getId());
         assertNull(retrieved);
@@ -127,9 +129,16 @@ class UserRepositoryTest {
     @Test
     void testDeleteAllUsers() {
         testSaveNewUser();
+        em.clear();
         userRepository.deleteAll();
+        em.clear();
+        // Use a new EntityManager for verification
+        EntityManager emVerification = emf.createEntityManager();
+        UserRepository userRepositoryVerification = new UserRepositoryImpl(emVerification);
 
-        List<User> users = userRepository.findAll();
+        List<User> users = userRepositoryVerification.findAll();
         assertTrue(users.isEmpty());
+
+        emVerification.close();
     }
 }
