@@ -55,6 +55,25 @@ class CategoryPanelTest {
     }
 
     @Test
+    void testFieldContentIsMatching() {
+        JTextComponentFixture nameField = window.textBox("nameField");
+        JTextComponentFixture descriptionField = window.textBox("descriptionField");
+        assertFalse(categoryView.getAddCategoryButton().isEnabled());
+        JTableFixture entityTable = window.table("entityTable");
+        nameField.setText("Name");
+        descriptionField.setText("Description");
+        nameField.requireText(categoryView.getName());
+        descriptionField.requireText(categoryView.getDescription());
+        assertTrue(categoryView.getAddCategoryButton().isEnabled());
+        categoryView.setName("New Name");
+        categoryView.setDescription("New Description");
+        nameField.requireText(categoryView.getName());
+        descriptionField.requireText(categoryView.getDescription());
+        entityTable.requireRowCount(0);
+        assertEquals(-1, categoryView.getSelectedCategoryIndex());
+    }
+
+    @Test
     void testWhenNameAndDescriptionAreFilledThenAddButtonShouldBeEnabled() {
         JTextComponentFixture nameField = window.textBox("nameField");
         JTextComponentFixture descriptionField = window.textBox("descriptionField");
@@ -111,25 +130,6 @@ class CategoryPanelTest {
         // Clear selection and assert that the delete button is disabled
         execute(() -> categoryView.getCategoryTable().clearSelection());
         window.button("deleteButton").requireDisabled();
-    }
-
-    @Test
-    void testFieldContentIsMatching() {
-        JTextComponentFixture nameField = window.textBox("nameField");
-        JTextComponentFixture descriptionField = window.textBox("descriptionField");
-        assertFalse(categoryView.getAddCategoryButton().isEnabled());
-        JTableFixture entityTable = window.table("entityTable");
-        nameField.setText("Name");
-        descriptionField.setText("Description");
-        nameField.requireText(categoryView.getName());
-        descriptionField.requireText(categoryView.getDescription());
-        assertTrue(categoryView.getAddCategoryButton().isEnabled());
-        categoryView.setName("New Name");
-        categoryView.setDescription("New Description");
-        nameField.requireText(categoryView.getName());
-        descriptionField.requireText(categoryView.getDescription());
-        entityTable.requireRowCount(0);
-        assertEquals(-1, categoryView.getSelectedCategoryIndex());
     }
 
     @Test

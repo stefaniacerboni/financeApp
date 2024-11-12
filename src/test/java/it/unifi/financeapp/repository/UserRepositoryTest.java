@@ -4,6 +4,7 @@ package it.unifi.financeapp.repository;
 import it.unifi.financeapp.model.Category;
 import it.unifi.financeapp.model.Expense;
 import it.unifi.financeapp.model.User;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,6 +26,12 @@ class UserRepositoryTest {
         emf = Persistence.createEntityManagerFactory("TestFinanceAppH2PU");
         em = emf.createEntityManager();
         userRepository = new UserRepositoryImpl(em);
+    }
+
+    @AfterEach
+    public void close() {
+        em.close();
+        emf.close();
     }
 
     @Test
@@ -54,6 +61,8 @@ class UserRepositoryTest {
 
         assertNotNull(users);
         assertEquals(2, users.size());
+        assertEquals(usr1, users.get(0));
+        assertEquals(usr2, users.get(1));
     }
 
     @Test
@@ -61,10 +70,13 @@ class UserRepositoryTest {
         User newUser = new User("New", "New User Email");
 
         userRepository.save(newUser);
+        em.clear();
 
         User retrieved = em.find(User.class, newUser.getId());
         assertNotNull(retrieved);
         assertEquals("New", retrieved.getUsername());
+        assertEquals("New User Email", retrieved.getEmail());
+
     }
 
     @Test
@@ -80,6 +92,7 @@ class UserRepositoryTest {
         User retrieved = em.find(User.class, existingUser.getId());
 
         assertNotNull(retrieved);
+        assertEquals(existingUser.getName(), retrieved.getName());
         assertEquals("Updated Email", retrieved.getEmail());
     }
 

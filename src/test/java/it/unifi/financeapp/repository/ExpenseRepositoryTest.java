@@ -3,6 +3,7 @@ package it.unifi.financeapp.repository;
 import it.unifi.financeapp.model.Category;
 import it.unifi.financeapp.model.Expense;
 import it.unifi.financeapp.model.User;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,29 +25,26 @@ class ExpenseRepositoryTest {
     private User user;
 
     @BeforeEach
-    void setUp() {
+    public void init() {
         emf = Persistence.createEntityManagerFactory("TestFinanceAppH2PU");
         em = emf.createEntityManager();
         expenseRepository = new ExpenseRepositoryImpl(em);
+    }
+
+    @AfterEach
+    public void close() {
+        em.close();
+        emf.close();
+    }
+
+    @BeforeEach
+    void setUp() {
         category = new Category("Travel", "Expenses for travel");
         user = new User("john.doe", "john.doe@example.com");
         em.getTransaction().begin();
         em.persist(category);
         em.persist(user);
         em.getTransaction().commit();
-    }
-    @Test
-    void testSaveNewExpense() {
-        Expense newExpense = new Expense(category, user, 100.0, "2021-07-16");
-
-        expenseRepository.save(newExpense);
-
-        Expense retrieved = em.find(Expense.class, newExpense.getId());
-        assertNotNull(retrieved);
-        assertEquals(user, retrieved.getUser());
-        assertEquals(category, retrieved.getCategory());
-        assertEquals(newExpense.getAmount(), retrieved.getAmount());
-        assertEquals(newExpense.getDate(), retrieved.getDate());
     }
 
     @Test
@@ -79,6 +77,43 @@ class ExpenseRepositoryTest {
 
         assertNotNull(expenses);
         assertEquals(2, expenses.size());
+        assertEquals(expense1, expenses.get(0));
+        assertEquals(expense2, expenses.get(1));
+    }
+
+
+    @Test
+    void testSaveNewExpense() {
+        Expense newExpense = new Expense(category, user, 100.0, "2021-07-16");
+
+        expenseRepository.save(newExpense);
+
+        Expense retrieved = em.find(Expense.class, newExpense.getId());
+        assertNotNull(retrieved);
+        assertEquals(user, retrieved.getUser());
+        assertEquals(category, retrieved.getCategory());
+        assertEquals(newExpense.getAmount(), retrieved.getAmount());
+        assertEquals(newExpense.getDate(), retrieved.getDate());
+    }
+
+    @Test
+    void testSaveExistingExpense() {
+        Expense existingExpense = new Expense(category, user, 150.00, "2022-01-02");
+        em.getTransaction().begin();
+        em.persist(existingExpense);
+        em.getTransaction().commit();
+
+        existingExpense.setCategory(new Category("School", "Expenses for school"));
+        existingExpense.setDate("2024-01-01");
+        expenseRepository.save(existingExpense);
+
+        Expense retrieved = em.find(Expense.class, existingExpense.getId());
+
+        assertNotNull(retrieved);
+        assertEquals(existingExpense.getUser(), retrieved.getUser());
+        assertEquals(existingExpense.getCategory(), retrieved.getCategory());
+        assertEquals(existingExpense.getAmount(), retrieved.getAmount());
+        assertEquals("2024-01-01", retrieved.getDate());
     }
 
     @Test
@@ -94,6 +129,9 @@ class ExpenseRepositoryTest {
         em.clear();
 
         Expense retrieved = em.find(Expense.class, existingExpense.getId());
+        assertEquals(existingExpense.getUser(), retrieved.getUser());
+        assertEquals(existingExpense.getCategory(), retrieved.getCategory());
+        assertEquals(existingExpense.getAmount(), retrieved.getAmount());
         assertEquals("2024-01-01", retrieved.getDate());
     }
 
@@ -120,22 +158,6 @@ class ExpenseRepositoryTest {
 
         Expense retrieved = em.find(Expense.class, expenseToDelete.getId());
         assertNull(retrieved);
-    }
-
-    @Test
-    void testSaveExistingExpense() {
-        Expense existingExpense = new Expense(category, user, 150.00, "2022-01-02");
-        em.getTransaction().begin();
-        em.persist(existingExpense);
-        em.getTransaction().commit();
-
-        existingExpense.setDate("2024-01-01");
-        expenseRepository.save(existingExpense);
-
-        Expense retrieved = em.find(Expense.class, existingExpense.getId());
-
-        assertNotNull(retrieved);
-        assertEquals("2024-01-01", retrieved.getDate());
     }
 
     @Test

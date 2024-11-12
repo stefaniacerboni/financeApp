@@ -43,6 +43,8 @@ class CategoryRepositoryTest {
         Category foundCategory = categoryRepository.findById(newCategory.getId());
         assertNotNull(foundCategory);
         assertEquals("Utilities", foundCategory.getName());
+        assertEquals("Utility bills", foundCategory.getDescription());
+
     }
 
     @Test
@@ -58,6 +60,8 @@ class CategoryRepositoryTest {
 
         assertNotNull(categories);
         assertEquals(2, categories.size());
+        assertEquals(cat1, categories.get(0));
+        assertEquals(cat2, categories.get(1));
     }
 
     @Test
@@ -85,6 +89,7 @@ class CategoryRepositoryTest {
 
         Category retrieved = em.find(Category.class, existingCategory.getId());
         assertNotNull(retrieved);
+        assertEquals(existingCategory.getName(), retrieved.getName());
         assertEquals("Updated Description", retrieved.getDescription());
     }
 

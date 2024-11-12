@@ -32,6 +32,19 @@ class UserServiceTest {
     class HappyCases {
 
         @Test
+        void testAddUser() {
+            User user = new User("username", "name", "surname", "email");
+            when(userRepository.save(any(User.class))).thenReturn(user);
+            User result = userService.addUser(user);
+            assertNotNull(result);
+            assertEquals(user.getUsername(), result.getUsername());
+            assertEquals(user.getName(), result.getName());
+            assertEquals(user.getSurname(), result.getSurname());
+            assertEquals(user.getEmail(), result.getEmail());
+            verify(userRepository).save(user);
+        }
+
+        @Test
         void testSaveExistingUser() {
             User existingUser = new User("username", "email");
             existingUser.setId(1L); // Simulate an existing category
@@ -40,35 +53,22 @@ class UserServiceTest {
             User updatedUser = userService.addUser(existingUser);
 
             assertNotNull(updatedUser);
-            Assertions.assertEquals(existingUser.getId(), updatedUser.getId());
+            assertEquals(existingUser.getId(), updatedUser.getId());
             verify(userRepository).save(existingUser);
         }
 
         @Test
-        void testGetAllUsers() {
-            User user1 = new User("username1", "email1");
-            User user2 = new User("username2", "email2");
-            List<User> expectedUsers = Arrays.asList(user1, user2);
+        void testFindUserById() {
+            User expectedUser = new User("username", "email");
+            Long userId = expectedUser.getId();
 
-            when(userRepository.findAll()).thenReturn(expectedUsers);
+            when(userRepository.findById(userId)).thenReturn(expectedUser);
 
-            List<User> actualUsers = userService.getAllUsers();
+            User result = userService.findUserById(userId);
 
-            assertNotNull(actualUsers);
-            Assertions.assertEquals(2, actualUsers.size());
-            Assertions.assertEquals(expectedUsers, actualUsers);
-            verify(userRepository).findAll();
-        }
-
-        @Test
-        void testGetAllUsersEmptyList() {
-            when(userRepository.findAll()).thenReturn(List.of());
-
-            List<User> actualUsers = userService.getAllUsers();
-
-            assertNotNull(actualUsers);
-            Assertions.assertTrue(actualUsers.isEmpty());
-            verify(userRepository).findAll();
+            assertNotNull(result);
+            assertEquals(expectedUser, result);
+            verify(userRepository).findById(userId);
         }
 
         @Test
@@ -84,53 +84,44 @@ class UserServiceTest {
             User result = userService.updateUser(originalUser);
 
             assertNotNull(result);
-            Assertions.assertEquals(updatedUser.getUsername(), result.getUsername());
+            assertEquals(updatedUser.getUsername(), result.getUsername());
             verify(userRepository).update(originalUser);
         }
 
         @Test
-        void testFindUserById() {
-            User expectedUser = new User("username", "email");
-            Long userId = expectedUser.getId();
+        void testGetAllUsers() {
+            User user1 = new User("username1", "email1");
+            User user2 = new User("username2", "email2");
+            List<User> expectedUsers = Arrays.asList(user1, user2);
 
-            when(userRepository.findById(userId)).thenReturn(expectedUser);
+            when(userRepository.findAll()).thenReturn(expectedUsers);
 
-            User result = userService.findUserById(userId);
+            List<User> actualUsers = userService.getAllUsers();
 
-            assertNotNull(result);
-            Assertions.assertEquals(expectedUser, result);
-            verify(userRepository).findById(userId);
+            assertNotNull(actualUsers);
+            assertEquals(2, actualUsers.size());
+            assertEquals(expectedUsers, actualUsers);
+            verify(userRepository).findAll();
+        }
+
+        @Test
+        void testGetAllUsersEmptyList() {
+            when(userRepository.findAll()).thenReturn(List.of());
+
+            List<User> actualUsers = userService.getAllUsers();
+
+            assertNotNull(actualUsers);
+            Assertions.assertTrue(actualUsers.isEmpty());
+            verify(userRepository).findAll();
         }
 
         @Test
         void testDeleteUser() {
             User user = new User("username", "name", "surname", "email");
-            Long userId = user.getId();
-
-            when(userRepository.findById(userId)).thenReturn(user);
-
-            userService.deleteUser(userId);
-
-            // Verify findById was called to fetch the user
-            verify(userRepository).findById(userId);
-
-            // Verify delete was called with the fetched user
+            when(userRepository.findById(user.getId())).thenReturn(user);
+            userService.deleteUser(user.getId());
+            verify(userRepository).findById(user.getId());
             verify(userRepository).delete(user);
-        }
-
-        @Test
-        void testAddUser() {
-            User user = new User("username", "name", "surname", "email");
-            when(userRepository.save(any(User.class))).thenReturn(user);
-
-            User result = userService.addUser(user);
-
-            assertNotNull(result);
-            Assertions.assertEquals(user.getUsername(), result.getUsername());
-            Assertions.assertEquals(user.getName(), result.getName());
-            Assertions.assertEquals(user.getSurname(), result.getSurname());
-            Assertions.assertEquals(user.getEmail(), result.getEmail());
-            verify(userRepository).save(user);
         }
 
         @Test
@@ -143,6 +134,16 @@ class UserServiceTest {
     @Nested
     @DisplayName("Error Cases")
     class ErrorCases {
+
+        @Test
+        void testAddUserDatabaseError() {
+            User user = new User("username", "name", "surname", "email");
+            when(userRepository.save(any(User.class))).thenThrow(new RuntimeException("Database error"));
+            Exception exception = assertThrows(RuntimeException.class, () -> userService.addUser(user));
+
+            Assertions.assertTrue(exception.getMessage().contains("Database error"));
+        }
+
         @Test
         void testAddNullUserThrowsException() {
             assertThrows(IllegalArgumentException.class, () -> userService.addUser(null));
@@ -156,38 +157,25 @@ class UserServiceTest {
             assertThrows(PersistenceException.class, () -> userService.addUser(user));
         }
 
-
-        @Test
-        void testAddUserDatabaseError() {
-            User user = new User("username", "name", "surname", "email");
-            when(userRepository.save(any(User.class))).thenThrow(new RuntimeException("Database error"));
-            Exception exception = assertThrows(RuntimeException.class, () -> userService.addUser(user));
-
-            Assertions.assertTrue(exception.getMessage().contains("Database error"));
-        }
-
         @Test
         void testAddUserWithInvalidData() {
             User invalidUser = new User("", "  ");
-
             assertThrows(InvalidUserException.class, () -> userService.addUser(invalidUser));
         }
 
 
         @Test
-        void testAddUserWithEmptyDate() {
+        void testAddUserWithNullUsernameThrowsException() {
             User userWithEmptyField = new User(null, "email");
-
             Exception exception = assertThrows(InvalidUserException.class, () -> userService.addUser(userWithEmptyField));
+            assertEquals("Username must be not null.", exception.getMessage());
+        }
 
-            Assertions.assertEquals("Username must be not null.", exception.getMessage());
-
-            // Also test for empty email
-            userWithEmptyField.setUsername("now i have a username");
-            userWithEmptyField.setEmail(null);
-            exception = assertThrows(InvalidUserException.class, () -> userService.addUser(userWithEmptyField));
-
-            Assertions.assertEquals("Email cannot be null.", exception.getMessage());
+        @Test
+        void testAddUserWithNullEmailThrowsException() {
+            User userWithEmptyField = new User("username", null);
+            Exception exception = assertThrows(InvalidUserException.class, () -> userService.addUser(userWithEmptyField));
+            assertEquals("Email cannot be null.", exception.getMessage());
         }
 
         @Test
@@ -206,16 +194,9 @@ class UserServiceTest {
         @Test
         void testDeleteNonExistentUser() {
             Long userId = 1L;
-
-            // findById return null if no user found
             when(userService.findUserById(userId)).thenReturn(null);
-
             assertThrows(IllegalArgumentException.class, () -> userService.deleteUser(userId));
-
-            // Verify findById was called
             verify(userRepository).findById(userId);
-
-            // Verify delete was never called since no user was found
             verify(userRepository, never()).delete(any(User.class));
         }
 

@@ -102,6 +102,17 @@ class ExpenseControllerTest {
     }
 
     @Test
+    void testNotDeleteExpenseWhenNoneSelected() {
+        when(expenseView.getSelectedExpenseIndex()).thenReturn(-1);
+
+        controller.deleteExpense();
+
+        verify(expenseView, never()).getExpenseIdFromTable(anyInt());
+        verify(expenseService, never()).deleteExpense(anyLong());
+        verify(expenseView).setStatus("No expense selected for deletion.");
+    }
+
+    @Test
     void testDeleteExpense() {
         when(expenseView.getSelectedExpenseIndex()).thenReturn(0);
         when(expenseView.getExpenseIdFromTable(0)).thenReturn(1L);
@@ -111,17 +122,6 @@ class ExpenseControllerTest {
         verify(expenseService).deleteExpense(1L);
         verify(expenseView).removeExpenseFromTable(0);
         verify(expenseView).setStatus("Expense deleted successfully.");
-    }
-
-    @Test
-    void testNotDeleteExpenseWhenNoneSelected() {
-        when(expenseView.getSelectedExpenseIndex()).thenReturn(-1);
-
-        controller.deleteExpense();
-
-        verify(expenseView, never()).getExpenseIdFromTable(anyInt());
-        verify(expenseService, never()).deleteExpense(anyLong());
-        verify(expenseView).setStatus("No expense selected for deletion.");
     }
 
     @Test

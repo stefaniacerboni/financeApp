@@ -6,6 +6,7 @@ import it.unifi.financeapp.model.User;
 import it.unifi.financeapp.repository.ExpenseRepository;
 import it.unifi.financeapp.service.exceptions.InvalidExpenseException;
 import org.hibernate.service.spi.ServiceException;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -30,19 +31,24 @@ class ExpenseServiceTest {
     @InjectMocks
     private ExpenseService expenseService;
 
+    static Category category;
+    static User user;
+
+    @BeforeAll
+    static void setUp() {
+        category = new Category("Food", "Category about food");
+        user = new User("username", "name", "surname", "email");
+    }
+
     @Nested
     @DisplayName("Happy Cases")
     class HappyCases {
 
         @Test
         void testAddExpense() {
-            Category category = new Category("Food", "Category about food");
-            User user = new User("username", "name", "surname", "email");
             Expense expense = new Expense(category, user, 9.99, "2024-07-15");
             when(expenseRepository.save(any(Expense.class))).thenReturn(expense);
-
             Expense result = expenseService.addExpense(expense);
-
             assertNotNull(result);
             assertEquals(category, result.getCategory());
             verify(expenseRepository).save(expense);
@@ -50,9 +56,7 @@ class ExpenseServiceTest {
 
         @Test
         void testSaveExistingExpense() {
-            Category existingCategory = new Category("name", "description");
-            User existingUser = new User("username", "name", "surname", "email");
-            Expense existingExpense = new Expense(existingCategory, existingUser, 9.99, "2024-07-15");
+            Expense existingExpense = new Expense(category, user, 9.99, "2024-07-15");
             existingExpense.setId(1L); // Simulate an existing expense
             when(expenseRepository.save(existingExpense)).thenReturn(existingExpense);
 
@@ -65,8 +69,6 @@ class ExpenseServiceTest {
 
         @Test
         void testAddExpenseOnBoundaryDate() {
-            Category category = new Category("Food", "Category about food");
-            User user = new User("username", "name", "surname", "email");
             Expense boundaryExpense = new Expense(category, user, 50.00, "2024-12-31");
             when(expenseRepository.save(any(Expense.class))).thenReturn(boundaryExpense);
 
@@ -78,8 +80,6 @@ class ExpenseServiceTest {
 
         @Test
         void testFindExpenseById() {
-            Category category = new Category("Food", "Category about food");
-            User user = new User("username", "name", "surname", "email");
             Expense expectedExpense = new Expense(category, user, 20.00, "2024-07-15");
             when(expenseRepository.findById(expectedExpense.getId())).thenReturn(expectedExpense);
 
@@ -93,8 +93,6 @@ class ExpenseServiceTest {
 
         @Test
         void testUpdateExpense() {
-            Category category = new Category("Travel", "Category about travel");
-            User user = new User("username", "name", "surname", "email");
             Expense originalExpense = new Expense(category, user, 300.00, "2024-07-16");
             Expense updatedExpense = new Expense(category, user, 350.00, "2024-07-16");
 
@@ -106,27 +104,6 @@ class ExpenseServiceTest {
             assertEquals(updatedExpense.getAmount(), result.getAmount());
             verify(expenseRepository).update(originalExpense);
         }
-
-
-        @Test
-        void testDeleteExpense() {
-            Expense expense = new Expense(new Category("Food", "Category about food"),
-                    new User("username", "name", "surname", "email"),
-                    9.99, "2024-07-15");
-
-            when(expenseRepository.findById(expense.getId())).thenReturn(expense);
-
-            expenseService.deleteExpense(expense.getId());
-
-            verify(expenseRepository).delete(expense);
-        }
-
-        @Test
-        void testDeleteExpenseNull() {
-            Exception exception = assertThrows(IllegalArgumentException.class, () -> expenseService.deleteExpense(1L));
-            assertEquals("Cannot delete a null expense.", exception.getMessage());
-        }
-
 
         @Test
         void testGetAllExpenses() {
@@ -149,7 +126,6 @@ class ExpenseServiceTest {
             verify(expenseRepository).findAll();
         }
 
-
         @Test
         void testGetAllExpensesEmptyList() {
             when(expenseRepository.findAll()).thenReturn(List.of());
@@ -162,6 +138,19 @@ class ExpenseServiceTest {
         }
 
         @Test
+        void testDeleteExpense() {
+            Expense expense = new Expense(new Category("Food", "Category about food"),
+                    new User("username", "name", "surname", "email"),
+                    9.99, "2024-07-15");
+
+            when(expenseRepository.findById(expense.getId())).thenReturn(expense);
+
+            expenseService.deleteExpense(expense.getId());
+
+            verify(expenseRepository).delete(expense);
+        }
+
+        @Test
         void testDeleteAll() {
             expenseService.deleteAll();
             verify(expenseRepository).deleteAll();
@@ -171,65 +160,9 @@ class ExpenseServiceTest {
     @Nested
     @DisplayName("Error Cases")
     class ErrorCases {
-        @Test
-        void testAddExpenseWithInvalidData() {
-            User user = new User("username", "name", "surname", "email");
-            Expense invalidExpense = new Expense(null, user, 100.00, "2024-07-16");
-
-            Exception exception = assertThrows(InvalidExpenseException.class, () -> expenseService.addExpense(invalidExpense));
-            assertEquals("Category cannot be null.", exception.getMessage());
-            Category category = new Category("Food", "Category about food");
-            invalidExpense.setCategory(category);
-            invalidExpense.setUser(null);
-            exception = assertThrows(InvalidExpenseException.class, () -> expenseService.addExpense(invalidExpense));
-            assertEquals("User cannot be null.", exception.getMessage());
-
-        }
-
-        @Test
-        void testAddNullExpenseThrowsException() {
-            assertThrows(IllegalArgumentException.class, () -> expenseService.addExpense(null));
-        }
-
-        @Test
-        void testAddExpenseWithInvalidAmount() {
-            Category category = new Category("Food", "Category about food");
-            User user = new User("username", "name", "surname", "email");
-            Expense expenseWithInvalidAmount = new Expense(category, user, -1, "2024-07-15");
-
-            Exception exception = assertThrows(InvalidExpenseException.class, () -> expenseService.addExpense(expenseWithInvalidAmount));
-
-            assertEquals("Amount must be greater than 0.", exception.getMessage());
-
-            expenseWithInvalidAmount.setAmount(0);
-
-            exception = assertThrows(InvalidExpenseException.class, () -> expenseService.addExpense(expenseWithInvalidAmount));
-
-            assertEquals("Amount must be greater than 0.", exception.getMessage());
-
-        }
-
-        @Test
-        void testAddExpenseWithEmptyDate() {
-            Category category = new Category("Food", "Category about food");
-            User user = new User("username", "name", "surname", "email");
-            Expense expenseWithEmptyDate = new Expense(category, user, 20, null);
-
-            Exception exception = assertThrows(InvalidExpenseException.class, () -> expenseService.addExpense(expenseWithEmptyDate));
-
-            assertEquals("Date cannot be empty.", exception.getMessage());
-
-            // Also test for empty string
-            expenseWithEmptyDate.setDate("");
-            exception = assertThrows(InvalidExpenseException.class, () -> expenseService.addExpense(expenseWithEmptyDate));
-
-            assertEquals("Date cannot be empty.", exception.getMessage());
-        }
 
         @Test
         void testAddExpenseDatabaseError() {
-            Category category = new Category("Accommodation", "Category about accommodation");
-            User user = new User("username", "name", "surname", "email");
             Expense newExpense = new Expense(category, user, 300.00, "2024-07-17");
             when(expenseRepository.save(any(Expense.class))).thenThrow(new RuntimeException("Database error"));
 
@@ -238,34 +171,67 @@ class ExpenseServiceTest {
             assertTrue(exception.getMessage().contains("Database error"));
         }
 
+        @Test
+        void testAddNullExpenseThrowsException() {
+            assertThrows(IllegalArgumentException.class, () -> expenseService.addExpense(null));
+        }
+
+        @Test
+        void testAddExpenseWithInvalidCategory() {
+            Expense invalidExpense = new Expense(null, user, 100.00, "2024-07-16");
+            Exception exception = assertThrows(InvalidExpenseException.class, () -> expenseService.addExpense(invalidExpense));
+            assertEquals("Category cannot be null.", exception.getMessage());
+        }
+
+        @Test
+        void testAddExpenseWithInvalidUser() {
+            Expense invalidExpense = new Expense(category, null, 100.00, "2024-07-16");
+            Exception exception = assertThrows(InvalidExpenseException.class, () -> expenseService.addExpense(invalidExpense));
+            assertEquals("User cannot be null.", exception.getMessage());
+        }
+
+
+        @Test
+        void testAddExpenseWithInvalidAmount() {
+            Expense expenseWithInvalidAmount = new Expense(category, user, -1, "2024-07-15");
+            Exception exception = assertThrows(InvalidExpenseException.class, () -> expenseService.addExpense(expenseWithInvalidAmount));
+            assertEquals("Amount must be greater than 0.", exception.getMessage());
+            expenseWithInvalidAmount.setAmount(0);
+            exception = assertThrows(InvalidExpenseException.class, () -> expenseService.addExpense(expenseWithInvalidAmount));
+            assertEquals("Amount must be greater than 0.", exception.getMessage());
+
+        }
+
+        @Test
+        void testAddExpenseWithEmptyDate() {
+            Expense expenseWithEmptyDate = new Expense(category, user, 20, null);
+            Exception exception = assertThrows(InvalidExpenseException.class, () -> expenseService.addExpense(expenseWithEmptyDate));
+            assertEquals("Date cannot be empty.", exception.getMessage());
+            // Also test for empty string
+            expenseWithEmptyDate.setDate("");
+            exception = assertThrows(InvalidExpenseException.class, () -> expenseService.addExpense(expenseWithEmptyDate));
+            assertEquals("Date cannot be empty.", exception.getMessage());
+        }
 
         @Test
         void testAddExpenseThrowsServiceException() {
-            // Create an Expense object to use in the test
-            Expense expense = new Expense(
-                    new Category("Travel", "Business trip"),
-                    new User("username", "name", "surname", "email"),
-                    299.99, "2024-08-01");
-
-            // Setup the mock to throw PersistenceException when save is called
+            Expense expense = new Expense(category, user, 299.99, "2024-08-01");
             doThrow(new PersistenceException("Database unavailable")).when(expenseRepository).save(expense);
-
-            // Assert that ServiceException is thrown when addExpense is called
             ServiceException thrown = assertThrows(ServiceException.class, () -> expenseService.addExpense(expense), "ServiceException should be thrown");
-
-            // Verify the message of the thrown ServiceException
             assertTrue(thrown.getMessage().contains("Error while adding expense"), "Exception message should indicate problem with adding expense");
             assertNotNull(thrown.getCause(), "ServiceException should have a cause");
             assertEquals(PersistenceException.class, thrown.getCause().getClass(), "The cause of ServiceException should be a PersistenceException");
-
-            // Ensure that save was attempted on the repository
             verify(expenseRepository).save(expense);
         }
 
         @Test
+        void testGetAllExpensesWithError() {
+            when(expenseRepository.findAll()).thenThrow(new RuntimeException("Database error"));
+            assertThrows(RuntimeException.class, () -> expenseService.getAllExpenses());
+        }
+
+        @Test
         void testUpdateExpenseWithInvalidData() {
-            Category category = new Category("Travel", "Category about travel");
-            User user = new User("username", "name", "surname", "email");
             Expense invalidExpense = new Expense(category, user, 300.00, null);
             assertThrows(InvalidExpenseException.class, () -> expenseService.updateExpense(invalidExpense));
         }
@@ -273,17 +239,16 @@ class ExpenseServiceTest {
         @Test
         void testDeleteNonExistentExpense() {
             Long expenseId = 1L;
-
-            // findById returns null indicating no expense found
             when(expenseRepository.findById(expenseId)).thenReturn(null);
-
             assertThrows(IllegalArgumentException.class, () -> expenseService.deleteExpense(expenseId));
-
-            // Verify findById was called
             verify(expenseRepository).findById(expenseId);
-
-            // Verify delete was never called since no expense was found
             verify(expenseRepository, never()).delete(any(Expense.class));
+        }
+
+        @Test
+        void testDeleteExpenseNull() {
+            Exception exception = assertThrows(IllegalArgumentException.class, () -> expenseService.deleteExpense(1L));
+            assertEquals("Cannot delete a null expense.", exception.getMessage());
         }
 
     }

@@ -44,10 +44,7 @@ class CategoryControllerTest {
 
         controller.initView();
 
-        // Verify each category is added to the view
-        mockCategories.forEach(category ->
-                verify(categoryView).addCategoryToTable(category)
-        );
+        verify(categoryView, times(mockCategories.size())).addCategoryToTable(any(Category.class));
     }
 
     @Test

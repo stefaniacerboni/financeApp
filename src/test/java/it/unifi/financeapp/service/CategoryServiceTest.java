@@ -3,7 +3,6 @@ package it.unifi.financeapp.service;
 import it.unifi.financeapp.model.Category;
 import it.unifi.financeapp.repository.CategoryRepository;
 import it.unifi.financeapp.service.exceptions.InvalidCategoryException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -30,14 +29,15 @@ class CategoryServiceTest {
     @Nested
     @DisplayName("Happy Cases")
     class HappyCases {
+
         @Test
         void testAddCategory() {
             Category category = new Category("Name", "Description");
             when(categoryRepository.save(any(Category.class))).thenReturn(category);
             Category result = categoryService.addCategory(category);
             assertNotNull(result);
-            Assertions.assertEquals(category.getName(), result.getName());
-            Assertions.assertEquals(category.getDescription(), result.getDescription());
+            assertEquals(category.getName(), result.getName());
+            assertEquals(category.getDescription(), result.getDescription());
             verify(categoryRepository).save(category);
         }
 
@@ -50,7 +50,7 @@ class CategoryServiceTest {
             Category updatedCategory = categoryService.addCategory(existingCategory);
 
             assertNotNull(updatedCategory);
-            Assertions.assertEquals(existingCategory.getId(), updatedCategory.getId());
+            assertEquals(existingCategory.getId(), updatedCategory.getId());
             verify(categoryRepository).save(existingCategory);
         }
 
@@ -60,7 +60,7 @@ class CategoryServiceTest {
             when(categoryRepository.findById(expectedCategory.getId())).thenReturn(expectedCategory);
             Category result = categoryService.findCategoryById(expectedCategory.getId());
             assertNotNull(result);
-            Assertions.assertEquals(expectedCategory, result);
+            assertEquals(expectedCategory, result);
             verify(categoryRepository).findById(expectedCategory.getId());
         }
 
@@ -71,7 +71,7 @@ class CategoryServiceTest {
             when(categoryRepository.update(originalCategory)).thenReturn(updatedCategory);
             Category result = categoryService.updateCategory(originalCategory);
             assertNotNull(result);
-            Assertions.assertEquals(updatedCategory.getName(), result.getName());
+            assertEquals(updatedCategory.getName(), result.getName());
             verify(categoryRepository).update(originalCategory);
         }
 
@@ -82,8 +82,8 @@ class CategoryServiceTest {
             when(categoryRepository.findAll()).thenReturn(expectedCategories);
             List<Category> actualCategories = categoryService.getAllCategories();
             assertNotNull(actualCategories);
-            Assertions.assertEquals(2, actualCategories.size());
-            Assertions.assertEquals(expectedCategories, actualCategories);
+            assertEquals(2, actualCategories.size());
+            assertEquals(expectedCategories, actualCategories);
             verify(categoryRepository).findAll();
         }
 
@@ -102,24 +102,6 @@ class CategoryServiceTest {
             categoryService.deleteCategory(category.getId());
             verify(categoryRepository).findById(category.getId());
             verify(categoryRepository).delete(category);
-        }
-
-        @Test
-        void testDeleteCategoryWithDependencies() {
-            Category category = new Category("name", "description");
-            when(categoryRepository.findById(category.getId())).thenReturn(category);
-            doThrow(IllegalStateException.class).when(categoryRepository).delete(category);
-            Long id = category.getId();
-            Exception ex = assertThrows(InvalidCategoryException.class, () -> categoryService.deleteCategory(id));
-            assertEquals("Cannot delete category with existing expenses", ex.getMessage());
-        }
-
-        @Test
-        void testDeleteNonExistentCategory() {
-            Long categoryId = 1L;
-            when(categoryRepository.findById(categoryId)).thenReturn(null);
-            assertThrows(IllegalArgumentException.class, () -> categoryService.deleteCategory(categoryId));
-            verify(categoryRepository, never()).delete(any(Category.class));
         }
 
         @Test
@@ -163,14 +145,14 @@ class CategoryServiceTest {
         void testAddCategoryWithNullNameThrowsException() {
             Category categoryWithNullName = new Category(null, "Valid Description");
             Exception exception = assertThrows(InvalidCategoryException.class, () -> categoryService.addCategory(categoryWithNullName));
-            Assertions.assertEquals("Name must be not null.", exception.getMessage());
+            assertEquals("Name must be not null.", exception.getMessage());
         }
 
         @Test
         void testAddCategoryWithNullDescriptionThrowsException() {
             Category categoryWithNullDescription = new Category("Valid Name", null);
             Exception exception = assertThrows(InvalidCategoryException.class, () -> categoryService.addCategory(categoryWithNullDescription));
-            Assertions.assertEquals("Description cannot be null.", exception.getMessage());
+            assertEquals("Description cannot be null.", exception.getMessage());
         }
 
 
@@ -184,6 +166,24 @@ class CategoryServiceTest {
         void testUpdateCategoryWithInvalidData() {
             Category invalidCategory = new Category("originalName", null);
             assertThrows(InvalidCategoryException.class, () -> categoryService.updateCategory(invalidCategory));
+        }
+
+        @Test
+        void testDeleteNonExistentCategory() {
+            Long categoryId = 1L;
+            when(categoryRepository.findById(categoryId)).thenReturn(null);
+            assertThrows(IllegalArgumentException.class, () -> categoryService.deleteCategory(categoryId));
+            verify(categoryRepository, never()).delete(any(Category.class));
+        }
+
+        @Test
+        void testDeleteCategoryWithDependencies() {
+            Category category = new Category("name", "description");
+            when(categoryRepository.findById(category.getId())).thenReturn(category);
+            doThrow(IllegalStateException.class).when(categoryRepository).delete(category);
+            Long id = category.getId();
+            Exception ex = assertThrows(InvalidCategoryException.class, () -> categoryService.deleteCategory(id));
+            assertEquals("Cannot delete category with existing expenses", ex.getMessage());
         }
     }
 }

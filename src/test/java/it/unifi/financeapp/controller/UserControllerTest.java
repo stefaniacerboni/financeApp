@@ -38,7 +38,7 @@ class UserControllerTest {
     }
 
     @Test
-    void testLoadUsers() {
+    void testLoadUsersOnInit() {
         List<User> users = Arrays.asList(new User("Username", "Email"), new User("Username2", "Email2"));
         when(userService.getAllUsers()).thenReturn(users);
 
