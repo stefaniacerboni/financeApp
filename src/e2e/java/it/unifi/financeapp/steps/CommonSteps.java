@@ -5,8 +5,9 @@ import io.cucumber.java.BeforeAll;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.assertj.swing.edt.GuiActionRunner;
+import org.assertj.swing.core.matcher.JButtonMatcher;
 
+import static org.assertj.swing.edt.GuiActionRunner.execute;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CommonSteps {
@@ -27,9 +28,9 @@ public class CommonSteps {
     }
 
     @And("I click the {string} button")
-    public void i_click_the_button(String buttonName) {
-        TestConfig.window.button(buttonName).requireEnabled();
-        GuiActionRunner.execute(() -> TestConfig.window.button(buttonName).target().doClick());
+    public void i_click_the_button(String buttonText) {
+        TestConfig.window.button(JButtonMatcher.withText(buttonText)).requireEnabled();
+        execute(() -> TestConfig.window.button(JButtonMatcher.withText(buttonText)).target().doClick());
     }
 
     @Then("I should see {string} in the list")

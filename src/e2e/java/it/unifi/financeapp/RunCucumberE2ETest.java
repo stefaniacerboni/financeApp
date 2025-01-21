@@ -6,8 +6,8 @@ import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-        features = "src/test/e2e/resources/features",
-        glue = "it.unifi.financeapp.e2e.steps",
+        features = "src/e2e/resources/features",
+        glue = "it.unifi.financeapp.steps",
         plugin = {"pretty", "html:target/cucumber-report.html"}
 )
 public class RunCucumberE2ETest {

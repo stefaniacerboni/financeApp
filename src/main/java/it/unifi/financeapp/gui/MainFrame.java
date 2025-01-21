@@ -45,6 +45,10 @@ public class MainFrame extends JFrame {
         UserController userController = new UserController(userService, userPanel);
         ExpenseController expenseController = new ExpenseController(expenseService, categoryService, userService, expensePanel);
 
+        categoryPanel.setCategoryController(categoryController);
+        userPanel.setUserController(userController);
+        expensePanel.setExpenseController(expenseController);
+
         // Initialize views within the controllers
         categoryController.initView();
         userController.initView();

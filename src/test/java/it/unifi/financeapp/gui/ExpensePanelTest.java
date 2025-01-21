@@ -53,7 +53,9 @@ class ExpensePanelTest {
 
     @AfterEach
     void tearDown() {
-        window.cleanUp();
+        if (window != null) {
+            window.cleanUp();
+        }
     }
 
     @Test
@@ -178,7 +180,7 @@ class ExpensePanelTest {
         JTextComponentFixture dateField = window.textBox("dateField");
         amountField.setText("100");
         dateField.setText("2024-01-01");
-        window.button(JButtonMatcher.withName("addButton")).target().doClick();
+        execute(() -> window.button(JButtonMatcher.withName("addButton")).target().doClick());
         verify(expenseController).addExpense();
     }
 
@@ -187,7 +189,7 @@ class ExpensePanelTest {
         testShownExpenseShouldMatchExpenseAdded();
         execute(() -> expenseView.getExpenseTable().setRowSelectionInterval(0, 0));
         window.button("deleteButton").requireEnabled();
-        window.button(JButtonMatcher.withName("deleteButton")).target().doClick();
+        execute(() -> window.button(JButtonMatcher.withName("deleteButton")).target().doClick());
         verify(expenseController).deleteExpense();
     }
 }

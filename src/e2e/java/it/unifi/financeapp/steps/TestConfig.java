@@ -11,6 +11,7 @@ import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -19,6 +20,7 @@ import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
 
+@Testcontainers
 public class TestConfig {
     @Container
     public static MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:5.7")
@@ -38,7 +40,12 @@ public class TestConfig {
         em = emf.createEntityManager();
         setupServices(em);
 
-        JFrame frame = GuiActionRunner.execute(() -> new MainFrame(categoryService, userService, expenseService));
+        JFrame frame = GuiActionRunner.execute(() -> {
+            JFrame f = new MainFrame(categoryService, userService, expenseService);
+            f.pack();
+            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            return f;
+        });
         window = new FrameFixture(frame);
         window.show();
     }

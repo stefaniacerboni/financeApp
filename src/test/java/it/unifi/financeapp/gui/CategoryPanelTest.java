@@ -35,7 +35,7 @@ class CategoryPanelTest {
     void setUp() {
         JFrame frame = GuiActionRunner.execute(() -> {
             JFrame f = new JFrame();
-            categoryView = new CategoryPanel(); // Make sure this is the only instance created
+            categoryView = new CategoryPanel();
             categoryView.setCategoryController(categoryController);
             f.setContentPane(categoryView);
             f.pack();
@@ -165,7 +165,7 @@ class CategoryPanelTest {
         JTextComponentFixture descriptionField = window.textBox("descriptionField");
         nameField.setText("Name");
         descriptionField.setText("Description");
-        window.button(JButtonMatcher.withName("addButton")).target().doClick();
+        execute(() -> window.button(JButtonMatcher.withName("addButton")).target().doClick());
         verify(categoryController).addCategory();
     }
 
@@ -174,7 +174,7 @@ class CategoryPanelTest {
         testShownCategoryShouldMatchCategoryAdded();
         execute(() -> categoryView.getCategoryTable().setRowSelectionInterval(0, 0));
         window.button("deleteButton").requireEnabled();
-        window.button(JButtonMatcher.withName("deleteButton")).target().doClick();
+        execute(() -> window.button(JButtonMatcher.withName("deleteButton")).target().doClick());
         verify(categoryController).deleteCategory();
     }
 }

@@ -28,6 +28,8 @@ public class CategoryPanel extends BasePanel implements CategoryView {
         addButton = createAddButton("Category");
         formPanel.add(addButton);
 
+        deleteButton.setText("Delete Category");
+
         addButton.addActionListener(e -> categoryController.addCategory());
         deleteButton.addActionListener(e -> categoryController.deleteCategory());
 

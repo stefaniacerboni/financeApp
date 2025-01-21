@@ -5,12 +5,12 @@ Feature: Manage Categories
     Given I am on the Category Management page
     When I enter "Travel" into the "nameField" field
     And I enter "Expenses for travel" into the "descriptionField" field
-    And I click the "addButton" button
+    And I click the "Add Category" button
     Then I should see "Travel" in the list
 
   Scenario: Delete a category
     Given I am on the Category Management page
     And the category "Travel" exists
     When I select the "Travel" category
-    And I click the "deleteButton" button
+    And I click the "Delete Category" button
     Then I should not see any category in the category list

@@ -8,7 +8,7 @@ Feature: Manage Expenses
     And I select the first category
     And I enter "100" into the "amountField" field
     And I enter "2024-09-05" into the "dateField" field
-    And I click the "addButton" button
+    And I click the "Add Expense" button
     Then I should see "john.doe" in the list
     And I should see the amount of the expense equals to "100.0"
 
@@ -16,5 +16,5 @@ Feature: Manage Expenses
     Given I am on the Expense Management page
     And the expense "100.0" exists
     When I select the "100.0" expense
-    And I click the "deleteButton" button
+    And I click the "Delete Expense" button
     Then I should not see any expense in the expense list

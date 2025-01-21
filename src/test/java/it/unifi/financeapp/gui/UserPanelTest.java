@@ -176,7 +176,7 @@ class UserPanelTest {
         JTextComponentFixture emailField = window.textBox("emailField");
         usernameField.setText("Username");
         emailField.setText("Email");
-        window.button(JButtonMatcher.withName("addButton")).target().doClick();
+        execute(() -> window.button(JButtonMatcher.withName("addButton")).target().doClick());
         verify(userController).addUser();
     }
 
@@ -185,7 +185,7 @@ class UserPanelTest {
         testShownUserShouldMatchUserAdded();
         execute(() -> userView.getUserTable().setRowSelectionInterval(0, 0));
         window.button("deleteButton").requireEnabled();
-        window.button(JButtonMatcher.withName("deleteButton")).target().doClick();
+        execute(() -> window.button(JButtonMatcher.withName("deleteButton")).target().doClick());
         verify(userController).deleteUser();
     }
 }

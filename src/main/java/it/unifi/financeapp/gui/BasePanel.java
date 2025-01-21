@@ -29,7 +29,7 @@ public abstract class BasePanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(entityTable);
 
         // South Panel
-        deleteButton = new JButton("Delete Selected");
+        deleteButton = new JButton();
         deleteButton.setEnabled(false);
         deleteButton.setName("deleteButton");
 
