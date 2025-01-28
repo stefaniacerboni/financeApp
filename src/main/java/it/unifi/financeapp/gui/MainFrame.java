@@ -15,6 +15,8 @@ import java.util.Map;
 
 public class MainFrame extends JFrame {
 
+    private static final long serialVersionUID = 1L;
+
     private final transient CategoryService categoryService;
     private final transient UserService userService;
     private final transient ExpenseService expenseService;
