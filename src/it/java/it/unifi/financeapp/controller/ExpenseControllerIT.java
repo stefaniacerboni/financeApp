@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Testcontainers
 class ExpenseControllerIT {
+    @SuppressWarnings("resource") // We explicitly close mysqlContainer in @AfterAll
     @Container
     public static final MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:5.7")
             .withDatabaseName("testdb")
@@ -49,6 +50,15 @@ class ExpenseControllerIT {
         overrides.put("hibernate.hbm2ddl.auto", "create-drop");
         // Create EntityManagerFactory with these properties
         emf = Persistence.createEntityManagerFactory("TestFinanceAppPU", overrides);
+    }
+
+    @AfterAll
+    static void tearDown() {
+        if (emf != null)
+            emf.close();
+
+        if (mysqlContainer != null)
+            mysqlContainer.close();
     }
 
     @BeforeEach
@@ -76,14 +86,6 @@ class ExpenseControllerIT {
         expenseView.setExpenseController(expenseController);
         expenseController.initView();
         expenseController.updateData();
-    }
-
-    @AfterAll
-    static void tearDown() {
-        if (emf != null) {
-            emf.close();
-        }
-        mysqlContainer.stop();
     }
 
     @Test

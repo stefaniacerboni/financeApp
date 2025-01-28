@@ -8,6 +8,9 @@ import javax.swing.*;
 import java.awt.*;
 
 public class CategoryPanel extends BasePanel implements CategoryView {
+
+    private static final long serialVersionUID = 1L;
+
     private JTextField nameField;
     private JTextField descriptionField;
     private transient CategoryController categoryController;

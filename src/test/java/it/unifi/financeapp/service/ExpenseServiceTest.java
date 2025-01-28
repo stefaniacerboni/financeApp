@@ -25,14 +25,12 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class ExpenseServiceTest {
 
-    @Mock
-    private ExpenseRepository expenseRepository;
-
-    @InjectMocks
-    private ExpenseService expenseService;
-
     static Category category;
     static User user;
+    @Mock
+    private ExpenseRepository expenseRepository;
+    @InjectMocks
+    private ExpenseService expenseService;
 
     @BeforeAll
     static void setUp() {

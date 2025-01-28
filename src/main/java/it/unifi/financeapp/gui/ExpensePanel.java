@@ -9,6 +9,9 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ExpensePanel extends BasePanel implements ExpenseView {
+
+    private static final long serialVersionUID = 1L;
+
     private JComboBox<User> userComboBox;
     private JComboBox<Category> categoryComboBox;
     private JTextField amountField;

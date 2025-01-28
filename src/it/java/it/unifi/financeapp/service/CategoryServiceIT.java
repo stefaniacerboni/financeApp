@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
 class CategoryServiceIT {
-
+    @SuppressWarnings("resource") // We explicitly close mysqlContainer in @AfterAll
     @Container
     public static final MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:5.7")
             .withDatabaseName("testdb")
@@ -54,10 +54,11 @@ class CategoryServiceIT {
 
     @AfterAll
     static void tearDown() {
-        if (emf != null) {
+        if (emf != null)
             emf.close();
-        }
-        mysqlContainer.stop();
+
+        if (mysqlContainer != null)
+            mysqlContainer.close();
     }
 
     @AfterEach

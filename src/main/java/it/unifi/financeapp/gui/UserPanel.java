@@ -8,6 +8,9 @@ import javax.swing.*;
 import java.awt.*;
 
 public class UserPanel extends BasePanel implements UserView {
+
+    private static final long serialVersionUID = 1L;
+
     private JTextField usernameField;
     private JTextField nameField;
     private JTextField surnameField;

@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Testcontainers
 class CategoryControllerIT {
+    @SuppressWarnings("resource") // We explicitly close mysqlContainer in @AfterAll
     @Container
     public static final MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:5.7")
             .withDatabaseName("testdb")
@@ -48,6 +49,15 @@ class CategoryControllerIT {
 
     }
 
+    @AfterAll
+    static void tearDown() {
+        if (emf != null)
+            emf.close();
+
+        if (mysqlContainer != null)
+            mysqlContainer.close();
+    }
+
     @BeforeEach
     void setup() {
 
@@ -61,14 +71,6 @@ class CategoryControllerIT {
         categoryController = new CategoryController(categoryService, categoryView);
         categoryView.setCategoryController(categoryController);
         categoryController.initView();
-    }
-
-    @AfterAll
-    static void tearDown() {
-        if (emf != null) {
-            emf.close();
-        }
-        mysqlContainer.stop();
     }
 
     @Test

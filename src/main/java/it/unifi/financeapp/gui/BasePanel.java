@@ -8,6 +8,8 @@ import java.awt.*;
 
 public abstract class BasePanel extends JPanel {
 
+    private static final long serialVersionUID = 1L;
+
     protected JButton addButton;
     protected JTable entityTable;
     protected JButton deleteButton;
