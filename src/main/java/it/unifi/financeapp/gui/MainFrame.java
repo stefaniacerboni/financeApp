@@ -64,7 +64,7 @@ public class MainFrame extends JFrame {
         tabActions.put(tabbedPane.indexOfTab("Expenses"), expenseController::updateData);
 
         // Attach a change listener that executes the corresponding action
-        tabbedPane.addChangeListener(e -> {
+        tabbedPane.addChangeListener(__ -> {
             Runnable action = tabActions.get(tabbedPane.getSelectedIndex());
             if (action != null) {
                 action.run();
