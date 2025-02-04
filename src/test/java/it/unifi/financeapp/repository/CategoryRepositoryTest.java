@@ -68,7 +68,8 @@ class CategoryRepositoryTest {
     void testSaveNewCategory() {
         Category newCategory = new Category("New", "New Category Description");
 
-        categoryRepository.save(newCategory);
+        Category res = categoryRepository.save(newCategory);
+        assertNotNull(res);
         em.clear();
 
         Category retrieved = em.find(Category.class, newCategory.getId());
@@ -85,7 +86,8 @@ class CategoryRepositoryTest {
         em.getTransaction().commit();
 
         existingCategory.setDescription("Updated Description");
-        categoryRepository.save(existingCategory);
+        Category res = categoryRepository.save(existingCategory);
+        assertNotNull(res);
 
         Category retrieved = em.find(Category.class, existingCategory.getId());
         assertNotNull(retrieved);
@@ -101,7 +103,8 @@ class CategoryRepositoryTest {
         em.getTransaction().commit();
 
         category.setName("Updated Name");
-        categoryRepository.update(category);
+        Category res = categoryRepository.update(category);
+        assertNotNull(res);
 
         em.clear();
 

@@ -86,7 +86,8 @@ class ExpenseRepositoryTest {
     void testSaveNewExpense() {
         Expense newExpense = new Expense(category, user, 100.0, "2021-07-16");
 
-        expenseRepository.save(newExpense);
+        Expense res = expenseRepository.save(newExpense);
+        assertNotNull(res);
 
         Expense retrieved = em.find(Expense.class, newExpense.getId());
         assertNotNull(retrieved);
@@ -105,7 +106,8 @@ class ExpenseRepositoryTest {
 
         existingExpense.setCategory(new Category("School", "Expenses for school"));
         existingExpense.setDate("2024-01-01");
-        expenseRepository.save(existingExpense);
+        Expense res = expenseRepository.save(existingExpense);
+        assertNotNull(res);
 
         Expense retrieved = em.find(Expense.class, existingExpense.getId());
 
@@ -125,7 +127,8 @@ class ExpenseRepositoryTest {
 
         existingExpense.setCategory(new Category("School", "Expenses for school"));
         existingExpense.setDate("2024-01-01");
-        expenseRepository.update(existingExpense);
+        Expense res = expenseRepository.update(existingExpense);
+        assertNotNull(res);
         em.clear();
 
         Expense retrieved = em.find(Expense.class, existingExpense.getId());

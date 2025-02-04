@@ -2,6 +2,8 @@ package it.unifi.financeapp.model;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
@@ -101,6 +103,17 @@ class CategoryTest {
         Category cat1 = new Category("Travel", null);
         Category cat2 = new Category("Travel", "Expenses for travel");
         assertNotEquals(cat1, cat2, "Categories should not be equal if one has a null description");
+    }
+
+    @Test
+    void testHashCodeImplementation() {
+        String name = "Travel";
+        String description = "Expenses for travel";
+        Category category = new Category(name, description);
+        int expectedHashCode = Objects.hash(name, description);
+        int actualHashCode = category.hashCode();
+        assertEquals(expectedHashCode, actualHashCode,
+                "The hashCode method should compute the hash based on the name and description fields");
     }
 
     @Test

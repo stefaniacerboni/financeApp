@@ -2,6 +2,8 @@ package it.unifi.financeapp.model;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserTest {
@@ -133,6 +135,15 @@ class UserTest {
         User user5 = new User("Username", "Name", "Surname", null);
         User user6 = new User("Username", "Name", "Surname", "Email");
         assertNotEquals(user5, user6, "Users should not be equal if one has null email");
+    }
+
+    @Test
+    void testHashCodeImplementation() {
+        User user = new User("Username", "Name", "Surname", "Email");
+        int expectedHashCode = Objects.hash(user.getUsername(), user.getName(), user.getSurname(), user.getEmail());
+        int actualHashCode = user.hashCode();
+        assertEquals(expectedHashCode, actualHashCode,
+                "The hashCode method should compute the hash based on the name and description fields");
     }
 
     @Test

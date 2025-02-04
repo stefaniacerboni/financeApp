@@ -163,13 +163,6 @@
                 </dependencies>
                 <configuration>
                     <threads>4</threads>
-                    <mutators>
-                        <mutator>NEGATE_CONDITIONALS</mutator>
-                        <mutator>VOID_METHOD_CALLS</mutator>
-                        <mutator>EMPTY_RETURNS</mutator>
-                        <mutator>CONDITIONALS_BOUNDARY</mutator>
-                        <mutator>INCREMENTS</mutator>
-                    </mutators>
                     <!-- Configuration parameters like target classes and test groups -->
                     <targetClasses>
                         <param>it.unifi.financeapp.controller.*</param>

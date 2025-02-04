@@ -69,7 +69,8 @@ class UserRepositoryTest {
     void testSaveNewUser() {
         User newUser = new User("New", "New User Email");
 
-        userRepository.save(newUser);
+        User res = userRepository.save(newUser);
+        assertNotNull(res);
         em.clear();
 
         User retrieved = em.find(User.class, newUser.getId());
@@ -87,7 +88,8 @@ class UserRepositoryTest {
         em.getTransaction().commit();
 
         existingUser.setEmail("Updated Email");
-        userRepository.save(existingUser);
+        User res = userRepository.save(existingUser);
+        assertNotNull(res);
 
         User retrieved = em.find(User.class, existingUser.getId());
 
@@ -104,7 +106,8 @@ class UserRepositoryTest {
         em.getTransaction().commit();
 
         user.setName("Updated Name");
-        userRepository.update(user);
+        User res = userRepository.update(user);
+        assertNotNull(res);
         em.clear();
 
         User retrieved = em.find(User.class, user.getId());
