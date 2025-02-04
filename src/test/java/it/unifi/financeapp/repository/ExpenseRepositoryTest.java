@@ -29,22 +29,19 @@ class ExpenseRepositoryTest {
         emf = Persistence.createEntityManagerFactory("TestFinanceAppH2PU");
         em = emf.createEntityManager();
         expenseRepository = new ExpenseRepositoryImpl(em);
-    }
-
-    @AfterEach
-    public void close() {
-        em.close();
-        emf.close();
-    }
-
-    @BeforeEach
-    void setUp() {
+        //setup
         category = new Category("Travel", "Expenses for travel");
         user = new User("john.doe", "john.doe@example.com");
         em.getTransaction().begin();
         em.persist(category);
         em.persist(user);
         em.getTransaction().commit();
+    }
+
+    @AfterEach
+    public void close() {
+        em.close();
+        emf.close();
     }
 
     @Test

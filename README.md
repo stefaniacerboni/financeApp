@@ -52,12 +52,7 @@ A step by step series of examples that tell you how to get a development environ
    mvn clean install
    ```
 
-4. Run the application:
-```bash
-java -jar target/financeAppTDD-1.0-SNAPSHOT.jar
-```
-
-5. Running the tests:
+4. Running the tests:
    
 To run the automated tests for this system:
 
