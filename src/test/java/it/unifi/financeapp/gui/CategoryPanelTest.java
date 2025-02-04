@@ -59,7 +59,6 @@ class CategoryPanelTest {
         JTextComponentFixture nameField = window.textBox("nameField");
         JTextComponentFixture descriptionField = window.textBox("descriptionField");
         assertFalse(categoryView.getAddCategoryButton().isEnabled());
-        JTableFixture entityTable = window.table("entityTable");
         nameField.setText("Name");
         descriptionField.setText("Description");
         nameField.requireText(categoryView.getName());
@@ -69,6 +68,7 @@ class CategoryPanelTest {
         categoryView.setDescription("New Description");
         nameField.requireText(categoryView.getName());
         descriptionField.requireText(categoryView.getDescription());
+        JTableFixture entityTable = window.table("entityTable");
         entityTable.requireRowCount(0);
         assertEquals(-1, categoryView.getSelectedCategoryIndex());
     }

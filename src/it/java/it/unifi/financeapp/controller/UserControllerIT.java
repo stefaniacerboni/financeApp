@@ -93,6 +93,23 @@ class UserControllerIT {
         assertEquals("New User Email", found.getEmail(), "The user email should match.");
     }
 
+    @Test
+    void testDeleteCategoryButtonFunctionality() {
+        // Prepare the view with one user
+        testAddUserButtonFunctionality(); // First add a user
+        userView.getUserTable().setRowSelectionInterval(0, 0); // Select the row
+
+        // Simulate delete button click
+        ActionEvent e = new ActionEvent(userView.getDeleteUserButton(), ActionEvent.ACTION_PERFORMED, null);
+        for (ActionListener al : userView.getDeleteUserButton().getActionListeners()) {
+            al.actionPerformed(e);
+        }
+
+        // Assert the row is deleted
+        List<User> userList = userService.getAllUsers();
+        assertEquals(0, userList.size());
+    }
+
     @AfterEach
     void cleanUpDatabase() {
         userService.deleteAll();

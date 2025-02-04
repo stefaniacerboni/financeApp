@@ -36,7 +36,7 @@ class UserPanelTest {
     void setUp() {
         JFrame frame = GuiActionRunner.execute(() -> {
             JFrame f = new JFrame();
-            userView = new UserPanel(); // Make sure this is the only instance created
+            userView = new UserPanel();
             userView.setUserController(userController);
             f.setContentPane(userView);
             f.pack();
@@ -61,7 +61,6 @@ class UserPanelTest {
         JTextComponentFixture nameField = window.textBox("nameField");
         JTextComponentFixture surnameField = window.textBox("surnameField");
         JTextComponentFixture emailField = window.textBox("emailField");
-        JTableFixture entityTable = window.table("entityTable");
         assertFalse(userView.getAddUserButton().isEnabled());
         usernameField.setText("Username");
         nameField.setText("Name");
@@ -80,6 +79,7 @@ class UserPanelTest {
         nameField.requireText(userView.getName());
         surnameField.requireText(userView.getSurname());
         emailField.requireText(userView.getEmail());
+        JTableFixture entityTable = window.table("entityTable");
         entityTable.requireRowCount(0);
         assertEquals(-1, userView.getSelectedUserIndex());
 
