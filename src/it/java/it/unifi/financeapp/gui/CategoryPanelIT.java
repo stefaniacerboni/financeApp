@@ -72,8 +72,7 @@ class CategoryPanelIT {
         categoryController.initView();
     }
 
-    @Test
-    void testAddCategoryButtonFunctionality() {
+    private void addCategory() {
         categoryView.setName("New Category");
         categoryView.setDescription("New Description");
 
@@ -81,7 +80,11 @@ class CategoryPanelIT {
         for (ActionListener al : categoryView.getAddCategoryButton().getActionListeners()) {
             al.actionPerformed(e);
         }
+    }
 
+    @Test
+    void testAddCategoryButtonFunctionality() {
+        addCategory();
         assertTrue(categoryView.getCategoryTable().getModel().getRowCount() > 0, "Table should have one category added.");
         assertEquals("New Category", categoryView.getCategoryTable().getModel().getValueAt(0, 1), "The category name should match.");
     }
@@ -89,7 +92,7 @@ class CategoryPanelIT {
     @Test
     void testDeleteCategoryButtonFunctionality() {
         // Prepare the view with one category
-        testAddCategoryButtonFunctionality();
+        addCategory();
         categoryView.getCategoryTable().setRowSelectionInterval(0, 0);
 
         ActionEvent e = new ActionEvent(categoryView.getDeleteCategoryButton(), ActionEvent.ACTION_PERFORMED, null);

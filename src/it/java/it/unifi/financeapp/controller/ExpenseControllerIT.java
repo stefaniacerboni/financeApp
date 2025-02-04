@@ -88,8 +88,7 @@ class ExpenseControllerIT {
         expenseController.updateData();
     }
 
-    @Test
-    void testAddExpenseButtonFunctionality() {
+    private void addExpense() {
         // Setting text to inputs
         expenseView.getUserComboBox().setSelectedIndex(0);
         expenseView.getCategoryComboBox().setSelectedIndex(0);
@@ -101,7 +100,11 @@ class ExpenseControllerIT {
         for (ActionListener al : expenseView.getAddExpenseButton().getActionListeners()) {
             al.actionPerformed(e);
         }
+    }
 
+    @Test
+    void testAddExpenseButtonFunctionality() {
+        addExpense();
         List<Expense> expenseList = expenseService.getAllExpenses();
         assertEquals(1, expenseList.size());
         Expense found = expenseList.get(0);
@@ -115,7 +118,7 @@ class ExpenseControllerIT {
     @Test
     void testDeleteExpenseButtonFunctionality() {
         // Prepare the view with one expense
-        testAddExpenseButtonFunctionality(); // First add a expense
+        addExpense(); // First add a expense
         expenseView.getExpenseTable().setRowSelectionInterval(0, 0); // Select the row
 
         // Simulate delete button click

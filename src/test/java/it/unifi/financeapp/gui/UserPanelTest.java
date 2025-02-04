@@ -117,11 +117,16 @@ class UserPanelTest {
         statusLabel.requireText("User added successfully");
     }
 
-    @Test
-    void testShownUserShouldMatchUserAdded() {
+    private User addUserToTable() {
         User user = new User("Username", "Email");
         user.setId(1L);
         execute(() -> userView.addUserToTable(user));
+        return user;
+    }
+
+    @Test
+    void testShownUserShouldMatchUserAdded() {
+        User user = addUserToTable();
         DefaultTableModel model = (DefaultTableModel) userView.getUserTable().getModel();
         assertEquals(1, model.getRowCount(), "Table should have one row after adding a user");
         assertEquals(user.getId(), model.getValueAt(0, 0), "User Id in the table should match the added user");
@@ -131,7 +136,7 @@ class UserPanelTest {
 
     @Test
     void testDeleteButtonShouldBeEnabledOnlyWhenAUserIsSelected() {
-        testShownUserShouldMatchUserAdded();
+        addUserToTable();
         // Select the first row and assert that the delete button is enabled
         execute(() -> userView.getUserTable().setRowSelectionInterval(0, 0));
         window.button("deleteButton").requireEnabled();
@@ -145,7 +150,7 @@ class UserPanelTest {
 
     @Test
     void testDeleteButtonShouldRemoveUserFromTable() {
-        testShownUserShouldMatchUserAdded();
+        addUserToTable();
         JTableFixture tableFixture = window.table("entityTable");
         tableFixture.requireRowCount(1);
         // Select the first row and assert that the delete button is enabled
@@ -182,7 +187,7 @@ class UserPanelTest {
 
     @Test
     void testDeleteUserShouldDelegateToUserController() {
-        testShownUserShouldMatchUserAdded();
+        addUserToTable();
         execute(() -> userView.getUserTable().setRowSelectionInterval(0, 0));
         window.button("deleteButton").requireEnabled();
         execute(() -> window.button(JButtonMatcher.withName("deleteButton")).target().doClick());

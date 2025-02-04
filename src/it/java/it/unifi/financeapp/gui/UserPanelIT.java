@@ -70,8 +70,7 @@ class UserPanelIT {
         userController.initView();
     }
 
-    @Test
-    void testAddUserButtonFunctionality() {
+    private void addUser() {
         // Setting text to inputs
         userView.setUsername("NewUser");
         userView.setName("New User Name");
@@ -83,7 +82,11 @@ class UserPanelIT {
         for (ActionListener al : userView.getAddUserButton().getActionListeners()) {
             al.actionPerformed(e);
         }
+    }
 
+    @Test
+    void testAddUserButtonFunctionality() {
+        addUser();
         // Assert changes
         assertTrue(userView.getUserTable().getModel().getRowCount() > 0, "Table should have one user added.");
         assertEquals("NewUser", userView.getUserTable().getModel().getValueAt(0, 1), "The user username should match.");
@@ -95,7 +98,7 @@ class UserPanelIT {
     @Test
     void testDeleteUserButtonFunctionality() {
         // Prepare the view with one user
-        testAddUserButtonFunctionality(); // First add a user
+        addUser(); // First add a user
         userView.getUserTable().setRowSelectionInterval(0, 0); // Select the row
 
         // Simulate delete button click

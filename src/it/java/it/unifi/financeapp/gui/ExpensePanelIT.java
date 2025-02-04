@@ -87,8 +87,7 @@ class ExpensePanelIT {
         expenseController.updateData();
     }
 
-    @Test
-    void testAddExpenseButtonFunctionality() {
+    private void addExpense() {
         // Setting text to inputs
         expenseView.getUserComboBox().setSelectedIndex(0);
         expenseView.getCategoryComboBox().setSelectedIndex(0);
@@ -100,7 +99,11 @@ class ExpensePanelIT {
         for (ActionListener al : expenseView.getAddExpenseButton().getActionListeners()) {
             al.actionPerformed(e);
         }
+    }
 
+    @Test
+    void testAddExpenseButtonFunctionality() {
+        addExpense();
         // Assert changes
         assertTrue(expenseView.getExpenseTable().getModel().getRowCount() > 0, "Table should have one expense added.");
         assertEquals("Test Username", expenseView.getExpenseTable().getModel().getValueAt(0, 1), "The expense username should match.");
@@ -112,7 +115,7 @@ class ExpensePanelIT {
     @Test
     void testDeleteExpenseButtonFunctionality() {
         // Prepare the view with one expense
-        testAddExpenseButtonFunctionality();
+        addExpense();
         expenseView.getExpenseTable().setRowSelectionInterval(0, 0);
 
         // Simulate delete button click

@@ -105,11 +105,16 @@ class CategoryPanelTest {
         statusLabel.requireText("Category added successfully");
     }
 
-    @Test
-    void testShownCategoryShouldMatchCategoryAdded() {
+    private Category addCategoryToTable() {
         Category category = new Category("Name", "Description");
         category.setId(1L);
         execute(() -> categoryView.addCategoryToTable(category));
+        return category;
+    }
+
+    @Test
+    void testShownCategoryShouldMatchCategoryAdded() {
+        Category category = addCategoryToTable();
         DefaultTableModel model = (DefaultTableModel) categoryView.getCategoryTable().getModel();
         assertEquals(1, model.getRowCount(), "Table should have one row after adding a category");
         assertEquals(category.getId(), model.getValueAt(0, 0), "Category Id in the table should match the added category");
@@ -122,7 +127,8 @@ class CategoryPanelTest {
         assertEquals(-1, window.table("entityTable").target().getSelectedRow());
         window.button("deleteButton").requireDisabled();
 
-        testShownCategoryShouldMatchCategoryAdded();
+        addCategoryToTable();
+
         // Select the first row and assert that the delete button is enabled
         execute(() -> categoryView.getCategoryTable().setRowSelectionInterval(0, 0));
         window.button("deleteButton").requireEnabled();
@@ -134,7 +140,7 @@ class CategoryPanelTest {
 
     @Test
     void testDeleteButtonShouldRemoveCategoryFromTable() {
-        testShownCategoryShouldMatchCategoryAdded();
+        addCategoryToTable();
         JTableFixture tableFixture = window.table("entityTable");
         tableFixture.requireRowCount(1);
         // Select the first row and assert that the delete button is enabled
@@ -171,7 +177,7 @@ class CategoryPanelTest {
 
     @Test
     void testDeleteCategoryShouldDelegateToCategoryController() {
-        testShownCategoryShouldMatchCategoryAdded();
+        addCategoryToTable();
         execute(() -> categoryView.getCategoryTable().setRowSelectionInterval(0, 0));
         window.button("deleteButton").requireEnabled();
         execute(() -> window.button(JButtonMatcher.withName("deleteButton")).target().doClick());

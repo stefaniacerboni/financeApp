@@ -71,8 +71,7 @@ class UserControllerIT {
         userController.initView();
     }
 
-    @Test
-    void testAddUserButtonFunctionality() {
+    private void addUser() {
         // Setting text to inputs
         userView.setUsername("NewUser");
         userView.setName("New User Name");
@@ -84,6 +83,11 @@ class UserControllerIT {
         for (ActionListener al : userView.getAddUserButton().getActionListeners()) {
             al.actionPerformed(e);
         }
+    }
+
+    @Test
+    void testAddUserButtonFunctionality() {
+        addUser();
         List<User> userList = userService.getAllUsers();
         assertEquals(1, userList.size());
         User found = userList.get(0);
@@ -96,7 +100,7 @@ class UserControllerIT {
     @Test
     void testDeleteCategoryButtonFunctionality() {
         // Prepare the view with one user
-        testAddUserButtonFunctionality(); // First add a user
+        addUser(); // First add a user
         userView.getUserTable().setRowSelectionInterval(0, 0); // Select the row
 
         // Simulate delete button click

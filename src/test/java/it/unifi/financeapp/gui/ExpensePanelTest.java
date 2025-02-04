@@ -117,13 +117,18 @@ class ExpensePanelTest {
         statusLabel.requireText("Expense added successfully");
     }
 
-    @Test
-    void testShownExpenseShouldMatchExpenseAdded() {
+    private Expense addExpenseToTable() {
         User user = (User) expenseView.getUserComboBox().getSelectedItem();
         Category category = (Category) expenseView.getCategoryComboBox().getSelectedItem();
         Expense expense = new Expense(category, user, 100.0, "2024-01-01");
         expense.setId(1L);
         execute(() -> expenseView.addExpenseToTable(expense));
+        return expense;
+    }
+
+    @Test
+    void testShownExpenseShouldMatchExpenseAdded() {
+        Expense expense = addExpenseToTable();
         DefaultTableModel model = (DefaultTableModel) expenseView.getExpenseTable().getModel();
         assertEquals(1, model.getRowCount(), "Table should have one row after adding a category");
         assertEquals(expense.getId(), model.getValueAt(0, 0), "Expense Id in the table should match the added expense");
@@ -135,7 +140,7 @@ class ExpensePanelTest {
 
     @Test
     void testDeleteButtonShouldBeEnabledOnlyWhenAnExpenseIsSelected() {
-        testShownExpenseShouldMatchExpenseAdded();
+        addExpenseToTable();
         // Select the first row and assert that the delete button is enabled
         execute(() -> expenseView.getExpenseTable().setRowSelectionInterval(0, 0));
         window.button("deleteButton").requireEnabled();
@@ -149,7 +154,7 @@ class ExpensePanelTest {
 
     @Test
     void testDeleteButtonShouldRemoveExpenseFromTable() {
-        testShownExpenseShouldMatchExpenseAdded();
+        addExpenseToTable();
         JTableFixture tableFixture = window.table("entityTable");
         tableFixture.requireRowCount(1);
         // Select the first row and assert that the delete button is enabled
@@ -186,7 +191,7 @@ class ExpensePanelTest {
 
     @Test
     void testDeleteExpenseShouldDelegateToExpenseController() {
-        testShownExpenseShouldMatchExpenseAdded();
+        addExpenseToTable();
         execute(() -> expenseView.getExpenseTable().setRowSelectionInterval(0, 0));
         window.button("deleteButton").requireEnabled();
         execute(() -> window.button(JButtonMatcher.withName("deleteButton")).target().doClick());

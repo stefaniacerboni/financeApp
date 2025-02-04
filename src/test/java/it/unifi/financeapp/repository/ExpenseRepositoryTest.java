@@ -78,13 +78,15 @@ class ExpenseRepositoryTest {
         assertEquals(expense2, expenses.get(1));
     }
 
+    private Expense addExpense() {
+        Expense newExpense = new Expense(category, user, 100.0, "2021-07-16");
+        return expenseRepository.save(newExpense);
+    }
 
     @Test
     void testSaveNewExpense() {
-        Expense newExpense = new Expense(category, user, 100.0, "2021-07-16");
-
-        Expense res = expenseRepository.save(newExpense);
-        assertNotNull(res);
+        Expense newExpense = addExpense();
+        assertNotNull(newExpense);
 
         Expense retrieved = em.find(Expense.class, newExpense.getId());
         assertNotNull(retrieved);
@@ -162,7 +164,7 @@ class ExpenseRepositoryTest {
 
     @Test
     void testDeleteAllExpenses() {
-        testSaveNewExpense();
+        addExpense();
         expenseRepository.deleteAll();
         em.clear();
         // Use a new EntityManager for verification

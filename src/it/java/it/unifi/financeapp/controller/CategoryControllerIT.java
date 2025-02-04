@@ -73,8 +73,7 @@ class CategoryControllerIT {
         categoryController.initView();
     }
 
-    @Test
-    void testAddCategoryButtonFunctionality() {
+    private void addCategory() {
         categoryView.setName("New Category");
         categoryView.setDescription("New Description");
 
@@ -82,6 +81,11 @@ class CategoryControllerIT {
         for (ActionListener al : categoryView.getAddCategoryButton().getActionListeners()) {
             al.actionPerformed(e);
         }
+    }
+
+    @Test
+    void testAddCategoryButtonFunctionality() {
+        addCategory();
         List<Category> categoryList = categoryService.getAllCategories();
         assertEquals(1, categoryList.size());
         Category found = categoryList.get(0);
@@ -92,7 +96,7 @@ class CategoryControllerIT {
     @Test
     void testDeleteCategoryButtonFunctionality() {
         // Prepare the view with one category
-        testAddCategoryButtonFunctionality(); // First add a category
+        addCategory(); // First add a category
         categoryView.getCategoryTable().setRowSelectionInterval(0, 0); // Select the row
 
         // Simulate delete button click

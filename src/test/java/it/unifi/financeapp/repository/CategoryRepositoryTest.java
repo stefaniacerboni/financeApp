@@ -64,14 +64,16 @@ class CategoryRepositoryTest {
         assertEquals(cat2, categories.get(1));
     }
 
+    private Category addCategory() {
+        Category newCategory = new Category("New", "New Category Description");
+        return categoryRepository.save(newCategory);
+    }
+
     @Test
     void testSaveNewCategory() {
-        Category newCategory = new Category("New", "New Category Description");
-
-        Category res = categoryRepository.save(newCategory);
-        assertNotNull(res);
+        Category newCategory = addCategory();
+        assertNotNull(newCategory);
         em.clear();
-
         Category retrieved = em.find(Category.class, newCategory.getId());
         assertNotNull(retrieved);
         assertEquals("New", retrieved.getName());
@@ -143,7 +145,7 @@ class CategoryRepositoryTest {
 
     @Test
     void testDeleteAllCategories() {
-        testSaveNewCategory();
+        addCategory();
         categoryRepository.deleteAll();
         em.clear();
         // Use a new EntityManager for verification

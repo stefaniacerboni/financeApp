@@ -65,12 +65,16 @@ class UserRepositoryTest {
         assertEquals(usr2, users.get(1));
     }
 
-    @Test
-    void testSaveNewUser() {
+    private User addUser() {
         User newUser = new User("New", "New User Email");
 
-        User res = userRepository.save(newUser);
-        assertNotNull(res);
+        return userRepository.save(newUser);
+    }
+
+    @Test
+    void testSaveNewUser() {
+        User newUser = addUser();
+        assertNotNull(newUser);
         em.clear();
 
         User retrieved = em.find(User.class, newUser.getId());
@@ -144,7 +148,7 @@ class UserRepositoryTest {
 
     @Test
     void testDeleteAllUsers() {
-        testSaveNewUser();
+        addUser();
         em.clear();
         userRepository.deleteAll();
         em.clear();
