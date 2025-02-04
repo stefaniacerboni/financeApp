@@ -46,8 +46,8 @@ public class UserPanel extends BasePanel implements UserView {
         deleteButton.setText("Delete User");
 
 
-        addButton.addActionListener(__ -> userController.addUser());
-        deleteButton.addActionListener(__ -> userController.deleteUser());
+        addButton.addActionListener(e -> userController.addUser());
+        deleteButton.addActionListener(e -> userController.deleteUser());
 
 
         return formPanel;

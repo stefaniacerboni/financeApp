@@ -4,14 +4,10 @@ package it.unifi.financeapp.gui;
 import it.unifi.financeapp.controller.CategoryController;
 import it.unifi.financeapp.controller.ExpenseController;
 import it.unifi.financeapp.controller.UserController;
-import it.unifi.financeapp.repository.*;
 import it.unifi.financeapp.service.CategoryService;
 import it.unifi.financeapp.service.ExpenseService;
 import it.unifi.financeapp.service.UserService;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
@@ -70,7 +66,7 @@ public class MainFrame extends JFrame {
         tabActions.put(tabbedPane.indexOfTab("Expenses"), expenseController::updateData);
 
         // Attach a change listener that executes the corresponding action
-        tabbedPane.addChangeListener(__ -> {
+        tabbedPane.addChangeListener(e -> {
             Runnable action = tabActions.get(tabbedPane.getSelectedIndex());
             if (action != null) {
                 action.run();
@@ -85,20 +81,4 @@ public class MainFrame extends JFrame {
         return tabbedPane;
     }
 
-    @Generated
-    public static void main(String[] args) {
-        EntityManagerFactory emFactory = Persistence.createEntityManagerFactory("FinanceAppPU");
-        EntityManager entityManager = emFactory.createEntityManager();
-        CategoryRepository categoryRepository = new CategoryRepositoryImpl(entityManager);
-        CategoryService categoryService = new CategoryService(categoryRepository);
-        UserRepository userRepository = new UserRepositoryImpl(entityManager);
-        UserService userService = new UserService(userRepository);
-        ExpenseRepository expenseRepository = new ExpenseRepositoryImpl(entityManager);
-        ExpenseService expenseService = new ExpenseService(expenseRepository);
-
-        SwingUtilities.invokeLater(() -> {
-            MainFrame frame = new MainFrame(categoryService, userService, expenseService);
-            frame.setVisible(true);
-        });
-    }
 }

@@ -48,8 +48,8 @@ public class ExpensePanel extends BasePanel implements ExpenseView {
 
         deleteButton.setText("Delete Expense");
 
-        addButton.addActionListener(__ -> expenseController.addExpense());
-        deleteButton.addActionListener(__ -> expenseController.deleteExpense());
+        addButton.addActionListener(e -> expenseController.addExpense());
+        deleteButton.addActionListener(e -> expenseController.deleteExpense());
 
 
         return formPanel;
