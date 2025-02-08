@@ -22,6 +22,7 @@ import java.util.Map;
 
 @Testcontainers
 public class TestConfig {
+    @SuppressWarnings("resource") // We explicitly close mysqlContainer in TeardownClass
     @Container
     public static MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:8.0.29")
             .withDatabaseName("testdb")
