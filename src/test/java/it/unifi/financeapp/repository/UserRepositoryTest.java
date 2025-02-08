@@ -86,6 +86,9 @@ class UserRepositoryTest {
         em.getTransaction().begin();
         em.persist(existingUser);
         em.getTransaction().commit();
+        
+        // Detach the entity to simulate a real update scenario
+        em.clear();
 
         existingUser.setEmail("Updated Email");
         User res = userRepository.save(existingUser);

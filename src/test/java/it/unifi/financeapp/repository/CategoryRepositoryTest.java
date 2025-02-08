@@ -82,6 +82,9 @@ class CategoryRepositoryTest {
         em.getTransaction().begin();
         em.persist(existingCategory);
         em.getTransaction().commit();
+        
+        // Detach the entity to simulate a real update scenario
+        em.clear();
 
         existingCategory.setDescription("Updated Description");
         Category res = categoryRepository.save(existingCategory);

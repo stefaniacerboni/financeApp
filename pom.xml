@@ -171,7 +171,9 @@
                 </dependencies>
                 <configuration>
                     <threads>4</threads>
-                    <!-- Configuration parameters like target classes and test groups -->
+                    <mutators>
+                    	<mutator>STRONGER</mutator>
+                    </mutators>
                     <targetClasses>
                         <param>it.unifi.financeapp.controller.*</param>
                         <param>it.unifi.financeapp.service.*</param>

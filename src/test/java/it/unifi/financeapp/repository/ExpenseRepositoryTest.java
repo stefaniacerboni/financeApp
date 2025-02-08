@@ -99,6 +99,9 @@ class ExpenseRepositoryTest {
         em.getTransaction().begin();
         em.persist(existingExpense);
         em.getTransaction().commit();
+        
+        // Detach the entity to simulate a real update scenario
+        em.clear();
 
         existingExpense.setCategory(new Category("School", "Expenses for school"));
         existingExpense.setDate("2024-01-01");
