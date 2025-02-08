@@ -5,7 +5,7 @@ import it.unifi.financeapp.repository.UserRepository;
 import it.unifi.financeapp.service.exceptions.InvalidUserException;
 import org.hibernate.service.spi.ServiceException;
 
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 import java.util.List;
 
 public class UserService {

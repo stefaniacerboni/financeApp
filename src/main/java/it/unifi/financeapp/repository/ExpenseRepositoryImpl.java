@@ -2,8 +2,8 @@ package it.unifi.financeapp.repository;
 
 import it.unifi.financeapp.model.Expense;
 
-import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import java.util.List;
 
 public class ExpenseRepositoryImpl implements ExpenseRepository {
