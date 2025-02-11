@@ -58,7 +58,7 @@ To run the automated tests for this system:
 
 ```bash
 mvn test # for unit tests
-mvn verify # for integration tests
+mvn verify # for integration and e2e tests
 ```
 
 ## Authors
