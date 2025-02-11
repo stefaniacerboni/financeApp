@@ -4,7 +4,10 @@ import it.unifi.financeapp.controller.UserController;
 import it.unifi.financeapp.repository.UserRepository;
 import it.unifi.financeapp.repository.UserRepositoryImpl;
 import it.unifi.financeapp.service.UserService;
+
+import org.assertj.swing.annotation.GUITest;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -20,6 +23,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@ExtendWith(GUITestExtension.class)
 @Testcontainers
 class UserPanelIT {
     @SuppressWarnings("resource") // We explicitly close mysqlContainer in @AfterAll
@@ -82,7 +86,7 @@ class UserPanelIT {
         }
     }
 
-    @Test
+    @Test @GUITest
     void testAddUserButtonFunctionality() {
         addUser();
         // Assert changes
@@ -93,7 +97,7 @@ class UserPanelIT {
         assertEquals("New User Email", userView.getUserTable().getModel().getValueAt(0, 4), "The user email should match.");
     }
 
-    @Test
+    @Test @GUITest
     void testDeleteUserButtonFunctionality() {
         // Prepare the view with one user
         addUser(); // First add a user
