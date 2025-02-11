@@ -8,9 +8,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -86,6 +86,9 @@ class UserRepositoryTest {
         em.getTransaction().begin();
         em.persist(existingUser);
         em.getTransaction().commit();
+        
+        // Detach the entity to simulate a real update scenario
+        em.clear();
 
         existingUser.setEmail("Updated Email");
         User res = userRepository.save(existingUser);

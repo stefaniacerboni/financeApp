@@ -127,4 +127,3 @@ public class CategoryPanel extends BasePanel implements CategoryView {
         return entityTable;
     }
 }
-

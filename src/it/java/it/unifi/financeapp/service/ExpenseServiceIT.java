@@ -11,9 +11,9 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ExpenseServiceIT {
     @SuppressWarnings("resource") // We explicitly close mysqlContainer in @AfterAll
     @Container
-    public static final MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:5.7")
+    public static final MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:8.0.29")
             .withDatabaseName("testdb")
             .withUsername("test")
             .withPassword("test");
@@ -40,7 +40,6 @@ class ExpenseServiceIT {
         overrides.put("javax.persistence.jdbc.url", mysqlContainer.getJdbcUrl());
         overrides.put("javax.persistence.jdbc.user", mysqlContainer.getUsername());
         overrides.put("javax.persistence.jdbc.password", mysqlContainer.getPassword());
-        overrides.put("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");  // MySQL dialect
 
         // Create EntityManagerFactory with these properties
         emf = Persistence.createEntityManagerFactory("TestFinanceAppPU", overrides);

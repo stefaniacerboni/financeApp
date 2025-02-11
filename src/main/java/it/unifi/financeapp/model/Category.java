@@ -1,7 +1,8 @@
 package it.unifi.financeapp.model;
 
-import javax.persistence.*;
 import java.util.Objects;
+
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "categories")

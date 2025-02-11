@@ -32,4 +32,3 @@ public class CategorySteps {
         TestConfig.window.table("entityTable").requireRowCount(0);
     }
 }
-

@@ -156,4 +156,3 @@ public class ExpensePanel extends BasePanel implements ExpenseView {
         return entityTable;
     }
 }
-

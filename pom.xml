@@ -1,12 +1,25 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <groupId>it.unifi</groupId>
-    <artifactId>financeAppTDD</artifactId>
-    <version>1.0</version>
+  <groupId>it.unifi</groupId>
+  <artifactId>financeAppTDD</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>financeAppTDD</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <project.resources.sourceEncoding>UTF-8</project.resources.sourceEncoding>
+    <java.version>11</java.version>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <sonar.organization>stefaniacerboni</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+  </properties>
 
     <dependencyManagement>
         <dependencies>
@@ -35,12 +48,13 @@
             <version>1.4.200</version>
             <scope>test</scope>
         </dependency>
-        <!-- JPA and Hibernate -->
+        <!-- Jakarta and Hibernate -->
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>5.6.9.Final</version>
-        </dependency>
+    		<groupId>org.hibernate.orm</groupId>
+    		<artifactId>hibernate-core</artifactId>
+    		<version>6.2.0.Final</version>
+		</dependency>
+
         <!-- JUnit Jupiter API -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -126,8 +140,8 @@
             <version>7.2.3</version>
             <scope>test</scope>
         </dependency>
-    </dependencies>
-    <build>
+  </dependencies>
+<build>
         <plugins>
             <!-- Build Helper Plugin to add additional test source directories -->
             <plugin>
@@ -163,7 +177,9 @@
                 </dependencies>
                 <configuration>
                     <threads>4</threads>
-                    <!-- Configuration parameters like target classes and test groups -->
+                    <mutators>
+                    	<mutator>STRONGER</mutator>
+                    </mutators>
                     <targetClasses>
                         <param>it.unifi.financeapp.controller.*</param>
                         <param>it.unifi.financeapp.service.*</param>
@@ -192,6 +208,7 @@
                 <configuration>
                     <excludes>
                         <exclude>**/*IT.java</exclude>
+                        <exclude>**/*E2ETest.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -270,17 +287,7 @@
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>3.6.0.1398</version>
             </plugin>
-
-        </plugins>
-    </build>
-
-    <properties>
-        <sonar.organization>stefaniacerboni</sonar.organization>
-        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <project.resources.sourceEncoding>UTF-8</project.resources.sourceEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-    </properties>
+            </plugins>
+            </build>
 </project>
+

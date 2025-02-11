@@ -7,9 +7,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -99,6 +99,9 @@ class ExpenseRepositoryTest {
         em.getTransaction().begin();
         em.persist(existingExpense);
         em.getTransaction().commit();
+        
+        // Detach the entity to simulate a real update scenario
+        em.clear();
 
         existingExpense.setCategory(new Category("School", "Expenses for school"));
         existingExpense.setDate("2024-01-01");
