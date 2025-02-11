@@ -3,6 +3,8 @@ package it.unifi.financeapp.gui;
 import it.unifi.financeapp.service.CategoryService;
 import it.unifi.financeapp.service.ExpenseService;
 import it.unifi.financeapp.service.UserService;
+
+import org.assertj.swing.annotation.GUITest;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.junit.jupiter.api.AfterEach;
@@ -17,6 +19,7 @@ import javax.swing.*;
 
 import static org.mockito.Mockito.*;
 
+@ExtendWith(GUITestExtension.class)
 @ExtendWith(MockitoExtension.class)
 class MainFrameTest {
 
@@ -48,13 +51,13 @@ class MainFrameTest {
         window.cleanUp();
     }
 
-    @Test
+    @Test @GUITest
     void shouldContainTabsWithProperTitles() {
         window.tabbedPane().requireVisible();
         window.tabbedPane().requireTabTitles("Categories", "Users", "Expenses");
     }
 
-    @Test
+    @Test @GUITest
     void switchingToExpensesTabShouldTriggerDataLoading() {
         // Reset mocks to clear any interactions during initialization
         Mockito.reset(categoryService, userService, expenseService);
@@ -67,7 +70,7 @@ class MainFrameTest {
         verify(userService, atLeastOnce()).getAllUsers();
     }
 
-    @Test
+    @Test @GUITest
     void switchingToCategoriesTabShouldNotTriggerDataLoading() {
         // Reset mocks to clear any interactions during initialization
         Mockito.reset(categoryService, userService, expenseService);

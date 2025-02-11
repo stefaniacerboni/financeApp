@@ -4,7 +4,10 @@ import it.unifi.financeapp.controller.CategoryController;
 import it.unifi.financeapp.repository.CategoryRepository;
 import it.unifi.financeapp.repository.CategoryRepositoryImpl;
 import it.unifi.financeapp.service.CategoryService;
+
+import org.assertj.swing.annotation.GUITest;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -20,6 +23,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@ExtendWith(GUITestExtension.class)
 @Testcontainers
 class CategoryPanelIT {
     @SuppressWarnings("resource") // We explicitly close mysqlContainer in @AfterAll
@@ -80,14 +84,14 @@ class CategoryPanelIT {
         }
     }
 
-    @Test
+    @Test @GUITest
     void testAddCategoryButtonFunctionality() {
         addCategory();
         assertTrue(categoryView.getCategoryTable().getModel().getRowCount() > 0, "Table should have one category added.");
         assertEquals("New Category", categoryView.getCategoryTable().getModel().getValueAt(0, 1), "The category name should match.");
     }
 
-    @Test
+    @Test @GUITest
     void testDeleteCategoryButtonFunctionality() {
         // Prepare the view with one category
         addCategory();

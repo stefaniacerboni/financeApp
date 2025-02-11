@@ -7,7 +7,10 @@ import it.unifi.financeapp.repository.*;
 import it.unifi.financeapp.service.CategoryService;
 import it.unifi.financeapp.service.ExpenseService;
 import it.unifi.financeapp.service.UserService;
+
+import org.assertj.swing.annotation.GUITest;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -23,6 +26,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@ExtendWith(GUITestExtension.class)
 @Testcontainers
 class ExpensePanelIT {
     @SuppressWarnings("resource") // We explicitly close mysqlContainer in @AfterAll
@@ -99,7 +103,7 @@ class ExpensePanelIT {
         }
     }
 
-    @Test
+    @Test @GUITest
     void testAddExpenseButtonFunctionality() {
         addExpense();
         // Assert changes
@@ -110,7 +114,7 @@ class ExpensePanelIT {
         assertEquals("2024-09-05", expenseView.getExpenseTable().getModel().getValueAt(0, 4), "The date should match.");
     }
 
-    @Test
+    @Test @GUITest
     void testDeleteExpenseButtonFunctionality() {
         // Prepare the view with one expense
         addExpense();

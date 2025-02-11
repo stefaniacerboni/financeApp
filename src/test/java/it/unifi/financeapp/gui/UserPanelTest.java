@@ -3,6 +3,8 @@ package it.unifi.financeapp.gui;
 
 import it.unifi.financeapp.controller.UserController;
 import it.unifi.financeapp.model.User;
+
+import org.assertj.swing.annotation.GUITest;
 import org.assertj.swing.core.matcher.JButtonMatcher;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
@@ -23,6 +25,7 @@ import static org.assertj.swing.edt.GuiActionRunner.execute;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
+@ExtendWith(GUITestExtension.class)
 @ExtendWith(MockitoExtension.class)
 class UserPanelTest {
     @Mock
@@ -55,7 +58,7 @@ class UserPanelTest {
         }
     }
 
-    @Test
+    @Test @GUITest
     void testFieldContentIsMatching() {
         JTextComponentFixture usernameField = window.textBox("usernameField");
         JTextComponentFixture nameField = window.textBox("nameField");
@@ -85,7 +88,7 @@ class UserPanelTest {
 
     }
 
-    @Test
+    @Test @GUITest
     void testWhenUsernameAndEmailAreFilledThenAddButtonShouldBeEnabled() {
         JTextComponentFixture usernameField = window.textBox("usernameField");
         JTextComponentFixture emailField = window.textBox("emailField");
@@ -95,7 +98,7 @@ class UserPanelTest {
     }
 
 
-    @Test
+    @Test @GUITest
     void testWhenEitherUsernameOrEmailAreBlankThenAddButtonShouldBeDisabled() {
         JTextComponentFixture usernameField = window.textBox("usernameField");
         JTextComponentFixture emailField = window.textBox("emailField");
@@ -110,7 +113,7 @@ class UserPanelTest {
         window.button(JButtonMatcher.withName("addButton")).requireDisabled();
     }
 
-    @Test
+    @Test @GUITest
     void testStatusUpdateAfterAddingUser() {
         execute(() -> userView.setStatus("User added successfully"));
         JLabelFixture statusLabel = window.label("statusLabel");
@@ -124,7 +127,7 @@ class UserPanelTest {
         return user;
     }
 
-    @Test
+    @Test @GUITest
     void testShownUserShouldMatchUserAdded() {
         User user = addUserToTable();
         DefaultTableModel model = (DefaultTableModel) userView.getUserTable().getModel();
@@ -134,7 +137,7 @@ class UserPanelTest {
         assertEquals(user.getEmail(), model.getValueAt(0, 4), "User Email in the table should match the added user");
     }
 
-    @Test
+    @Test @GUITest
     void testDeleteButtonShouldBeEnabledOnlyWhenAUserIsSelected() {
         addUserToTable();
         // Select the first row and assert that the delete button is enabled
@@ -148,7 +151,7 @@ class UserPanelTest {
         window.button("deleteButton").requireDisabled();
     }
 
-    @Test
+    @Test @GUITest
     void testDeleteButtonShouldRemoveUserFromTable() {
         addUserToTable();
         JTableFixture tableFixture = window.table("entityTable");
@@ -161,7 +164,7 @@ class UserPanelTest {
         tableFixture.requireRowCount(0);
     }
 
-    @Test
+    @Test @GUITest
     void testClearFormShouldClearTextFields() {
         JTextComponentFixture usernameField = window.textBox("usernameField");
         JTextComponentFixture emailField = window.textBox("emailField");
@@ -175,7 +178,7 @@ class UserPanelTest {
     }
 
 
-    @Test
+    @Test @GUITest
     void testAddUserShouldDelegateToUserController() {
         JTextComponentFixture usernameField = window.textBox("usernameField");
         JTextComponentFixture emailField = window.textBox("emailField");
@@ -185,7 +188,7 @@ class UserPanelTest {
         verify(userController).addUser();
     }
 
-    @Test
+    @Test @GUITest
     void testDeleteUserShouldDelegateToUserController() {
         addUserToTable();
         execute(() -> userView.getUserTable().setRowSelectionInterval(0, 0));
