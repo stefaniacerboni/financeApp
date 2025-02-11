@@ -3,6 +3,7 @@ package it.unifi.financeapp.gui;
 import it.unifi.financeapp.controller.CategoryController;
 import it.unifi.financeapp.model.Category;
 import org.assertj.swing.core.matcher.JButtonMatcher;
+import org.assertj.swing.annotation.GUITest;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.fixture.JLabelFixture;
@@ -22,6 +23,7 @@ import static org.assertj.swing.edt.GuiActionRunner.execute;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
+@ExtendWith(GUITestExtension.class)
 @ExtendWith(MockitoExtension.class)
 class CategoryPanelTest {
     @Mock
@@ -54,7 +56,7 @@ class CategoryPanelTest {
         }
     }
 
-    @Test
+    @Test @GUITest
     void testFieldContentIsMatching() {
         JTextComponentFixture nameField = window.textBox("nameField");
         JTextComponentFixture descriptionField = window.textBox("descriptionField");
@@ -73,7 +75,7 @@ class CategoryPanelTest {
         assertEquals(-1, categoryView.getSelectedCategoryIndex());
     }
 
-    @Test
+    @Test @GUITest
     void testWhenNameAndDescriptionAreFilledThenAddButtonShouldBeEnabled() {
         JTextComponentFixture nameField = window.textBox("nameField");
         JTextComponentFixture descriptionField = window.textBox("descriptionField");
@@ -83,7 +85,7 @@ class CategoryPanelTest {
     }
 
 
-    @Test
+    @Test @GUITest
     void testWhenEitherNameOrDescriptionAreBlankThenAddButtonShouldBeDisabled() {
         JTextComponentFixture nameField = window.textBox("nameField");
         JTextComponentFixture descriptionField = window.textBox("descriptionField");
@@ -98,7 +100,7 @@ class CategoryPanelTest {
         window.button(JButtonMatcher.withName("addButton")).requireDisabled();
     }
 
-    @Test
+    @Test @GUITest
     void testStatusUpdateAfterAddingCategory() {
         execute(() -> categoryView.setStatus("Category added successfully"));
         JLabelFixture statusLabel = window.label("statusLabel");
@@ -112,7 +114,7 @@ class CategoryPanelTest {
         return category;
     }
 
-    @Test
+    @Test @GUITest
     void testShownCategoryShouldMatchCategoryAdded() {
         Category category = addCategoryToTable();
         DefaultTableModel model = (DefaultTableModel) categoryView.getCategoryTable().getModel();
@@ -122,7 +124,7 @@ class CategoryPanelTest {
         assertEquals(category.getDescription(), model.getValueAt(0, 2), "Category Description in the table should match the added category");
     }
 
-    @Test
+    @Test @GUITest
     void testDeleteButtonShouldBeEnabledOnlyWhenACategoryIsSelected() {
         assertEquals(-1, window.table("entityTable").target().getSelectedRow());
         window.button("deleteButton").requireDisabled();
@@ -138,7 +140,7 @@ class CategoryPanelTest {
         window.button("deleteButton").requireDisabled();
     }
 
-    @Test
+    @Test @GUITest
     void testDeleteButtonShouldRemoveCategoryFromTable() {
         addCategoryToTable();
         JTableFixture tableFixture = window.table("entityTable");
@@ -152,7 +154,7 @@ class CategoryPanelTest {
         tableFixture.requireRowCount(0);
     }
 
-    @Test
+    @Test @GUITest
     void testClearFormShouldClearTextFields() {
         JTextComponentFixture nameField = window.textBox("nameField");
         JTextComponentFixture descriptionField = window.textBox("descriptionField");
@@ -165,7 +167,7 @@ class CategoryPanelTest {
         descriptionField.requireText("");
     }
 
-    @Test
+    @Test @GUITest
     void testAddCategoryShouldDelegateToCategoryController() {
         JTextComponentFixture nameField = window.textBox("nameField");
         JTextComponentFixture descriptionField = window.textBox("descriptionField");
@@ -175,7 +177,7 @@ class CategoryPanelTest {
         verify(categoryController).addCategory();
     }
 
-    @Test
+    @Test @GUITest
     void testDeleteCategoryShouldDelegateToCategoryController() {
         addCategoryToTable();
         execute(() -> categoryView.getCategoryTable().setRowSelectionInterval(0, 0));

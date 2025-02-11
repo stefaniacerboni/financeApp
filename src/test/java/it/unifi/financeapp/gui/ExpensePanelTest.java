@@ -4,6 +4,8 @@ import it.unifi.financeapp.controller.ExpenseController;
 import it.unifi.financeapp.model.Category;
 import it.unifi.financeapp.model.Expense;
 import it.unifi.financeapp.model.User;
+
+import org.assertj.swing.annotation.GUITest;
 import org.assertj.swing.core.matcher.JButtonMatcher;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
@@ -24,6 +26,7 @@ import static org.assertj.swing.edt.GuiActionRunner.execute;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
+@ExtendWith(GUITestExtension.class)
 @ExtendWith(MockitoExtension.class)
 class ExpensePanelTest {
     @Mock
@@ -58,7 +61,7 @@ class ExpensePanelTest {
         }
     }
 
-    @Test
+    @Test @GUITest
     void testInitialConditions() {
         window.textBox("amountField").requireEmpty();
         window.textBox("dateField").requireEmpty();
@@ -67,7 +70,7 @@ class ExpensePanelTest {
         window.table("entityTable").requireRowCount(0);
     }
 
-    @Test
+    @Test @GUITest
     void testTextFieldContentIsMatching() {
         JTextComponentFixture amountField = window.textBox("amountField");
         JTextComponentFixture dateField = window.textBox("dateField");
@@ -85,7 +88,7 @@ class ExpensePanelTest {
 
     }
 
-    @Test
+    @Test @GUITest
     void testEnableAddButtonWhenFieldsAreFilled() {
         window.comboBox("userComboBox").selectItem(0);
         window.comboBox("categoryComboBox").selectItem(0);
@@ -95,7 +98,7 @@ class ExpensePanelTest {
         assertTrue(expenseView.getAddExpenseButton().isEnabled());
     }
 
-    @Test
+    @Test @GUITest
     void testWhenEitherNameOrDescriptionAreBlankThenAddButtonShouldBeDisabled() {
         JTextComponentFixture amountField = window.textBox("amountField");
         JTextComponentFixture dateField = window.textBox("dateField");
@@ -110,7 +113,7 @@ class ExpensePanelTest {
         window.button(JButtonMatcher.withName("addButton")).requireDisabled();
     }
 
-    @Test
+    @Test @GUITest
     void testStatusUpdateAfterAddingCategory() {
         execute(() -> expenseView.setStatus("Expense added successfully"));
         JLabelFixture statusLabel = window.label("statusLabel");
@@ -126,7 +129,7 @@ class ExpensePanelTest {
         return expense;
     }
 
-    @Test
+    @Test @GUITest
     void testShownExpenseShouldMatchExpenseAdded() {
         Expense expense = addExpenseToTable();
         DefaultTableModel model = (DefaultTableModel) expenseView.getExpenseTable().getModel();
@@ -138,7 +141,7 @@ class ExpensePanelTest {
         assertEquals(expense.getDate(), model.getValueAt(0, 4), "Expense date name in the table should match the added expense");
     }
 
-    @Test
+    @Test @GUITest
     void testDeleteButtonShouldBeEnabledOnlyWhenAnExpenseIsSelected() {
         addExpenseToTable();
         // Select the first row and assert that the delete button is enabled
@@ -152,7 +155,7 @@ class ExpensePanelTest {
         assertFalse(expenseView.getDeleteExpenseButton().isEnabled());
     }
 
-    @Test
+    @Test @GUITest
     void testDeleteButtonShouldRemoveExpenseFromTable() {
         addExpenseToTable();
         JTableFixture tableFixture = window.table("entityTable");
@@ -165,7 +168,7 @@ class ExpensePanelTest {
         tableFixture.requireRowCount(0);
     }
 
-    @Test
+    @Test @GUITest
     void testClearFormShouldClearTextFields() {
         JTextComponentFixture amountField = window.textBox("amountField");
         JTextComponentFixture dateField = window.textBox("dateField");
@@ -179,7 +182,7 @@ class ExpensePanelTest {
     }
 
 
-    @Test
+    @Test @GUITest
     void testAddExpenseShouldDelegateToExpenseController() {
         JTextComponentFixture amountField = window.textBox("amountField");
         JTextComponentFixture dateField = window.textBox("dateField");
@@ -189,7 +192,7 @@ class ExpensePanelTest {
         verify(expenseController).addExpense();
     }
 
-    @Test
+    @Test @GUITest
     void testDeleteExpenseShouldDelegateToExpenseController() {
         addExpenseToTable();
         execute(() -> expenseView.getExpenseTable().setRowSelectionInterval(0, 0));
