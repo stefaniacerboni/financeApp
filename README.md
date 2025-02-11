@@ -32,6 +32,7 @@ What you need to install the software:
 - Java JDK 11
 - Maven
 - MySQL Server
+- Docker Desktop 
 
 ### Installing
 
