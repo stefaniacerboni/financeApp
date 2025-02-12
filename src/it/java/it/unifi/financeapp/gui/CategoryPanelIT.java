@@ -1,27 +1,31 @@
 package it.unifi.financeapp.gui;
 
-import it.unifi.financeapp.controller.CategoryController;
-import it.unifi.financeapp.repository.CategoryRepository;
-import it.unifi.financeapp.repository.CategoryRepositoryImpl;
-import it.unifi.financeapp.service.CategoryService;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.assertj.swing.annotation.GUITest;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.assertj.swing.annotation.GUITest;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
+import it.unifi.financeapp.controller.CategoryController;
+import it.unifi.financeapp.repository.CategoryRepository;
+import it.unifi.financeapp.repository.CategoryRepositoryImpl;
+import it.unifi.financeapp.service.CategoryService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 
 @ExtendWith(GUITestExtension.class)
 @Testcontainers
@@ -90,7 +94,7 @@ class CategoryPanelIT {
         assertTrue(categoryView.getCategoryTable().getModel().getRowCount() > 0, "Table should have one category added.");
         assertEquals("New Category", categoryView.getCategoryTable().getModel().getValueAt(0, 1), "The category name should match.");
     }
-
+    
     @Test @GUITest
     void testDeleteCategoryButtonFunctionality() {
         // Prepare the view with one category

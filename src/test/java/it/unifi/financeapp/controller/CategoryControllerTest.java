@@ -11,10 +11,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import java.util.concurrent.TimeUnit;
 
 import static org.mockito.Mockito.*;
+import static org.awaitility.Awaitility.*;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryControllerTest {
@@ -73,6 +79,23 @@ class CategoryControllerTest {
         verify(categoryView).setStatus("Failed to add category.");
     }
 
+    @Test
+    void testNewCategoryConcurrent() {
+    	List<Category> categories = new ArrayList<>();
+    	Category category = new Category("Name", "Description");
+    	doAnswer(invocation -> {
+    		categories.add(category);
+    		return null;
+    	}).when(categoryService).addCategory(any(Category.class));
+        when(categoryView.getName()).thenReturn("Name");
+        when(categoryView.getDescription()).thenReturn("Description");
+    	List<Thread> threads = IntStream.range(0, 10)
+    			.mapToObj(i-> new Thread(() -> controller.addCategory()))
+    			.peek(t -> t.start())
+    			.collect(Collectors.toList());
+    	await().atMost(10, TimeUnit.SECONDS).until(() -> threads.stream().noneMatch(t -> t.isAlive()));    
+    }
+    
     @Test
     void testNotDeleteIfNoCategorySelected() {
         when(categoryView.getSelectedCategoryIndex()).thenReturn(-1);

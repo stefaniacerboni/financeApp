@@ -1,9 +1,23 @@
 package it.unifi.financeapp.controller;
 
-import it.unifi.financeapp.gui.UserView;
-import it.unifi.financeapp.model.User;
-import it.unifi.financeapp.service.UserService;
-import it.unifi.financeapp.service.exceptions.InvalidUserException;
+import static org.awaitility.Awaitility.await;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,10 +25,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static org.mockito.Mockito.*;
+import it.unifi.financeapp.gui.UserView;
+import it.unifi.financeapp.model.User;
+import it.unifi.financeapp.service.UserService;
+import it.unifi.financeapp.service.exceptions.InvalidUserException;
 
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
@@ -75,6 +89,25 @@ class UserControllerTest {
         controller.addUser();
 
         verify(userView).setStatus("Failed to add user.");
+    }
+    
+    @Test
+    void testNewUserConcurrent() {
+    	List<User> users = new ArrayList<>();
+    	User user = new User("Username", "Name", "Surname", "Email");
+    	doAnswer(invocation -> {
+    		users.add(user);
+    		return null;
+    	}).when(userService).addUser(any(User.class));
+        when(userView.getUsername()).thenReturn("Username");
+        when(userView.getName()).thenReturn("Name");
+        when(userView.getSurname()).thenReturn("Surname");
+        when(userView.getEmail()).thenReturn("Email");
+    	List<Thread> threads = IntStream.range(0, 10)
+    			.mapToObj(i-> new Thread(() -> controller.addUser()))
+    			.peek(t -> t.start())
+    			.collect(Collectors.toList());
+    	await().atMost(10, TimeUnit.SECONDS).until(() -> threads.stream().noneMatch(t -> t.isAlive()));    
     }
 
     @Test

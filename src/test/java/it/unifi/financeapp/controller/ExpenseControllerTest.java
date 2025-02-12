@@ -15,9 +15,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.swing.*;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import static org.awaitility.Awaitility.await;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -99,6 +106,29 @@ class ExpenseControllerTest {
         controller.addExpense();
 
         verify(expenseView).setStatus("Failed to add expense.");
+    }
+    
+    @Test
+    void testNewExpenseConcurrent() {
+        User user = new User("JohnDoe", "John", "Doe", "john.doe@example.com");
+        Category category = new Category("Travel", "Travel expenses");
+    	List<Expense> expenses = new ArrayList<>();
+        Expense expense = new Expense(category, user, 100L, "2024-01-01");
+    	doAnswer(invocation -> {
+    		expenses.add(expense);
+    		return null;
+    	}).when(expenseService).addExpense(any(Expense.class));
+        when(expenseView.getUserComboBox()).thenReturn(userComboBox);
+        when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
+        when(expenseView.getUserComboBox().getSelectedItem()).thenReturn(user);
+        when(expenseView.getCategoryComboBox().getSelectedItem()).thenReturn(category);
+        when(expenseView.getAmount()).thenReturn("100");
+        when(expenseView.getDate()).thenReturn("2024-01-01");
+    	List<Thread> threads = IntStream.range(0, 10)
+    			.mapToObj(i-> new Thread(() -> controller.addExpense()))
+    			.peek(t -> t.start())
+    			.collect(Collectors.toList());
+    	await().atMost(10, TimeUnit.SECONDS).until(() -> threads.stream().noneMatch(t -> t.isAlive()));    
     }
 
     @Test
