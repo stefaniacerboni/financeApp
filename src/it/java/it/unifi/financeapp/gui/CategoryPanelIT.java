@@ -1,12 +1,15 @@
 package it.unifi.financeapp.gui;
 
+import static org.assertj.swing.edt.GuiActionRunner.execute;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.swing.JLabel;
+import javax.swing.table.TableModel;
 
 import org.assertj.swing.annotation.GUITest;
 import org.junit.jupiter.api.AfterAll;
@@ -41,6 +44,8 @@ class CategoryPanelIT {
     CategoryPanel categoryView;
     CategoryService categoryService;
     CategoryController categoryController;
+    private String CATEGORY_NAME = "New Category";
+    private String CATEGORY_DESCRIPTION = "New Description";
 
     @BeforeAll
     static void setUpTestClasses() {
@@ -79,8 +84,8 @@ class CategoryPanelIT {
     }
 
     private void addCategory() {
-        categoryView.setName("New Category");
-        categoryView.setDescription("New Description");
+        categoryView.setName(CATEGORY_NAME);
+        categoryView.setDescription(CATEGORY_DESCRIPTION);
 
         ActionEvent e = new ActionEvent(categoryView.getAddCategoryButton(), ActionEvent.ACTION_PERFORMED, null);
         for (ActionListener al : categoryView.getAddCategoryButton().getActionListeners()) {
@@ -90,9 +95,28 @@ class CategoryPanelIT {
 
     @Test @GUITest
     void testAddCategoryButtonFunctionality() {
+        TableModel model = categoryView.getCategoryTable().getModel();
+        assertEquals(0, model.getRowCount(), "Table should have zero rows before adding a category");
         addCategory();
-        assertTrue(categoryView.getCategoryTable().getModel().getRowCount() > 0, "Table should have one category added.");
-        assertEquals("New Category", categoryView.getCategoryTable().getModel().getValueAt(0, 1), "The category name should match.");
+        assertEquals(1, model.getRowCount(), "Table should have one row after adding a category");
+    }
+    
+    @Test @GUITest
+    void testStatusUpdateAfterAddingCategory() {
+        JLabel statusLabel = categoryView.statusLabel;
+        assertEquals(" ", statusLabel.getText());
+        addCategory();
+        execute(() -> categoryView.setStatus("Category added successfully"));
+        assertEquals("Category added successfully", statusLabel.getText());
+    }
+    
+    @Test @GUITest
+    void testShownCategoryShouldMatchCategoryAdded() {
+        addCategory();
+        TableModel model = categoryView.getCategoryTable().getModel();
+        assertEquals(1, model.getRowCount(), "Table should have one row after adding a category");
+        assertEquals(CATEGORY_NAME, model.getValueAt(0, 1), "Category name in the table should match the added category");
+        assertEquals(CATEGORY_DESCRIPTION, model.getValueAt(0, 2), "Category Description in the table should match the added category");
     }
     
     @Test @GUITest

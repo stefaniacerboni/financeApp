@@ -35,12 +35,12 @@ public class ExpensePanel extends BasePanel implements ExpenseView {
 
         formPanel.add(new JLabel("Amount:"));
         amountField = new JTextField();
-        amountField.setName("amountField");
+        amountField.setName("Amount");
         formPanel.add(amountField);
 
         formPanel.add(new JLabel("Date (yyyy-mm-dd):"));
         dateField = new JTextField();
-        dateField.setName("dateField");
+        dateField.setName("Date");
         formPanel.add(dateField);
 
         addButton = createAddButton("Expense");

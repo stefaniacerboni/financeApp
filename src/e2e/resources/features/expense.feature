@@ -6,8 +6,8 @@ Feature: Manage Expenses
     And I am on the Expense Management page
     When I select the first user
     And I select the first category
-    And I enter "100" into the "amountField" field
-    And I enter "2024-09-05" into the "dateField" field
+    And I enter "100" into the "Amount" field
+    And I enter "2024-09-05" into the "Date" field
     And I click the "Add Expense" button
     Then I should see "john.doe" in the list
     And I should see the amount of the expense equals to "100.0"

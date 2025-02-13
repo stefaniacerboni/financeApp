@@ -1,30 +1,42 @@
 package it.unifi.financeapp.gui;
 
-import it.unifi.financeapp.controller.ExpenseController;
-import it.unifi.financeapp.model.Category;
-import it.unifi.financeapp.model.User;
-import it.unifi.financeapp.repository.*;
-import it.unifi.financeapp.service.CategoryService;
-import it.unifi.financeapp.service.ExpenseService;
-import it.unifi.financeapp.service.UserService;
+import static org.assertj.swing.edt.GuiActionRunner.execute;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.assertj.swing.annotation.GUITest;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import javax.swing.JLabel;
+import javax.swing.table.TableModel;
+
+import org.assertj.swing.annotation.GUITest;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
+import it.unifi.financeapp.controller.ExpenseController;
+import it.unifi.financeapp.model.Category;
+import it.unifi.financeapp.model.User;
+import it.unifi.financeapp.repository.CategoryRepository;
+import it.unifi.financeapp.repository.CategoryRepositoryImpl;
+import it.unifi.financeapp.repository.ExpenseRepository;
+import it.unifi.financeapp.repository.ExpenseRepositoryImpl;
+import it.unifi.financeapp.repository.UserRepository;
+import it.unifi.financeapp.repository.UserRepositoryImpl;
+import it.unifi.financeapp.service.CategoryService;
+import it.unifi.financeapp.service.ExpenseService;
+import it.unifi.financeapp.service.UserService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 
 @ExtendWith(GUITestExtension.class)
 @Testcontainers
@@ -41,6 +53,11 @@ class ExpensePanelIT {
     UserService userService;
     CategoryService categoryService;
     ExpenseController expenseController;
+    
+    private Category EXPENSE_CATEGORY = new Category("Category Name", "Category Description");
+    private User EXPENSE_USER = new User("Test Username", "Test User Email");
+    private double EXPENSE_AMOUNT = 50.0;
+    private String EXPENSE_DATE = "2024-09-05";
 
     @BeforeAll
     static void setUpTestClasses() {
@@ -75,12 +92,12 @@ class ExpensePanelIT {
         CategoryRepository categoryRepository = new CategoryRepositoryImpl(em);
         categoryService = new CategoryService(categoryRepository);
         categoryService.deleteAll();
-        categoryService.addCategory(new Category("Category Name", "Category Description"));
+        categoryService.addCategory(EXPENSE_CATEGORY);
 
         UserRepository userRepository = new UserRepositoryImpl(em);
         userService = new UserService(userRepository);
         userService.deleteAll();
-        userService.addUser(new User("Test Username", "Test User Email"));
+        userService.addUser(EXPENSE_USER);
 
         expenseView = new ExpensePanel();
         expenseController = new ExpenseController(expenseService, categoryService, userService, expenseView);
@@ -93,8 +110,8 @@ class ExpensePanelIT {
         // Setting text to inputs
         expenseView.getUserComboBox().setSelectedIndex(0);
         expenseView.getCategoryComboBox().setSelectedIndex(0);
-        expenseView.setAmount("50");
-        expenseView.setDate("2024-09-05");
+        expenseView.setAmount(String.valueOf(EXPENSE_AMOUNT));
+        expenseView.setDate(EXPENSE_DATE);
 
         // Simulating button click
         ActionEvent e = new ActionEvent(expenseView.getAddExpenseButton(), ActionEvent.ACTION_PERFORMED, null);
@@ -105,14 +122,32 @@ class ExpensePanelIT {
 
     @Test @GUITest
     void testAddExpenseButtonFunctionality() {
+        TableModel model = expenseView.getExpenseTable().getModel();
+        assertEquals(0, model.getRowCount(), "Table should have zero rows before adding an expense");
         addExpense();
-        // Assert changes
-        assertTrue(expenseView.getExpenseTable().getModel().getRowCount() > 0, "Table should have one expense added.");
-        assertEquals("Test Username", expenseView.getExpenseTable().getModel().getValueAt(0, 1), "The expense username should match.");
-        assertEquals("Category Name", expenseView.getExpenseTable().getModel().getValueAt(0, 2), "The username should match.");
-        assertEquals(50.0, expenseView.getExpenseTable().getModel().getValueAt(0, 3), "The amount should match.");
-        assertEquals("2024-09-05", expenseView.getExpenseTable().getModel().getValueAt(0, 4), "The date should match.");
+        assertEquals(1, model.getRowCount(), "Table should have one row after adding an expense");
     }
+    
+    @Test @GUITest
+    void testStatusUpdateAfterAddingExpense() {
+        JLabel statusLabel = expenseView.statusLabel;
+        assertEquals(" ", statusLabel.getText());
+        addExpense();
+        execute(() -> expenseView.setStatus("Expense added successfully"));
+        assertEquals("Expense added successfully", statusLabel.getText());
+    }
+    
+    @Test @GUITest
+    void testShownExpenseShouldMatchExpenseAdded() {
+    	addExpense();
+        TableModel model = expenseView.getExpenseTable().getModel();
+        assertEquals(1, model.getRowCount(), "Table should have one row after adding an expense");
+        assertEquals(EXPENSE_USER.getUsername(), model.getValueAt(0, 1), "Expense user's username in the table should match the added expense");
+        assertEquals(EXPENSE_CATEGORY.getName(), model.getValueAt(0, 2), "Expense category's name in the table should match the added expense");
+        assertEquals(EXPENSE_AMOUNT, model.getValueAt(0, 3), "Expense amount in the table should match the added expense");
+        assertEquals(EXPENSE_DATE, model.getValueAt(0, 4), "Expense date in the table should match the added expense");
+    }
+    
 
     @Test @GUITest
     void testDeleteExpenseButtonFunctionality() {

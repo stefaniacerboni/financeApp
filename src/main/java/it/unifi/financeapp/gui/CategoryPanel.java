@@ -20,12 +20,12 @@ public class CategoryPanel extends BasePanel implements CategoryView {
         JPanel formPanel = new JPanel(new GridLayout(3, 2));
         formPanel.add(new JLabel("Name:"));
         nameField = new JTextField();
-        nameField.setName("nameField");
+        nameField.setName("Name");
         formPanel.add(nameField);
 
         formPanel.add(new JLabel("Description:"));
         descriptionField = new JTextField();
-        descriptionField.setName("descriptionField");
+        descriptionField.setName("Description");
         formPanel.add(descriptionField);
 
         addButton = createAddButton("Category");

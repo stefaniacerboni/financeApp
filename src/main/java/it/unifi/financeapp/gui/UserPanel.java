@@ -22,22 +22,22 @@ public class UserPanel extends BasePanel implements UserView {
         JPanel formPanel = new JPanel(new GridLayout(5, 2));
         formPanel.add(new JLabel("Username:"));
         usernameField = new JTextField();
-        usernameField.setName("usernameField");
+        usernameField.setName("Username");
         formPanel.add(usernameField);
 
         formPanel.add(new JLabel("Name:"));
         nameField = new JTextField();
-        nameField.setName("nameField");
+        nameField.setName("Name");
         formPanel.add(nameField);
 
         formPanel.add(new JLabel("Surname:"));
         surnameField = new JTextField();
-        surnameField.setName("surnameField");
+        surnameField.setName("Surname");
         formPanel.add(surnameField);
 
         formPanel.add(new JLabel("Email:"));
         emailField = new JTextField();
-        emailField.setName("emailField");
+        emailField.setName("Email");
         formPanel.add(emailField);
 
         addButton = createAddButton("User");

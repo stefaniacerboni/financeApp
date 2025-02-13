@@ -3,8 +3,8 @@ Feature: Manage Categories
 
   Scenario: Add a new category
     Given I am on the Category Management page
-    When I enter "Travel" into the "nameField" field
-    And I enter "Expenses for travel" into the "descriptionField" field
+    When I enter "Travel" into the "Name" field
+    And I enter "Expenses for travel" into the "Description" field
     And I click the "Add Category" button
     Then I should see "Travel" in the list
 

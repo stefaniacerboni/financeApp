@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,117 +34,124 @@ import it.unifi.financeapp.service.exceptions.InvalidUserException;
 
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
-    @Mock
-    private UserService userService;
-    @Mock
-    private UserView userView;
+	@Mock
+	private UserService userService;
+	@Mock
+	private UserView userView;
 
-    @InjectMocks
-    private UserController controller;
+	@InjectMocks
+	private UserController controller;
 
-    @BeforeEach
-    void setUp() {
-        controller = new UserController(userService, userView);
-        controller.initView();
-    }
+	@BeforeEach
+	void setUp() {
+		controller = new UserController(userService, userView);
+		controller.initView();
+	}
 
-    @Test
-    void shouldInitializeView() {
-        verify(userService).getAllUsers();  // loadUsers() is called in initView()
-    }
+	@Nested
+	@DisplayName("Happy Cases")
+	class HappyCases {
 
-    @Test
-    void testLoadUsersOnInit() {
-        List<User> users = Arrays.asList(new User("Username", "Email"), new User("Username2", "Email2"));
-        when(userService.getAllUsers()).thenReturn(users);
+		@Test
+		void shouldInitializeView() {
+			verify(userService).getAllUsers(); // loadUsers() is called in initView()
+		}
 
-        controller.loadUsers();
+		@Test
+		void testLoadUsersOnInit() {
+			List<User> users = Arrays.asList(new User("Username", "Email"), new User("Username2", "Email2"));
+			when(userService.getAllUsers()).thenReturn(users);
 
-        verify(userView, times(users.size())).addUserToTable(any(User.class));
-    }
+			controller.loadUsers();
 
-    @Test
-    void testAddUserSuccessfully() {
-        when(userView.getUsername()).thenReturn("JohnDoe");
-        when(userView.getName()).thenReturn("John");
-        when(userView.getSurname()).thenReturn("Doe");
-        when(userView.getEmail()).thenReturn("johndoe@example.com");
-        User newUser = new User("JohnDoe", "John", "Doe", "johndoe@example.com");
-        when(userService.addUser(any(User.class))).thenReturn(newUser);
+			verify(userView, times(users.size())).addUserToTable(any(User.class));
+		}
 
-        controller.addUser();
+		@Test
+		void testAddUserSuccessfully() {
+			when(userView.getUsername()).thenReturn("JohnDoe");
+			when(userView.getName()).thenReturn("John");
+			when(userView.getSurname()).thenReturn("Doe");
+			when(userView.getEmail()).thenReturn("johndoe@example.com");
+			User newUser = new User("JohnDoe", "John", "Doe", "johndoe@example.com");
+			when(userService.addUser(any(User.class))).thenReturn(newUser);
 
-        verify(userService).addUser(newUser);
-        verify(userView).addUserToTable(newUser);
-        verify(userView).setStatus("User added successfully.");
-        verify(userView).clearForm();
-    }
+			controller.addUser();
 
-    @Test
-    void testAddUserFailure() {
-        when(userView.getUsername()).thenReturn("JohnDoe");
-        when(userView.getName()).thenReturn("John");
-        when(userView.getSurname()).thenReturn("Doe");
-        when(userView.getEmail()).thenReturn("johndoe@example.com");
-        when(userService.addUser(any(User.class))).thenReturn(null);
+			verify(userService).addUser(newUser);
+			verify(userView).addUserToTable(newUser);
+			verify(userView).setStatus("User added successfully.");
+			verify(userView).clearForm();
+		}
 
-        controller.addUser();
+		@Test
+		void testNewUserConcurrent() {
+			List<User> users = new ArrayList<>();
+			User user = new User("Username", "Name", "Surname", "Email");
+			doAnswer(invocation -> {
+				users.add(user);
+				return null;
+			}).when(userService).addUser(any(User.class));
+			when(userView.getUsername()).thenReturn("Username");
+			when(userView.getName()).thenReturn("Name");
+			when(userView.getSurname()).thenReturn("Surname");
+			when(userView.getEmail()).thenReturn("Email");
+			List<Thread> threads = IntStream.range(0, 10).mapToObj(i -> new Thread(() -> controller.addUser()))
+					.peek(t -> t.start()).collect(Collectors.toList());
+			await().atMost(10, TimeUnit.SECONDS).until(() -> threads.stream().noneMatch(t -> t.isAlive()));
+		}
 
-        verify(userView).setStatus("Failed to add user.");
-    }
-    
-    @Test
-    void testNewUserConcurrent() {
-    	List<User> users = new ArrayList<>();
-    	User user = new User("Username", "Name", "Surname", "Email");
-    	doAnswer(invocation -> {
-    		users.add(user);
-    		return null;
-    	}).when(userService).addUser(any(User.class));
-        when(userView.getUsername()).thenReturn("Username");
-        when(userView.getName()).thenReturn("Name");
-        when(userView.getSurname()).thenReturn("Surname");
-        when(userView.getEmail()).thenReturn("Email");
-    	List<Thread> threads = IntStream.range(0, 10)
-    			.mapToObj(i-> new Thread(() -> controller.addUser()))
-    			.peek(t -> t.start())
-    			.collect(Collectors.toList());
-    	await().atMost(10, TimeUnit.SECONDS).until(() -> threads.stream().noneMatch(t -> t.isAlive()));    
-    }
+		@Test
+		void testDeleteSelectedUser() {
+			when(userView.getSelectedUserIndex()).thenReturn(0);
+			when(userView.getUserIdFromTable(0)).thenReturn(1L);
 
-    @Test
-    void testNotDeleteIfNoUserSelected() {
-        when(userView.getSelectedUserIndex()).thenReturn(-1);
+			controller.deleteUser();
 
-        controller.deleteUser();
+			verify(userService).deleteUser(1L);
+			verify(userView).removeUserFromTable(0);
+			verify(userView).setStatus("User deleted successfully.");
+		}
+	}
 
-        verify(userView, never()).getUserIdFromTable(anyInt());
-        verify(userService, never()).deleteUser(anyLong());
-        verify(userView).setStatus("No user selected for deletion.");
-    }
+	@Nested
+	@DisplayName("Bad Cases")
+	class BadCases {
+		@Test
+		void testAddUserFailure() {
+			when(userView.getUsername()).thenReturn("JohnDoe");
+			when(userView.getName()).thenReturn("John");
+			when(userView.getSurname()).thenReturn("Doe");
+			when(userView.getEmail()).thenReturn("johndoe@example.com");
+			when(userService.addUser(any(User.class))).thenReturn(null);
 
-    @Test
-    void testNotDeleteIfUserHasDependencies() {
-        Long id = 1L;
-        when(userView.getSelectedUserIndex()).thenReturn(0);
-        when(userView.getUserIdFromTable(0)).thenReturn(id);
-        doThrow(new InvalidUserException("Cannot delete user with existing expenses"))
-                .when(userService).deleteUser(id);
+			controller.addUser();
 
-        controller.deleteUser();
+			verify(userView).setStatus("Failed to add user.");
+		}
 
-        verify(userView).setStatus("Cannot delete user with existing expenses");
-    }
+		@Test
+		void testNotDeleteIfNoUserSelected() {
+			when(userView.getSelectedUserIndex()).thenReturn(-1);
 
-    @Test
-    void testDeleteSelectedUser() {
-        when(userView.getSelectedUserIndex()).thenReturn(0);
-        when(userView.getUserIdFromTable(0)).thenReturn(1L);
+			controller.deleteUser();
 
-        controller.deleteUser();
+			verify(userView, never()).getUserIdFromTable(anyInt());
+			verify(userService, never()).deleteUser(anyLong());
+			verify(userView).setStatus("No user selected for deletion.");
+		}
 
-        verify(userService).deleteUser(1L);
-        verify(userView).removeUserFromTable(0);
-        verify(userView).setStatus("User deleted successfully.");
-    }
+		@Test
+		void testNotDeleteIfUserHasDependencies() {
+			Long id = 1L;
+			when(userView.getSelectedUserIndex()).thenReturn(0);
+			when(userView.getUserIdFromTable(0)).thenReturn(id);
+			doThrow(new InvalidUserException("Cannot delete user with existing expenses")).when(userService)
+					.deleteUser(id);
+
+			controller.deleteUser();
+
+			verify(userView).setStatus("Cannot delete user with existing expenses");
+		}
+	}
 }

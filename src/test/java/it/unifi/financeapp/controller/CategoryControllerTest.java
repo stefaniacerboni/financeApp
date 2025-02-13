@@ -5,6 +5,8 @@ import it.unifi.financeapp.model.Category;
 import it.unifi.financeapp.service.CategoryService;
 import it.unifi.financeapp.service.exceptions.InvalidCategoryException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,111 +26,120 @@ import static org.awaitility.Awaitility.*;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryControllerTest {
-    @Mock
-    private CategoryService categoryService;
-    @Mock
-    private CategoryView categoryView;
+	@Mock
+	private CategoryService categoryService;
+	@Mock
+	private CategoryView categoryView;
 
-    @InjectMocks
-    private CategoryController controller;
+	@InjectMocks
+	private CategoryController controller;
 
-    @BeforeEach
-    void setUp() {
-        controller = new CategoryController(categoryService, categoryView);
-        controller.initView();
-    }
+	@BeforeEach
+	void setUp() {
+		controller = new CategoryController(categoryService, categoryView);
+		controller.initView();
+	}
 
-    @Test
-    void shouldInitializeView() {
-        verify(categoryService).getAllCategories();  // loadCategories() is called in initView()
-    }
+	@Nested
+	@DisplayName("Happy Cases")
+	class HappyCases {
 
-    @Test
-    void testLoadCategoriesOnInit() {
-        List<Category> mockCategories = Arrays.asList(new Category("1", "Food"), new Category("2", "Utilities"));
-        when(categoryService.getAllCategories()).thenReturn(mockCategories);
+		@Test
+		void shouldInitializeView() {
+			verify(categoryService).getAllCategories(); // loadCategories() is called in initView()
+		}
 
-        controller.initView();
+		@Test
+		void testLoadCategoriesOnInit() {
+			List<Category> mockCategories = Arrays.asList(new Category("1", "Food"), new Category("2", "Utilities"));
+			when(categoryService.getAllCategories()).thenReturn(mockCategories);
 
-        verify(categoryView, times(mockCategories.size())).addCategoryToTable(any(Category.class));
-    }
+			controller.initView();
 
-    @Test
-    void testAddCategorySuccessfully() {
-        when(categoryView.getName()).thenReturn("New Category");
-        when(categoryView.getDescription()).thenReturn("New Description");
-        Category newCategory = new Category("New Category", "New Description");
-        when(categoryService.addCategory(any(Category.class))).thenReturn(newCategory);
+			verify(categoryView, times(mockCategories.size())).addCategoryToTable(any(Category.class));
+		}
 
-        controller.addCategory();
+		@Test
+		void testAddCategorySuccessfully() {
+			when(categoryView.getName()).thenReturn("New Category");
+			when(categoryView.getDescription()).thenReturn("New Description");
+			Category newCategory = new Category("New Category", "New Description");
+			when(categoryService.addCategory(any(Category.class))).thenReturn(newCategory);
 
-        verify(categoryService).addCategory(newCategory);
-        verify(categoryView).addCategoryToTable(newCategory);
-        verify(categoryView).setStatus("Category added successfully.");
-        verify(categoryView).clearForm();
-    }
+			controller.addCategory();
 
-    @Test
-    void testAddCategoryFailure() {
-        when(categoryView.getName()).thenReturn("New Category");
-        when(categoryView.getDescription()).thenReturn("New Description");
-        when(categoryService.addCategory(any(Category.class))).thenReturn(null);
+			verify(categoryService).addCategory(newCategory);
+			verify(categoryView).addCategoryToTable(newCategory);
+			verify(categoryView).setStatus("Category added successfully.");
+			verify(categoryView).clearForm();
+		}
 
-        controller.addCategory();
+		@Test
+		void testNewCategoryConcurrent() {
+			List<Category> categories = new ArrayList<>();
+			Category category = new Category("Name", "Description");
+			doAnswer(invocation -> {
+				categories.add(category);
+				return null;
+			}).when(categoryService).addCategory(any(Category.class));
+			when(categoryView.getName()).thenReturn("Name");
+			when(categoryView.getDescription()).thenReturn("Description");
+			List<Thread> threads = IntStream.range(0, 10).mapToObj(i -> new Thread(() -> controller.addCategory()))
+					.peek(t -> t.start()).collect(Collectors.toList());
+			await().atMost(10, TimeUnit.SECONDS).until(() -> threads.stream().noneMatch(t -> t.isAlive()));
+		}
 
-        verify(categoryView).setStatus("Failed to add category.");
-    }
+		@Test
+		void testDeleteSelectedCategory() {
+			when(categoryView.getSelectedCategoryIndex()).thenReturn(0);
+			when(categoryView.getCategoryIdFromTable(0)).thenReturn(1L);
 
-    @Test
-    void testNewCategoryConcurrent() {
-    	List<Category> categories = new ArrayList<>();
-    	Category category = new Category("Name", "Description");
-    	doAnswer(invocation -> {
-    		categories.add(category);
-    		return null;
-    	}).when(categoryService).addCategory(any(Category.class));
-        when(categoryView.getName()).thenReturn("Name");
-        when(categoryView.getDescription()).thenReturn("Description");
-    	List<Thread> threads = IntStream.range(0, 10)
-    			.mapToObj(i-> new Thread(() -> controller.addCategory()))
-    			.peek(t -> t.start())
-    			.collect(Collectors.toList());
-    	await().atMost(10, TimeUnit.SECONDS).until(() -> threads.stream().noneMatch(t -> t.isAlive()));    
-    }
-    
-    @Test
-    void testNotDeleteIfNoCategorySelected() {
-        when(categoryView.getSelectedCategoryIndex()).thenReturn(-1);
+			controller.deleteCategory();
 
-        controller.deleteCategory();
+			verify(categoryService).deleteCategory(1L);
+			verify(categoryView).removeCategoryFromTable(0);
+			verify(categoryView).setStatus("Category deleted successfully.");
+		}
+	}
 
-        verify(categoryView, never()).getCategoryIdFromTable(anyInt());
-        verify(categoryService, never()).deleteCategory(anyLong());
-        verify(categoryView).setStatus("No category selected for deletion.");
-    }
+	@Nested
+	@DisplayName("Bad Cases")
+	class BadCases {
 
-    @Test
-    void testNotDeleteIfCategoryHasDependencies() {
-        Long id = 1L;
-        when(categoryView.getSelectedCategoryIndex()).thenReturn(0);
-        when(categoryView.getCategoryIdFromTable(0)).thenReturn(id);
-        doThrow(new InvalidCategoryException("Cannot delete category with existing expenses"))
-                .when(categoryService).deleteCategory(id);
+		@Test
+		void testNotDeleteIfNoCategorySelected() {
+			when(categoryView.getSelectedCategoryIndex()).thenReturn(-1);
 
-        controller.deleteCategory();
+			controller.deleteCategory();
 
-        verify(categoryView).setStatus("Cannot delete category with existing expenses");
-    }
+			verify(categoryView, never()).getCategoryIdFromTable(anyInt());
+			verify(categoryService, never()).deleteCategory(anyLong());
+			verify(categoryView).setStatus("No category selected for deletion.");
+		}
 
-    @Test
-    void testDeleteSelectedCategory() {
-        when(categoryView.getSelectedCategoryIndex()).thenReturn(0);
-        when(categoryView.getCategoryIdFromTable(0)).thenReturn(1L);
+		@Test
+		void testAddCategoryFailure() {
+			when(categoryView.getName()).thenReturn("New Category");
+			when(categoryView.getDescription()).thenReturn("New Description");
+			when(categoryService.addCategory(any(Category.class))).thenReturn(null);
 
-        controller.deleteCategory();
+			controller.addCategory();
 
-        verify(categoryService).deleteCategory(1L);
-        verify(categoryView).removeCategoryFromTable(0);
-        verify(categoryView).setStatus("Category deleted successfully.");
-    }
+			verify(categoryView).setStatus("Failed to add category.");
+		}
+
+		@Test
+		void testNotDeleteIfCategoryHasDependencies() {
+			Long id = 1L;
+			when(categoryView.getSelectedCategoryIndex()).thenReturn(0);
+			when(categoryView.getCategoryIdFromTable(0)).thenReturn(id);
+			doThrow(new InvalidCategoryException("Cannot delete category with existing expenses")).when(categoryService)
+					.deleteCategory(id);
+
+			controller.deleteCategory();
+
+			verify(categoryView).setStatus("Cannot delete category with existing expenses");
+		}
+	}
+
 }

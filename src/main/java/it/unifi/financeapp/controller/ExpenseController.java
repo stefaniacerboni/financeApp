@@ -38,7 +38,7 @@ public class ExpenseController {
     public void addExpense() {
         User user = (User) expenseView.getUserComboBox().getSelectedItem();
         Category category = (Category) expenseView.getCategoryComboBox().getSelectedItem();
-        Expense expense = new Expense(category, user, Long.parseLong(expenseView.getAmount()), expenseView.getDate());
+        Expense expense = new Expense(category, user, Double.parseDouble(expenseView.getAmount()), expenseView.getDate());
         Expense result = expenseService.addExpense(expense);
         if (result != null) {
             expenseView.addExpenseToTable(result);

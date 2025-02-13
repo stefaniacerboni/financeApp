@@ -2,11 +2,13 @@ Feature: Manage Users
 
   Scenario: Add a new user
     Given I am on the User Management page
-    When I enter "Username" into the "usernameField" field
-    And I enter "Email" into the "emailField" field
+    When I enter "Username" into the "Username" field
+    And I enter "Name" into the "Name" field
+    And I enter "Surname" into the "Surname" field
+    And I enter "Email" into the "Email" field
     And I click the "Add User" button
     Then I should see "Username" in the list
-
+    
   Scenario: Delete a user
     Given I am on the User Management page
     And the user "Username" exists

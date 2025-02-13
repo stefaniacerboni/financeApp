@@ -60,10 +60,10 @@ class UserPanelTest {
 
     @Test @GUITest
     void testFieldContentIsMatching() {
-        JTextComponentFixture usernameField = window.textBox("usernameField");
-        JTextComponentFixture nameField = window.textBox("nameField");
-        JTextComponentFixture surnameField = window.textBox("surnameField");
-        JTextComponentFixture emailField = window.textBox("emailField");
+        JTextComponentFixture usernameField = window.textBox("Username");
+        JTextComponentFixture nameField = window.textBox("Name");
+        JTextComponentFixture surnameField = window.textBox("Surname");
+        JTextComponentFixture emailField = window.textBox("Email");
         assertFalse(userView.getAddUserButton().isEnabled());
         usernameField.setText("Username");
         nameField.setText("Name");
@@ -90,8 +90,8 @@ class UserPanelTest {
 
     @Test @GUITest
     void testWhenUsernameAndEmailAreFilledThenAddButtonShouldBeEnabled() {
-        JTextComponentFixture usernameField = window.textBox("usernameField");
-        JTextComponentFixture emailField = window.textBox("emailField");
+        JTextComponentFixture usernameField = window.textBox("Username");
+        JTextComponentFixture emailField = window.textBox("Email");
         usernameField.setText("Username");
         emailField.setText("Email");
         window.button(JButtonMatcher.withName("addButton")).requireEnabled();
@@ -100,8 +100,8 @@ class UserPanelTest {
 
     @Test @GUITest
     void testWhenEitherUsernameOrEmailAreBlankThenAddButtonShouldBeDisabled() {
-        JTextComponentFixture usernameField = window.textBox("usernameField");
-        JTextComponentFixture emailField = window.textBox("emailField");
+        JTextComponentFixture usernameField = window.textBox("Username");
+        JTextComponentFixture emailField = window.textBox("Email");
         usernameField.setText("Username");
         emailField.setText(" ");
         window.button(JButtonMatcher.withName("addButton")).requireDisabled();
@@ -166,8 +166,8 @@ class UserPanelTest {
 
     @Test @GUITest
     void testClearFormShouldClearTextFields() {
-        JTextComponentFixture usernameField = window.textBox("usernameField");
-        JTextComponentFixture emailField = window.textBox("emailField");
+        JTextComponentFixture usernameField = window.textBox("Username");
+        JTextComponentFixture emailField = window.textBox("Email");
 
         usernameField.setText("Username");
         emailField.setText("Email");
@@ -180,8 +180,8 @@ class UserPanelTest {
 
     @Test @GUITest
     void testAddUserShouldDelegateToUserController() {
-        JTextComponentFixture usernameField = window.textBox("usernameField");
-        JTextComponentFixture emailField = window.textBox("emailField");
+        JTextComponentFixture usernameField = window.textBox("Username");
+        JTextComponentFixture emailField = window.textBox("Email");
         usernameField.setText("Username");
         emailField.setText("Email");
         execute(() -> window.button(JButtonMatcher.withName("addButton")).target().doClick());
