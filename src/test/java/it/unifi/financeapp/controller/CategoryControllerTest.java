@@ -85,7 +85,7 @@ class CategoryControllerTest {
 			when(categoryView.getName()).thenReturn("Name");
 			when(categoryView.getDescription()).thenReturn("Description");
 			List<Thread> threads = IntStream.range(0, 10).mapToObj(i -> new Thread(() -> controller.addCategory()))
-					.peek(t -> t.start()).collect(Collectors.toList());
+					.peek(Thread::start).collect(Collectors.toList());
 			await().atMost(10, TimeUnit.SECONDS).until(() -> threads.stream().noneMatch(t -> t.isAlive()));
 		}
 

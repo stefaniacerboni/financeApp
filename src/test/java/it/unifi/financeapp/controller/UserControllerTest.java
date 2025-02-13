@@ -97,7 +97,7 @@ class UserControllerTest {
 			when(userView.getSurname()).thenReturn("Surname");
 			when(userView.getEmail()).thenReturn("Email");
 			List<Thread> threads = IntStream.range(0, 10).mapToObj(i -> new Thread(() -> controller.addUser()))
-					.peek(t -> t.start()).collect(Collectors.toList());
+					.peek(Thread::start).collect(Collectors.toList());
 			await().atMost(10, TimeUnit.SECONDS).until(() -> threads.stream().noneMatch(t -> t.isAlive()));
 		}
 

@@ -113,7 +113,7 @@ class ExpenseControllerTest {
 			when(expenseView.getAmount()).thenReturn("100");
 			when(expenseView.getDate()).thenReturn("2024-01-01");
 			List<Thread> threads = IntStream.range(0, 10).mapToObj(i -> new Thread(() -> controller.addExpense()))
-					.peek(t -> t.start()).collect(Collectors.toList());
+					.peek(Thread::start).collect(Collectors.toList());
 			await().atMost(10, TimeUnit.SECONDS).until(() -> threads.stream().noneMatch(t -> t.isAlive()));
 		}
 
