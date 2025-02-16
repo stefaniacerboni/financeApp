@@ -210,7 +210,7 @@ class ExpenseServiceTest {
 					() -> expenseService.addExpense(expenseWithEmptyDate));
 			assertEquals("Date is invalid.", exception.getMessage());
 		}
-		
+
 		@Test
 		void testAddExpenseWithInvalidDate() {
 			Expense expenseWithInvalidDate = new Expense(category, user, 20, "invalid");
@@ -222,6 +222,16 @@ class ExpenseServiceTest {
 			exception = assertThrows(InvalidExpenseException.class,
 					() -> expenseService.addExpense(expenseWithInvalidDate));
 			assertEquals("Date is invalid.", exception.getMessage());
+		}
+
+		@Test
+		void testIsValidDateWithNull() {
+			assertFalse(expenseService.isValidDate(null));
+		}
+
+		@Test
+		void testIsValidDateWithEmptyString() {
+			assertFalse(expenseService.isValidDate(""));
 		}
 
 		@Test

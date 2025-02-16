@@ -75,7 +75,7 @@ public class ExpenseService {
 		}
 	}
 
-	private boolean isValidDate(String date) {
+	boolean isValidDate(String date) {
 		if (date == null || date.isEmpty()) {
 			return false;
 		}
