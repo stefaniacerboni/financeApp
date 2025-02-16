@@ -203,12 +203,25 @@ class ExpenseServiceTest {
 			Expense expenseWithEmptyDate = new Expense(category, user, 20, null);
 			Exception exception = assertThrows(InvalidExpenseException.class,
 					() -> expenseService.addExpense(expenseWithEmptyDate));
-			assertEquals("Date cannot be empty.", exception.getMessage());
+			assertEquals("Date is invalid.", exception.getMessage());
 			// Also test for empty string
 			expenseWithEmptyDate.setDate("");
 			exception = assertThrows(InvalidExpenseException.class,
 					() -> expenseService.addExpense(expenseWithEmptyDate));
-			assertEquals("Date cannot be empty.", exception.getMessage());
+			assertEquals("Date is invalid.", exception.getMessage());
+		}
+		
+		@Test
+		void testAddExpenseWithInvalidDate() {
+			Expense expenseWithInvalidDate = new Expense(category, user, 20, "invalid");
+			Exception exception = assertThrows(InvalidExpenseException.class,
+					() -> expenseService.addExpense(expenseWithInvalidDate));
+			assertEquals("Date is invalid.", exception.getMessage());
+			// Also test for dd-mm-yyyy string date
+			expenseWithInvalidDate.setDate("11-01-2021");
+			exception = assertThrows(InvalidExpenseException.class,
+					() -> expenseService.addExpense(expenseWithInvalidDate));
+			assertEquals("Date is invalid.", exception.getMessage());
 		}
 
 		@Test

@@ -6,11 +6,16 @@ import it.unifi.financeapp.service.exceptions.InvalidExpenseException;
 import org.hibernate.service.spi.ServiceException;
 
 import jakarta.persistence.PersistenceException;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 public class ExpenseService {
 
 	private final ExpenseRepository expenseRepository;
+	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	public ExpenseService(ExpenseRepository expenseRepository) {
 		this.expenseRepository = expenseRepository;
@@ -65,8 +70,20 @@ public class ExpenseService {
 		if (expense.getAmount() <= 0) {
 			throw new InvalidExpenseException("Amount must be greater than 0.");
 		}
-		if (expense.getDate() == null || expense.getDate().isEmpty()) {
-			throw new InvalidExpenseException("Date cannot be empty.");
+		if (!isValidDate(expense.getDate())) {
+			throw new InvalidExpenseException("Date is invalid.");
+		}
+	}
+
+	private boolean isValidDate(String date) {
+		if (date == null || date.isEmpty()) {
+			return false;
+		}
+		try {
+			LocalDate.parse(date, DATE_FORMATTER);
+			return true;
+		} catch (DateTimeParseException e) {
+			return false;
 		}
 	}
 }

@@ -9,6 +9,10 @@ import it.unifi.financeapp.service.ExpenseService;
 import it.unifi.financeapp.service.UserService;
 
 import javax.swing.*;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Vector;
 
@@ -38,15 +42,20 @@ public class ExpenseController {
 	public void addExpense() {
 		User user = (User) expenseView.getUserComboBox().getSelectedItem();
 		Category category = (Category) expenseView.getCategoryComboBox().getSelectedItem();
-		Expense expense = new Expense(category, user, Double.parseDouble(expenseView.getAmount()),
-				expenseView.getDate());
-		Expense result = expenseService.addExpense(expense);
-		if (result != null) {
-			expenseView.addExpenseToTable(result);
-			expenseView.setStatus("Expense added successfully.");
-			expenseView.clearForm();
-		} else {
-			expenseView.setStatus("Failed to add expense.");
+		try {
+			Expense expense = new Expense(category, user, Double.parseDouble(expenseView.getAmount()),
+					expenseView.getDate());
+			Expense result = expenseService.addExpense(expense);
+			if (result != null) {
+				expenseView.addExpenseToTable(result);
+				expenseView.setStatus("Expense added successfully.");
+				expenseView.clearForm();
+			} else {
+				expenseView.setStatus("Failed to add expense.");
+			}
+
+		} catch (NumberFormatException ex) {
+			expenseView.setStatus("Failed to add expense: Incorrect Amount.");
 		}
 	}
 
@@ -76,4 +85,5 @@ public class ExpenseController {
 		List<Category> categories = categoryService.getAllCategories();
 		expenseView.getCategoryComboBox().setModel(new DefaultComboBoxModel<>(new Vector<>(categories)));
 	}
+
 }

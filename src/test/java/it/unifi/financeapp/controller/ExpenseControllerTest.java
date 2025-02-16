@@ -186,6 +186,37 @@ class ExpenseControllerTest {
 		}
 
 		@Test
+		void testAddExpenseIncorrectAmount() {
+			User user = new User("JohnDoe", "John", "Doe", "john.doe@example.com");
+			Category category = new Category("Travel", "Travel expenses");
+			when(expenseView.getUserComboBox()).thenReturn(userComboBox);
+			when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
+			when(expenseView.getUserComboBox().getSelectedItem()).thenReturn(user);
+			when(expenseView.getCategoryComboBox().getSelectedItem()).thenReturn(category);
+			when(expenseView.getAmount()).thenReturn("aaaa");
+
+			controller.addExpense();
+
+			verify(expenseView).setStatus("Failed to add expense: Incorrect Amount.");
+		}
+
+		@Test
+		void testAddExpenseIncorrectDate() {
+			User user = new User("JohnDoe", "John", "Doe", "john.doe@example.com");
+			Category category = new Category("Travel", "Travel expenses");
+			when(expenseView.getUserComboBox()).thenReturn(userComboBox);
+			when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
+			when(expenseView.getUserComboBox().getSelectedItem()).thenReturn(user);
+			when(expenseView.getCategoryComboBox().getSelectedItem()).thenReturn(category);
+			when(expenseView.getAmount()).thenReturn("100");
+			when(expenseView.getDate()).thenReturn("aaa");
+
+			controller.addExpense();
+
+			verify(expenseView).setStatus("Failed to add expense.");
+		}
+
+		@Test
 		void testNotDeleteExpenseWhenNoneSelected() {
 			when(expenseView.getSelectedExpenseIndex()).thenReturn(-1);
 
