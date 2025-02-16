@@ -63,7 +63,7 @@ public class UserService {
 		if (user.getUsername() == null) {
 			throw new InvalidUserException("Username must be not null.");
 		}
-		if (user.getUsername().trim().length() == 0) {
+		if (user.getUsername().isEmpty()) {
 			throw new InvalidUserException("Username must be not null.");
 		}
 		if (user.getEmail() == null) {

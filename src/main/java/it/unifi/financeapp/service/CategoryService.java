@@ -62,7 +62,7 @@ public class CategoryService {
 		if (category.getName() == null) {
 			throw new InvalidCategoryException("Name must be not null.");
 		}
-		if (category.getName().trim().length() == 0) {
+		if (category.getName().isEmpty()) {
 			throw new InvalidCategoryException("Name must be not null.");
 		}
 		if (category.getDescription() == null) {
