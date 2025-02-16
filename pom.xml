@@ -261,11 +261,6 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.7</version>
-				<configuration>
-					<excludes>
-						<exclude>**/Main.java</exclude>
-					</excludes>
-				</configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -280,6 +275,11 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<excludes>
+						<exclude>**/Main</exclude>
+					</excludes>
+				</configuration>
 			</plugin>
 
 			<!-- Coveralls plugin -->
