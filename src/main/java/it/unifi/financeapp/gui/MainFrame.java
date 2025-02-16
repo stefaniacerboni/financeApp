@@ -1,16 +1,19 @@
 package it.unifi.financeapp.gui;
 
+import java.awt.BorderLayout;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.swing.JFrame;
+import javax.swing.JTabbedPane;
+import javax.swing.WindowConstants;
+
 import it.unifi.financeapp.controller.CategoryController;
 import it.unifi.financeapp.controller.ExpenseController;
 import it.unifi.financeapp.controller.UserController;
 import it.unifi.financeapp.service.CategoryService;
 import it.unifi.financeapp.service.ExpenseService;
 import it.unifi.financeapp.service.UserService;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MainFrame extends JFrame {
 
@@ -80,5 +83,4 @@ public class MainFrame extends JFrame {
 	JTabbedPane getTabbedPane() {
 		return tabbedPane;
 	}
-
 }
