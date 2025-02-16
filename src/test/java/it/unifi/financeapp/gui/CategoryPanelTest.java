@@ -61,7 +61,7 @@ class CategoryPanelTest {
 	@Nested
 	@DisplayName("Happy Cases")
 	class HappyCases {
-		
+
 		@Test
 		@GUITest
 		void testFieldContentIsMatching() {

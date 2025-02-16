@@ -71,7 +71,7 @@ class ExpenseTest {
 		User user = new User("Username", "Name", "Surname", "Email");
 		Expense expense = new Expense(category, user, 100L, "2024-12-23");
 		assertNotEquals(expense, null);
-		//inverted values so we can properly test equals method in Expense
+		// inverted values so we can properly test equals method in Expense
 	}
 
 	@Test
