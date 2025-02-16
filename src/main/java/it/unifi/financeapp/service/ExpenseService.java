@@ -76,9 +76,10 @@ public class ExpenseService {
 	}
 
 	boolean isValidDate(String date) {
-		if (date == null || date.isEmpty()) {
+		if (date == null)
 			return false;
-		}
+		if(date.isEmpty())
+			return false;
 		try {
 			LocalDate.parse(date, DATE_FORMATTER);
 			return true;
