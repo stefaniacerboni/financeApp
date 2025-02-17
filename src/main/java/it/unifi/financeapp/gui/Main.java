@@ -1,5 +1,11 @@
 package it.unifi.financeapp.gui;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.concurrent.CountDownLatch;
+
+import javax.swing.JFrame;
+
 import it.unifi.financeapp.repository.CategoryRepository;
 import it.unifi.financeapp.repository.CategoryRepositoryImpl;
 import it.unifi.financeapp.repository.ExpenseRepository;
@@ -16,23 +22,34 @@ import jakarta.persistence.Persistence;
 public class Main {
 
 	public static void main(String[] args) {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("FinanceAppPU");
+		// Use try-with-resources so that the EntityManagerFactory is closed when done.
+		try (EntityManagerFactory emf = Persistence.createEntityManagerFactory("FinanceAppPU")) {
+			EntityManager em = emf.createEntityManager();
+			CategoryRepository categoryRepository = new CategoryRepositoryImpl(em);
+			CategoryService categoryService = new CategoryService(categoryRepository);
+			UserRepository userRepository = new UserRepositoryImpl(em);
+			UserService userService = new UserService(userRepository);
+			ExpenseRepository expenseRepository = new ExpenseRepositoryImpl(em);
+			ExpenseService expenseService = new ExpenseService(expenseRepository);
 
-		// Register a shutdown hook to close the EntityManagerFactory on JVM exit
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			if (emf.isOpen()) {
-				emf.close();
-			}
-		}));
+			// Prepare the main frame and use a latch to wait until it is closed.
+			MainFrame mf = new MainFrame(categoryService, userService, expenseService);
+			mf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-		EntityManager em = emf.createEntityManager();
-		CategoryRepository categoryRepository = new CategoryRepositoryImpl(em);
-		CategoryService categoryService = new CategoryService(categoryRepository);
-		UserRepository userRepository = new UserRepositoryImpl(em);
-		UserService userService = new UserService(userRepository);
-		ExpenseRepository expenseRepository = new ExpenseRepositoryImpl(em);
-		ExpenseService expenseService = new ExpenseService(expenseRepository);
-		MainFrame mf = new MainFrame(categoryService, userService, expenseService);
-		mf.setVisible(true);
+			CountDownLatch latch = new CountDownLatch(1);
+			mf.addWindowListener(new WindowAdapter() {
+				@Override
+				public void windowClosed(WindowEvent e) {
+					latch.countDown();
+				}
+			});
+
+			mf.setVisible(true);
+
+			// Wait until the main frame is closed before exiting the try block.
+			latch.await();
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
 	}
 }
