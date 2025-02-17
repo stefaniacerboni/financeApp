@@ -4,7 +4,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.concurrent.CountDownLatch;
 
-import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import it.unifi.financeapp.repository.CategoryRepository;
