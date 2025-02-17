@@ -14,9 +14,17 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
 public class Main {
-	
+
 	public static void main(String[] args) {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("FinanceAppPU");
+
+		// Register a shutdown hook to close the EntityManagerFactory on JVM exit
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			if (emf.isOpen()) {
+				emf.close();
+			}
+		}));
+
 		EntityManager em = emf.createEntityManager();
 		CategoryRepository categoryRepository = new CategoryRepositoryImpl(em);
 		CategoryService categoryService = new CategoryService(categoryRepository);
