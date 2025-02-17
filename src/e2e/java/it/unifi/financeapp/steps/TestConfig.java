@@ -76,7 +76,9 @@ public class TestConfig {
 	}
 
 	public static void tearDownClass() {
-		window.cleanUp();
-		mysqlContainer.stop();
+		if(window != null)
+			window.cleanUp();
+		if(mysqlContainer != null)
+			mysqlContainer.stop();
 	}
 }
