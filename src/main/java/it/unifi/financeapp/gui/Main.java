@@ -5,6 +5,7 @@ import java.awt.event.WindowEvent;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 
 import it.unifi.financeapp.repository.CategoryRepository;
 import it.unifi.financeapp.repository.CategoryRepositoryImpl;
@@ -34,7 +35,7 @@ public class Main {
 
 			// Prepare the main frame and use a latch to wait until it is closed.
 			MainFrame mf = new MainFrame(categoryService, userService, expenseService);
-			mf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			mf.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
 			CountDownLatch latch = new CountDownLatch(1);
 			mf.addWindowListener(new WindowAdapter() {
