@@ -264,7 +264,7 @@
 				<version>0.8.7</version>
 				<configuration>
 					<excludes>
-						<exclude>**/Main.class</exclude>
+						<exclude>it/unifi/financeapp/gui/Main</exclude>
 					</excludes>
 					<outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
 					<formats>
