@@ -267,6 +267,10 @@
 						<exclude>**/Main.class</exclude>
 					</excludes>
 					<outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
+					<formats>
+						<format>XML</format>
+						<format>HTML</format>
+					</formats>
 				</configuration>
 				<executions>
 					<execution>
@@ -290,6 +294,8 @@
 				<artifactId>coveralls-maven-plugin</artifactId>
 				<version>4.3.0</version>
 				<configuration>
+					<jacocoReports>
+						${project.reporting.outputDirectory}/jacoco/jacoco.xml</jacocoReports>
 					<sourceDirectories>
 						<sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
 					</sourceDirectories>
