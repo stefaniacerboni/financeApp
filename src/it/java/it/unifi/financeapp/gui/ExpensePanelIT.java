@@ -52,10 +52,10 @@ class ExpensePanelIT {
 	CategoryService categoryService;
 	ExpenseController expenseController;
 
-	private Category EXPENSE_CATEGORY = new Category("Category Name", "Category Description");
-	private User EXPENSE_USER = new User("Test Username", "Test User Email");
-	private double EXPENSE_AMOUNT = 50.0;
-	private String EXPENSE_DATE = "2024-09-05";
+	private final Category EXPENSE_CATEGORY = new Category("Category Name", "Category Description");
+	private final User EXPENSE_USER = new User("Test Username", "Test User Email");
+	private final double EXPENSE_AMOUNT = 50.0;
+	private final String EXPENSE_DATE = "2024-09-05";
 
 	@BeforeAll
 	static void setUpTestClasses() {

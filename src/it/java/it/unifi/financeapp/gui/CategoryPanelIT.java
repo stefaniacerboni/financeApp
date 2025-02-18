@@ -42,8 +42,8 @@ class CategoryPanelIT {
 	CategoryPanel categoryView;
 	CategoryService categoryService;
 	CategoryController categoryController;
-	private String CATEGORY_NAME = "New Category";
-	private String CATEGORY_DESCRIPTION = "New Description";
+	private final String CATEGORY_NAME = "New Category";
+	private final String CATEGORY_DESCRIPTION = "New Description";
 
 	@BeforeAll
 	static void setUpTestClasses() {

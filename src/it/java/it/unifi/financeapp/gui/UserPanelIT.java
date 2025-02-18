@@ -41,10 +41,10 @@ class UserPanelIT {
 	UserPanel userView;
 	UserService userService;
 	UserController userController;
-	private String USER_USERNAME = "NewUser";
-	private String USER_NAME = "New User Name";
-	private String USER_SURNAME = "New User Surname";
-	private String USER_EMAIL = "New User Email";
+	private final String USER_USERNAME = "NewUser";
+	private final String USER_NAME = "New User Name";
+	private final String USER_SURNAME = "New User Surname";
+	private final String USER_EMAIL = "New User Email";
 
 	@BeforeAll
 	static void setUpTestClasses() {
