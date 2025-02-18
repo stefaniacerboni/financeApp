@@ -1,4 +1,4 @@
-package it.unifi.financeapp.gui;
+package it.unifi.financeapp.exec;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -6,6 +6,8 @@ import java.util.concurrent.CountDownLatch;
 
 import javax.swing.WindowConstants;
 
+import it.unifi.financeapp.gui.Generated;
+import it.unifi.financeapp.gui.MainFrame;
 import it.unifi.financeapp.repository.CategoryRepository;
 import it.unifi.financeapp.repository.CategoryRepositoryImpl;
 import it.unifi.financeapp.repository.ExpenseRepository;
@@ -20,7 +22,6 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
 public class Main {
-
 	public static void main(String[] args) {
 		// Use try-with-resources so that the EntityManagerFactory is closed when done.
 		try (EntityManagerFactory emf = Persistence.createEntityManagerFactory("FinanceAppPU")) {
