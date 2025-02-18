@@ -21,14 +21,14 @@ class UserRepositoryTest {
 	private EntityManager em;
 
 	@BeforeEach
-	void setUp() {
+	void init() {
 		emf = Persistence.createEntityManagerFactory("TestFinanceAppH2PU");
 		em = emf.createEntityManager();
 		userRepository = new UserRepositoryImpl(em);
 	}
 
 	@AfterEach
-	public void close() {
+	void close() {
 		em.close();
 		emf.close();
 	}

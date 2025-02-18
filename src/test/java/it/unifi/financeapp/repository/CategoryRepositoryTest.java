@@ -21,14 +21,14 @@ class CategoryRepositoryTest {
 	private CategoryRepository categoryRepository;
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		emf = Persistence.createEntityManagerFactory("TestFinanceAppH2PU");
 		em = emf.createEntityManager();
 		categoryRepository = new CategoryRepositoryImpl(em);
 	}
 
 	@AfterEach
-	public void close() {
+	void close() {
 		em.close();
 		emf.close();
 	}

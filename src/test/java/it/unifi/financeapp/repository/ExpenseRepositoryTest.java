@@ -25,7 +25,7 @@ class ExpenseRepositoryTest {
 	private User user;
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		emf = Persistence.createEntityManagerFactory("TestFinanceAppH2PU");
 		em = emf.createEntityManager();
 		expenseRepository = new ExpenseRepositoryImpl(em);
@@ -39,7 +39,7 @@ class ExpenseRepositoryTest {
 	}
 
 	@AfterEach
-	public void close() {
+	void close() {
 		em.close();
 		emf.close();
 	}
