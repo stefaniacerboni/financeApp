@@ -5,29 +5,29 @@ import it.unifi.financeapp.model.Category;
 import javax.swing.*;
 
 public interface CategoryView {
-    String getName();
+	String getName();
 
-    void setName(String name);
+	void setName(String name);
 
-    String getDescription();
+	String getDescription();
 
-    void setDescription(String description);
+	void setDescription(String description);
 
-    void setStatus(String status);
+	void setStatus(String status);
 
-    void clearForm();
+	void clearForm();
 
-    void addCategoryToTable(Category category);
+	void addCategoryToTable(Category category);
 
-    void removeCategoryFromTable(int rowIndex);
+	void removeCategoryFromTable(int rowIndex);
 
-    int getSelectedCategoryIndex();
+	int getSelectedCategoryIndex();
 
-    Long getCategoryIdFromTable(int rowIndex);
+	Long getCategoryIdFromTable(int rowIndex);
 
-    JButton getAddCategoryButton();
+	JButton getAddCategoryButton();
 
-    JButton getDeleteCategoryButton();
+	JButton getDeleteCategoryButton();
 
-    JTable getCategoryTable();
+	JTable getCategoryTable();
 }

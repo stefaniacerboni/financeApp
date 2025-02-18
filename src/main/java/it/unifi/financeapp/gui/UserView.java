@@ -5,37 +5,37 @@ import it.unifi.financeapp.model.User;
 import javax.swing.*;
 
 public interface UserView {
-    String getUsername();
+	String getUsername();
 
-    void setUsername(String username);
+	void setUsername(String username);
 
-    String getName();
+	String getName();
 
-    void setName(String name);
+	void setName(String name);
 
-    String getSurname();
+	String getSurname();
 
-    void setSurname(String surname);
+	void setSurname(String surname);
 
-    String getEmail();
+	String getEmail();
 
-    void setEmail(String email);
+	void setEmail(String email);
 
-    void setStatus(String status);
+	void setStatus(String status);
 
-    void clearForm();
+	void clearForm();
 
-    void addUserToTable(User user);
+	void addUserToTable(User user);
 
-    void removeUserFromTable(int rowIndex);
+	void removeUserFromTable(int rowIndex);
 
-    int getSelectedUserIndex();
+	int getSelectedUserIndex();
 
-    Long getUserIdFromTable(int rowIndex);
+	Long getUserIdFromTable(int rowIndex);
 
-    JButton getAddUserButton();
+	JButton getAddUserButton();
 
-    JButton getDeleteUserButton();
+	JButton getDeleteUserButton();
 
-    JTable getUserTable();
+	JTable getUserTable();
 }

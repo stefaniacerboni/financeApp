@@ -8,6 +8,8 @@ import it.unifi.financeapp.service.CategoryService;
 import it.unifi.financeapp.service.ExpenseService;
 import it.unifi.financeapp.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,162 +31,201 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ExpenseControllerTest {
-    @Mock
-    private ExpenseService expenseService;
-    @Mock
-    private UserService userService;
-    @Mock
-    private CategoryService categoryService;
-    @Mock
-    private ExpenseView expenseView;
-    @Mock
-    private JComboBox<User> userComboBox;
-    @Mock
-    private JComboBox<Category> categoryComboBox;
+	@Mock
+	private ExpenseService expenseService;
+	@Mock
+	private UserService userService;
+	@Mock
+	private CategoryService categoryService;
+	@Mock
+	private ExpenseView expenseView;
+	@Mock
+	private JComboBox<User> userComboBox;
+	@Mock
+	private JComboBox<Category> categoryComboBox;
 
-    @InjectMocks
-    private ExpenseController controller;
+	@InjectMocks
+	private ExpenseController controller;
 
-    @BeforeEach
-    void setUp() {
-        controller = new ExpenseController(expenseService, categoryService, userService, expenseView);
-        controller.initView();
-    }
+	@BeforeEach
+	void setUp() {
+		controller = new ExpenseController(expenseService, categoryService, userService, expenseView);
+		controller.initView();
+	}
 
-    @Test
-    void shouldInitializeView() {
-        verify(expenseService).getAllExpenses();
-    }
+	@Nested
+	@DisplayName("Happy Cases")
+	class HappyCases {
 
-    @Test
-    void testLoadExpenses() {
-        Category category = new Category("Tech", "Tech stuff");
-        User user = new User("JohnDoe", "John", "Doe", "john.doe@example.com");
-        List<Expense> expenses = Arrays.asList(
-                new Expense(category, user, 30.0, "2024-12-12"),
-                new Expense(category, user, 50.0, "2024-12-24"));
-        when(expenseService.getAllExpenses()).thenReturn(expenses);
+		@Test
+		void shouldInitializeView() {
+			verify(expenseService).getAllExpenses();
+		}
 
-        controller.loadExpenses();
+		@Test
+		void testLoadExpenses() {
+			Category category = new Category("Tech", "Tech stuff");
+			User user = new User("JohnDoe", "John", "Doe", "john.doe@example.com");
+			List<Expense> expenses = Arrays.asList(new Expense(category, user, 30.0, "2024-12-12"),
+					new Expense(category, user, 50.0, "2024-12-24"));
+			when(expenseService.getAllExpenses()).thenReturn(expenses);
 
-        verify(expenseView, times(expenses.size())).addExpenseToTable(any(Expense.class));
-    }
+			controller.loadExpenses();
 
-    @Test
-    void testAddExpenseSuccessfully() {
-        User user = new User("JohnDoe", "John", "Doe", "john.doe@example.com");
-        Category category = new Category("Travel", "Travel expenses");
-        when(expenseView.getUserComboBox()).thenReturn(userComboBox);
-        when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
-        when(expenseView.getUserComboBox().getSelectedItem()).thenReturn(user);
-        when(expenseView.getCategoryComboBox().getSelectedItem()).thenReturn(category);
-        when(expenseView.getAmount()).thenReturn("100");
-        when(expenseView.getDate()).thenReturn("2024-01-01");
-        Expense expense = new Expense(category, user, 100L, "2024-01-01");
-        when(expenseService.addExpense(any(Expense.class))).thenReturn(expense);
+			verify(expenseView, times(expenses.size())).addExpenseToTable(any(Expense.class));
+		}
 
-        controller.addExpense();
+		@Test
+		void testAddExpenseSuccessfully() {
+			User user = new User("JohnDoe", "John", "Doe", "john.doe@example.com");
+			Category category = new Category("Travel", "Travel expenses");
+			when(expenseView.getUserComboBox()).thenReturn(userComboBox);
+			when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
+			when(expenseView.getUserComboBox().getSelectedItem()).thenReturn(user);
+			when(expenseView.getCategoryComboBox().getSelectedItem()).thenReturn(category);
+			when(expenseView.getAmount()).thenReturn("100");
+			when(expenseView.getDate()).thenReturn("2024-01-01");
+			Expense expense = new Expense(category, user, 100L, "2024-01-01");
+			when(expenseService.addExpense(any(Expense.class))).thenReturn(expense);
 
-        verify(expenseService).addExpense(any(Expense.class));
-        verify(expenseView).addExpenseToTable(expense);
-        verify(expenseView).setStatus("Expense added successfully.");
-        verify(expenseView).clearForm();
-    }
+			controller.addExpense();
 
-    @Test
-    void testAddExpenseFailure() {
-        User user = new User("JohnDoe", "John", "Doe", "john.doe@example.com");
-        Category category = new Category("Travel", "Travel expenses");
-        when(expenseView.getUserComboBox()).thenReturn(userComboBox);
-        when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
-        when(expenseView.getUserComboBox().getSelectedItem()).thenReturn(user);
-        when(expenseView.getCategoryComboBox().getSelectedItem()).thenReturn(category);
-        when(expenseView.getAmount()).thenReturn("100");
-        when(expenseView.getDate()).thenReturn("2024-01-01");
-        when(expenseService.addExpense(any(Expense.class))).thenReturn(null);
+			verify(expenseService).addExpense(any(Expense.class));
+			verify(expenseView).addExpenseToTable(expense);
+			verify(expenseView).setStatus("Expense added successfully.");
+			verify(expenseView).clearForm();
+		}
 
-        controller.addExpense();
+		@Test
+		void testNewExpenseConcurrent() {
+			User user = new User("JohnDoe", "John", "Doe", "john.doe@example.com");
+			Category category = new Category("Travel", "Travel expenses");
+			List<Expense> expenses = new ArrayList<>();
+			Expense expense = new Expense(category, user, 100L, "2024-01-01");
+			doAnswer(invocation -> {
+				expenses.add(expense);
+				return null;
+			}).when(expenseService).addExpense(any(Expense.class));
+			when(expenseView.getUserComboBox()).thenReturn(userComboBox);
+			when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
+			when(expenseView.getUserComboBox().getSelectedItem()).thenReturn(user);
+			when(expenseView.getCategoryComboBox().getSelectedItem()).thenReturn(category);
+			when(expenseView.getAmount()).thenReturn("100");
+			when(expenseView.getDate()).thenReturn("2024-01-01");
+			List<Thread> threads = IntStream.range(0, 10).mapToObj(i -> new Thread(() -> controller.addExpense()))
+					.peek(Thread::start).collect(Collectors.toList());
+			await().atMost(10, TimeUnit.SECONDS).until(() -> threads.stream().noneMatch(t -> t.isAlive()));
+		}
 
-        verify(expenseView).setStatus("Failed to add expense.");
-    }
-    
-    @Test
-    void testNewExpenseConcurrent() {
-        User user = new User("JohnDoe", "John", "Doe", "john.doe@example.com");
-        Category category = new Category("Travel", "Travel expenses");
-    	List<Expense> expenses = new ArrayList<>();
-        Expense expense = new Expense(category, user, 100L, "2024-01-01");
-    	doAnswer(invocation -> {
-    		expenses.add(expense);
-    		return null;
-    	}).when(expenseService).addExpense(any(Expense.class));
-        when(expenseView.getUserComboBox()).thenReturn(userComboBox);
-        when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
-        when(expenseView.getUserComboBox().getSelectedItem()).thenReturn(user);
-        when(expenseView.getCategoryComboBox().getSelectedItem()).thenReturn(category);
-        when(expenseView.getAmount()).thenReturn("100");
-        when(expenseView.getDate()).thenReturn("2024-01-01");
-    	List<Thread> threads = IntStream.range(0, 10)
-    			.mapToObj(i-> new Thread(() -> controller.addExpense()))
-    			.peek(t -> t.start())
-    			.collect(Collectors.toList());
-    	await().atMost(10, TimeUnit.SECONDS).until(() -> threads.stream().noneMatch(t -> t.isAlive()));    
-    }
+		@Test
+		void testDeleteExpense() {
+			when(expenseView.getSelectedExpenseIndex()).thenReturn(0);
+			when(expenseView.getExpenseIdFromTable(0)).thenReturn(1L);
 
-    @Test
-    void testNotDeleteExpenseWhenNoneSelected() {
-        when(expenseView.getSelectedExpenseIndex()).thenReturn(-1);
+			controller.deleteExpense();
 
-        controller.deleteExpense();
+			verify(expenseService).deleteExpense(1L);
+			verify(expenseView).removeExpenseFromTable(0);
+			verify(expenseView).setStatus("Expense deleted successfully.");
+		}
 
-        verify(expenseView, never()).getExpenseIdFromTable(anyInt());
-        verify(expenseService, never()).deleteExpense(anyLong());
-        verify(expenseView).setStatus("No expense selected for deletion.");
-    }
+		@Test
+		void testUpdateData() {
+			when(expenseView.getUserComboBox()).thenReturn(userComboBox);
+			when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
+			controller.updateData();
+			verify(userService).getAllUsers();
+			verify(categoryService).getAllCategories();
+		}
 
-    @Test
-    void testDeleteExpense() {
-        when(expenseView.getSelectedExpenseIndex()).thenReturn(0);
-        when(expenseView.getExpenseIdFromTable(0)).thenReturn(1L);
+		@Test
+		void testPopulateUserComboBoxWhenUsersAreUpdated() {
+			when(expenseView.getUserComboBox()).thenReturn(userComboBox);
 
-        controller.deleteExpense();
+			List<User> users = List.of(new User("User1", "Email1"), new User("User2", "Email2"));
+			when(userService.getAllUsers()).thenReturn(users);
 
-        verify(expenseService).deleteExpense(1L);
-        verify(expenseView).removeExpenseFromTable(0);
-        verify(expenseView).setStatus("Expense deleted successfully.");
-    }
+			controller.updateUsers();
 
-    @Test
-    void testUpdateData() {
-        when(expenseView.getUserComboBox()).thenReturn(userComboBox);
-        when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
-        controller.updateData();
-        verify(userService).getAllUsers();
-        verify(categoryService).getAllCategories();
-    }
+			verify(userService).getAllUsers();
+			verify(userComboBox).setModel(any());
+		}
 
-    @Test
-    void testPopulateUserComboBoxWhenUsersAreUpdated() {
-        when(expenseView.getUserComboBox()).thenReturn(userComboBox);
+		@Test
+		void testPopulateCategoryComboBoxWhenCategoriesAreUpdated() {
+			when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
+			List<Category> categories = List.of(new Category("Category1", "Description1"),
+					new Category("Category2", "Description2"));
+			when(categoryService.getAllCategories()).thenReturn(categories);
 
-        List<User> users = List.of(new User("User1", "Email1"), new User("User2", "Email2"));
-        when(userService.getAllUsers()).thenReturn(users);
+			controller.updateCategories();
 
-        controller.updateUsers();
+			verify(categoryService).getAllCategories();
+			verify(categoryComboBox).setModel(any());
+		}
+	}
 
-        verify(userService).getAllUsers();
-        verify(userComboBox).setModel(any());
-    }
+	@Nested
+	@DisplayName("Bad Cases")
+	class BadCases {
+		@Test
+		void testAddExpenseFailure() {
+			User user = new User("JohnDoe", "John", "Doe", "john.doe@example.com");
+			Category category = new Category("Travel", "Travel expenses");
+			when(expenseView.getUserComboBox()).thenReturn(userComboBox);
+			when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
+			when(expenseView.getUserComboBox().getSelectedItem()).thenReturn(user);
+			when(expenseView.getCategoryComboBox().getSelectedItem()).thenReturn(category);
+			when(expenseView.getAmount()).thenReturn("100");
+			when(expenseView.getDate()).thenReturn("2024-01-01");
+			when(expenseService.addExpense(any(Expense.class))).thenReturn(null);
 
-    @Test
-    void testPopulateCategoryComboBoxWhenCategoriesAreUpdated() {
-        when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
-        List<Category> categories = List.of(new Category("Category1", "Description1"), new Category("Category2", "Description2"));
-        when(categoryService.getAllCategories()).thenReturn(categories);
+			controller.addExpense();
 
-        controller.updateCategories();
+			verify(expenseView).setStatus("Failed to add expense.");
+		}
 
-        verify(categoryService).getAllCategories();
-        verify(categoryComboBox).setModel(any());
-    }
+		@Test
+		void testAddExpenseIncorrectAmount() {
+			User user = new User("JohnDoe", "John", "Doe", "john.doe@example.com");
+			Category category = new Category("Travel", "Travel expenses");
+			when(expenseView.getUserComboBox()).thenReturn(userComboBox);
+			when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
+			when(expenseView.getUserComboBox().getSelectedItem()).thenReturn(user);
+			when(expenseView.getCategoryComboBox().getSelectedItem()).thenReturn(category);
+			when(expenseView.getAmount()).thenReturn("aaaa");
+
+			controller.addExpense();
+
+			verify(expenseView).setStatus("Failed to add expense: Incorrect Amount.");
+		}
+
+		@Test
+		void testAddExpenseIncorrectDate() {
+			User user = new User("JohnDoe", "John", "Doe", "john.doe@example.com");
+			Category category = new Category("Travel", "Travel expenses");
+			when(expenseView.getUserComboBox()).thenReturn(userComboBox);
+			when(expenseView.getCategoryComboBox()).thenReturn(categoryComboBox);
+			when(expenseView.getUserComboBox().getSelectedItem()).thenReturn(user);
+			when(expenseView.getCategoryComboBox().getSelectedItem()).thenReturn(category);
+			when(expenseView.getAmount()).thenReturn("100");
+			when(expenseView.getDate()).thenReturn("aaa");
+
+			controller.addExpense();
+
+			verify(expenseView).setStatus("Failed to add expense.");
+		}
+
+		@Test
+		void testNotDeleteExpenseWhenNoneSelected() {
+			when(expenseView.getSelectedExpenseIndex()).thenReturn(-1);
+
+			controller.deleteExpense();
+
+			verify(expenseView, never()).getExpenseIdFromTable(anyInt());
+			verify(expenseService, never()).deleteExpense(anyLong());
+			verify(expenseView).setStatus("No expense selected for deletion.");
+		}
+	}
+
 }
