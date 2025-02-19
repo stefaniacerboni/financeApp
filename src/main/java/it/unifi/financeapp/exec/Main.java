@@ -6,7 +6,6 @@ import java.util.concurrent.CountDownLatch;
 
 import javax.swing.WindowConstants;
 
-import it.unifi.financeapp.gui.Generated;
 import it.unifi.financeapp.gui.MainFrame;
 import it.unifi.financeapp.repository.CategoryRepository;
 import it.unifi.financeapp.repository.CategoryRepositoryImpl;
@@ -21,6 +20,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
+@SuppressWarnings("unused")
 public class Main {
 	public static void main(String[] args) {
 		// Use try-with-resources so that the EntityManagerFactory is closed when done.
