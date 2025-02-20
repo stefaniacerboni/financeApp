@@ -27,7 +27,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.google.protobuf.ServiceException;
+
 import it.unifi.financeapp.gui.UserView;
+import it.unifi.financeapp.model.Category;
 import it.unifi.financeapp.model.User;
 import it.unifi.financeapp.service.UserService;
 import it.unifi.financeapp.service.exceptions.InvalidUserException;
@@ -117,6 +120,18 @@ class UserControllerTest {
 	@Nested
 	@DisplayName("Bad Cases")
 	class BadCases {
+		
+		@Test
+		void testDuplicatedUser() {
+			when(userView.getUsername()).thenReturn("JohnDoe");
+			when(userView.getEmail()).thenReturn("johndoe@example.com");
+			when(userService.addUser(any(User.class))).thenThrow(ServiceException.class);
+
+			controller.addUser();
+
+			verify(userView).setStatus("Failed to add user: Persistence error.");
+		}
+
 		@Test
 		void testAddUserFailure() {
 			when(userView.getUsername()).thenReturn("JohnDoe");

@@ -13,6 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.google.protobuf.ServiceException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -105,6 +107,17 @@ class CategoryControllerTest {
 	@Nested
 	@DisplayName("Bad Cases")
 	class BadCases {
+		
+		@Test
+		void testDuplicatedCategory() {
+			when(categoryView.getName()).thenReturn("Category Name");
+			when(categoryView.getDescription()).thenReturn("Category Description");
+			when(categoryService.addCategory(any(Category.class))).thenThrow(ServiceException.class);
+
+			controller.addCategory();
+
+			verify(categoryView).setStatus("Failed to add category: Persistence error.");
+		}
 
 		@Test
 		void testNotDeleteIfNoCategorySelected() {

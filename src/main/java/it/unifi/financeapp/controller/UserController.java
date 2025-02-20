@@ -1,5 +1,7 @@
 package it.unifi.financeapp.controller;
 
+import org.hibernate.service.spi.ServiceException;
+
 import it.unifi.financeapp.gui.UserView;
 import it.unifi.financeapp.model.User;
 import it.unifi.financeapp.service.UserService;
@@ -25,13 +27,18 @@ public class UserController {
 
 	public void addUser() {
 		User user = new User(userView.getUsername(), userView.getName(), userView.getSurname(), userView.getEmail());
-		User result = userService.addUser(user);
-		if (result != null) {
-			userView.addUserToTable(result);
-			userView.setStatus("User added successfully.");
-			userView.clearForm();
-		} else {
-			userView.setStatus("Failed to add user.");
+		try {
+			User result = userService.addUser(user);
+			if (result != null) {
+				userView.addUserToTable(result);
+				userView.setStatus("User added successfully.");
+				userView.clearForm();
+			} else {
+				userView.setStatus("Failed to add user.");
+			}
+		} catch (ServiceException se) {
+			userView.setStatus("Failed to add user: Persistence error.");
+
 		}
 	}
 
