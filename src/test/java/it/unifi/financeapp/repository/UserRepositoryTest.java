@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.PersistenceException;
+
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -100,6 +102,16 @@ class UserRepositoryTest {
 	}
 
 	@Test
+	void testSaveSameUsernameUser() {
+		User existingUser = new User("Existing", "Existing User Email");
+		em.getTransaction().begin();
+		em.persist(existingUser);
+		em.getTransaction().commit();
+		User newUser = new User("Existing", "Different User Email");
+		assertThrows(PersistenceException.class, () -> userRepository.save(newUser));
+	}
+	
+	@Test
 	void testUpdateUser() {
 		User user = new User("Existing", "Existing User Description");
 		em.getTransaction().begin();
@@ -113,6 +125,20 @@ class UserRepositoryTest {
 
 		User retrieved = em.find(User.class, user.getId());
 		assertEquals("Updated Name", retrieved.getName());
+	}
+	
+	@Test
+	void testUpdateSameUsernameUser() {
+		User existingUser = new User("Existing", "Existing User Email");
+		em.getTransaction().begin();
+		em.persist(existingUser);
+		em.getTransaction().commit();
+		User newUser = new User("Not Existing", "Different User Email");
+		em.getTransaction().begin();
+		em.persist(newUser);
+		em.getTransaction().commit();
+		newUser.setUsername("Existing");
+		assertThrows(PersistenceException.class, () -> userRepository.update(newUser));
 	}
 
 	@Test

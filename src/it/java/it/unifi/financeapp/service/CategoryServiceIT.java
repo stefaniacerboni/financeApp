@@ -3,6 +3,8 @@ package it.unifi.financeapp.service;
 import it.unifi.financeapp.model.Category;
 import it.unifi.financeapp.repository.CategoryRepository;
 import it.unifi.financeapp.repository.CategoryRepositoryImpl;
+
+import org.hibernate.service.spi.ServiceException;
 import org.junit.jupiter.api.*;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -86,6 +88,29 @@ class CategoryServiceIT {
 		assertNotNull(savedCategory);
 		Assertions.assertEquals(category.getName(), savedCategory.getName());
 		Assertions.assertEquals(category.getDescription(), savedCategory.getDescription());
+	}
+	
+	@Test
+	void testAddCategoryWithExistingNameShouldThrowException() {
+		// Setup test data
+		Category category = new Category("Coffee", "Category about coffee");
+		Category savedCategory = categoryService.addCategory(category);
+		assertNotNull(savedCategory);
+		Category sameCategory = new Category("Coffee", "Same Category about coffee");
+		assertThrows(ServiceException.class, () -> categoryService.addCategory(sameCategory)); 
+	}
+	
+	@Test
+	void testUpdateCategoryWithExistingNameShouldThrowException() {
+		// Setup test data
+		Category category = new Category("Coffee", "Category about coffee");
+		Category savedCategory = categoryService.addCategory(category);
+		assertNotNull(savedCategory);
+		Category newCategory = new Category("No Coffee", "Category not about coffee");
+		Category savedNewCategory = categoryService.addCategory(newCategory);
+		assertNotNull(savedNewCategory);
+		savedNewCategory.setName("Coffee");
+		assertThrows(ServiceException.class, () -> categoryService.updateCategory(savedNewCategory)); 
 	}
 
 	@Test

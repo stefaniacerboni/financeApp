@@ -3,6 +3,7 @@ package it.unifi.financeapp.repository;
 import it.unifi.financeapp.model.User;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
 import java.util.List;
 
@@ -17,10 +18,15 @@ public class UserRepositoryImpl implements UserRepository {
 	@Override
 	public User save(User user) {
 		entityManager.getTransaction().begin();
-		if (user.getId() == null) {
-			entityManager.persist(user);
-		} else {
-			user = entityManager.merge(user);
+		try {
+			if (user.getId() == null) {
+				entityManager.persist(user);
+			} else {
+				user = entityManager.merge(user);
+			}
+		} catch (PersistenceException pe) {
+			entityManager.getTransaction().rollback();
+			throw pe;
 		}
 		entityManager.getTransaction().commit();
 		return user;
@@ -33,10 +39,16 @@ public class UserRepositoryImpl implements UserRepository {
 
 	@Override
 	public User update(User user) {
+		User res;
 		entityManager.getTransaction().begin();
-		User result = entityManager.merge(user);
+		try {
+			res = entityManager.merge(user);
+		} catch (PersistenceException pe) {
+			entityManager.getTransaction().rollback();
+			throw pe;
+		}
 		entityManager.getTransaction().commit();
-		return result;
+		return res;
 	}
 
 	@Override

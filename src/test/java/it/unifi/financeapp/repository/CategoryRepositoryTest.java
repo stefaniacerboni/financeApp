@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.PersistenceException;
+
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -95,6 +97,16 @@ class CategoryRepositoryTest {
 		assertEquals(existingCategory.getName(), retrieved.getName());
 		assertEquals("Updated Description", retrieved.getDescription());
 	}
+	
+	@Test
+	void testSaveSameNameCategory() {
+		Category existingCategory = new Category("Existing", "Existing Category Description");
+		em.getTransaction().begin();
+		em.persist(existingCategory);
+		em.getTransaction().commit();
+		Category newCategory = new Category("Existing", "Existing Category Description");
+		assertThrows(PersistenceException.class, () -> categoryRepository.save(newCategory));
+	}
 
 	@Test
 	void testUpdateCategory() {
@@ -111,6 +123,20 @@ class CategoryRepositoryTest {
 
 		Category retrieved = em.find(Category.class, category.getId());
 		assertEquals("Updated Name", retrieved.getName());
+	}
+	
+	@Test
+	void testUpdateSameNameCategory() {
+		Category existingCategory = new Category("Existing", "Existing Category Description");
+		em.getTransaction().begin();
+		em.persist(existingCategory);
+		em.getTransaction().commit();
+		Category newCategory = new Category("Not Existing", "Not Existing Category Description");
+		em.getTransaction().begin();
+		em.persist(newCategory);
+		em.getTransaction().commit();
+		newCategory.setName("Existing");
+		assertThrows(PersistenceException.class, () -> categoryRepository.update(newCategory));
 	}
 
 	@Test

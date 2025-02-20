@@ -3,6 +3,8 @@ package it.unifi.financeapp.service;
 import it.unifi.financeapp.model.User;
 import it.unifi.financeapp.repository.UserRepository;
 import it.unifi.financeapp.repository.UserRepositoryImpl;
+
+import org.hibernate.service.spi.ServiceException;
 import org.junit.jupiter.api.*;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -86,6 +88,29 @@ class UserServiceIT {
 		Assertions.assertEquals(user.getName(), savedUser.getName());
 		Assertions.assertEquals(user.getSurname(), savedUser.getSurname());
 		Assertions.assertEquals(user.getEmail(), savedUser.getEmail());
+	}
+
+	@Test
+	void testAddUserWithExistingUsernameShouldThrowException() {
+		// Setup test data
+		User user = new User("username", "name", "surname", "email");
+		User savedUser = userService.addUser(user);
+		assertNotNull(savedUser);
+		User sameUser = new User("username", "differentEmail");
+		assertThrows(ServiceException.class, () -> userService.addUser(sameUser));
+	}
+	
+	@Test
+	void testUpdateUserWithExistingUsernameShouldThrowException() {
+		// Setup test data
+		User user = new User("username", "name", "surname", "email");
+		User savedUser = userService.addUser(user);
+		assertNotNull(savedUser);
+		User newUser = new User("different username", "differentEmail");
+		User savedNewUser = userService.addUser(newUser);
+		assertNotNull(savedNewUser);
+		savedNewUser.setUsername("username");
+		assertThrows(ServiceException.class, () -> userService.addUser(savedNewUser));
 	}
 
 	@Test

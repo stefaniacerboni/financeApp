@@ -1,8 +1,8 @@
 package it.unifi.financeapp.repository;
 
 import it.unifi.financeapp.model.Category;
-
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
 import java.util.List;
 
@@ -27,21 +27,34 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 	@Transactional
 	@Override
 	public Category save(Category category) {
+		Category result;
 		entityManager.getTransaction().begin();
-		if (category.getId() == null) {
-			entityManager.persist(category);
-		} else {
-			category = entityManager.merge(category);
+		try {
+			if (category.getId() == null) {
+				entityManager.persist(category);
+				result = category;
+			} else {
+				result = entityManager.merge(category);
+			}
+		} catch (PersistenceException pe) {
+			entityManager.getTransaction().rollback();
+			throw pe;
 		}
 		entityManager.getTransaction().commit();
-		return category;
+		return result;
 	}
 
 	@Transactional
 	@Override
 	public Category update(Category category) {
+		Category result;
 		entityManager.getTransaction().begin();
-		Category result = entityManager.merge(category);
+		try {
+			result = entityManager.merge(category);
+		} catch (PersistenceException pe) {
+			entityManager.getTransaction().rollback();
+			throw pe;
+		}
 		entityManager.getTransaction().commit();
 		return result;
 	}

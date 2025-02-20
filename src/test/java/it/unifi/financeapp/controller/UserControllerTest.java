@@ -30,7 +30,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 
 import it.unifi.financeapp.gui.UserView;
-import it.unifi.financeapp.model.Category;
 import it.unifi.financeapp.model.User;
 import it.unifi.financeapp.service.UserService;
 import it.unifi.financeapp.service.exceptions.InvalidUserException;

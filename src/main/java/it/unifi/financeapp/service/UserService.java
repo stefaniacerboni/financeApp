@@ -32,7 +32,13 @@ public class UserService {
 
 	public User updateUser(User user) {
 		validateUser(user);
-		return userRepository.update(user);
+		User res = null;
+		try {
+			res = userRepository.update(user);
+		} catch (PersistenceException pe) {
+			throw new ServiceException("Error while updating category", pe);
+		}
+		return res;
 	}
 
 	public User findUserById(Long id) {

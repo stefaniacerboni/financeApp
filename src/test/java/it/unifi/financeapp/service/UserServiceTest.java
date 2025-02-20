@@ -3,6 +3,8 @@ package it.unifi.financeapp.service;
 import it.unifi.financeapp.model.User;
 import it.unifi.financeapp.repository.UserRepository;
 import it.unifi.financeapp.service.exceptions.InvalidUserException;
+
+import org.hibernate.service.spi.ServiceException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -188,6 +190,13 @@ class UserServiceTest {
 		void testUpdateUserWithInvalidData() {
 			User invalidUser = new User("username", null);
 			assertThrows(InvalidUserException.class, () -> userService.updateUser(invalidUser));
+		}
+		
+		@Test
+		void testUpdateUserWithAlreadyExistingName() {
+			User invalidUser = new User("alreadySavedUsername", "Username should be unique");
+			when(userRepository.update(invalidUser)).thenThrow(PersistenceException.class);
+			assertThrows(ServiceException.class, () -> userService.updateUser(invalidUser));
 		}
 
 		@Test

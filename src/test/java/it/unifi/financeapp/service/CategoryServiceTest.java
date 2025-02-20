@@ -3,6 +3,8 @@ package it.unifi.financeapp.service;
 import it.unifi.financeapp.model.Category;
 import it.unifi.financeapp.repository.CategoryRepository;
 import it.unifi.financeapp.service.exceptions.InvalidCategoryException;
+
+import org.hibernate.service.spi.ServiceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -169,6 +171,13 @@ class CategoryServiceTest {
 		void testUpdateCategoryWithInvalidData() {
 			Category invalidCategory = new Category("originalName", null);
 			assertThrows(InvalidCategoryException.class, () -> categoryService.updateCategory(invalidCategory));
+		}
+
+		@Test
+		void testUpdateCategoryWithAlreadyExistingName() {
+			Category invalidCategory = new Category("alreadySavedName", "Name should be unique");
+			when(categoryRepository.update(invalidCategory)).thenThrow(PersistenceException.class);
+			assertThrows(ServiceException.class, () -> categoryService.updateCategory(invalidCategory));
 		}
 
 		@Test

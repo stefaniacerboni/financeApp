@@ -30,7 +30,13 @@ public class CategoryService {
 
 	public Category updateCategory(Category category) {
 		validateCategory(category);
-		return categoryRepository.update(category);
+		Category res = null;
+		try {
+			res = categoryRepository.update(category);
+		} catch (PersistenceException pe) {
+			throw new ServiceException("Error while updating category", pe);
+		}
+		return res;
 	}
 
 	public List<Category> getAllCategories() {
