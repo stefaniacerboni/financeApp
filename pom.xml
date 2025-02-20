@@ -189,6 +189,9 @@
 					<mutators>
 						<mutator>STRONGER</mutator>
 					</mutators>
+					<avoidCallsTo>
+						<avoidCallsTo>jakarta.persistence</avoidCallsTo>
+					</avoidCallsTo>
 					<targetClasses>
 						<param>it.unifi.financeapp.controller.*</param>
 						<param>it.unifi.financeapp.service.*</param>
