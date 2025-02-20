@@ -4,6 +4,8 @@ import it.unifi.financeapp.gui.CategoryView;
 import it.unifi.financeapp.model.Category;
 import it.unifi.financeapp.service.CategoryService;
 import it.unifi.financeapp.service.exceptions.InvalidCategoryException;
+
+import org.hibernate.service.spi.ServiceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -12,8 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import com.google.protobuf.ServiceException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
