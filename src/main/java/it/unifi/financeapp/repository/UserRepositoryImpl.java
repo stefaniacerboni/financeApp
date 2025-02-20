@@ -43,6 +43,7 @@ public class UserRepositoryImpl implements UserRepository {
 		entityManager.getTransaction().begin();
 		try {
 			res = entityManager.merge(user);
+			entityManager.flush();
 		} catch (PersistenceException pe) {
 			entityManager.getTransaction().rollback();
 			throw pe;

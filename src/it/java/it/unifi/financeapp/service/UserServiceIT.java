@@ -110,7 +110,7 @@ class UserServiceIT {
 		User savedNewUser = userService.addUser(newUser);
 		assertNotNull(savedNewUser);
 		savedNewUser.setUsername("username");
-		assertThrows(ServiceException.class, () -> userService.addUser(savedNewUser));
+		assertThrows(ServiceException.class, () -> userService.updateUser(savedNewUser));
 	}
 
 	@Test

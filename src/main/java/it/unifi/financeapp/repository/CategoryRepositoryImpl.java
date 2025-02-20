@@ -51,6 +51,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 		entityManager.getTransaction().begin();
 		try {
 			result = entityManager.merge(category);
+			entityManager.flush();
 		} catch (PersistenceException pe) {
 			entityManager.getTransaction().rollback();
 			throw pe;
