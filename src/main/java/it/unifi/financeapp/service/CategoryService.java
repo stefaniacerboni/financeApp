@@ -17,7 +17,6 @@ public class CategoryService {
 
 	public Category addCategory(Category category) {
 		validateCategory(category);
-
 		try {
 			return categoryRepository.save(category);
 		} catch (PersistenceException pe) {

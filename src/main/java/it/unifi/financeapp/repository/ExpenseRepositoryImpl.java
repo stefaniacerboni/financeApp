@@ -1,7 +1,6 @@
 package it.unifi.financeapp.repository;
 
 import it.unifi.financeapp.model.Expense;
-
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import java.util.List;

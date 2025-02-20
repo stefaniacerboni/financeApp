@@ -20,7 +20,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
-@SuppressWarnings("unused")
 public class Main {
 	public static void main(String[] args) {
 		// Use try-with-resources so that the EntityManagerFactory is closed when done.

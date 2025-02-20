@@ -29,6 +29,8 @@ class ExpenseServiceIT {
 
 	private static EntityManagerFactory emf;
 	private static ExpenseService expenseService;
+	private static final Category category = new Category("Books", "Category about books");
+	private static final User user = new User("username", "email");
 
 	@BeforeAll
 	static void setUp() {
@@ -44,6 +46,11 @@ class ExpenseServiceIT {
 
 		ExpenseRepository expenseRepository = new ExpenseRepositoryImpl(em);
 		expenseService = new ExpenseService(expenseRepository);
+
+		em.getTransaction().begin();
+		em.persist(category);
+		em.persist(user);
+		em.getTransaction().commit();
 	}
 
 	@AfterAll
@@ -63,8 +70,6 @@ class ExpenseServiceIT {
 	@Test
 	void testAddAndRetrieveExpense() {
 		// Setup test data
-		Category category = new Category("Coffee", "Category about coffee");
-		User user = new User("username", "email");
 		Expense expense = new Expense(category, user, 3.50, "2024-07-15");
 		Expense savedExpense = expenseService.addExpense(expense);
 
@@ -83,8 +88,6 @@ class ExpenseServiceIT {
 	@Test
 	void testAddExistingExpense() {
 		// Setup test data
-		Category category = new Category("Coffee", "Category about coffee");
-		User user = new User("username", "email");
 		Expense expense = new Expense(category, user, 3.50, "2024-07-15");
 		expense.setId(100L);
 		Expense savedExpense = expenseService.addExpense(expense);
@@ -107,8 +110,6 @@ class ExpenseServiceIT {
 
 	@Test
 	void testAddThenDeleteExpense() {
-		Category category = new Category("Books", "Category about books");
-		User user = new User("username", "email");
 		Expense expense = new Expense(category, user, 62.50, "2024-08-01");
 		Expense saved = expenseService.addExpense(expense);
 		Assertions.assertNotNull(saved, "What sorcery is this? The expense vanished upon saving!");
@@ -121,8 +122,6 @@ class ExpenseServiceIT {
 	@Test
 	void testUpdateExpense() {
 		// Create and save an initial expense
-		Category category = new Category("Transportation", "Category about transportation");
-		User user = new User("username", "email");
 		Expense expense = new Expense(category, user, 15.75, "2024-07-20");
 		Expense savedExpense = expenseService.addExpense(expense);
 		assertNotNull(savedExpense);
@@ -143,8 +142,6 @@ class ExpenseServiceIT {
 
 	@Test
 	void testFindAll() {
-		User user = new User("username1", "email1");
-		Category category = new Category("Travel", "Category about travel");
 		Expense expense1 = new Expense(category, user, 200.0, "2024-07-22");
 		Expense expense2 = new Expense(category, user, 300.0, "2024-07-23");
 		Expense savedExpense1 = expenseService.addExpense(expense1);
@@ -163,8 +160,6 @@ class ExpenseServiceIT {
 	@Test
 	void testDeleteExpense() {
 		// Create and save an expense
-		Category category = new Category("Coffee", "Category about coffee");
-		User user = new User("username", "email");
 		Expense expense = new Expense(category, user, 3.50, "2024-07-15");
 		Expense savedExpense = expenseService.addExpense(expense);
 		assertNotNull(savedExpense);
@@ -179,8 +174,6 @@ class ExpenseServiceIT {
 
 	@Test
 	void testDeleteAll() {
-		User user = new User("username1", "email1");
-		Category category = new Category("Travel", "Category about travel");
 		Expense expense = new Expense(category, user, 200.0, "2024-07-22");
 		expenseService.addExpense(expense);
 		List<Expense> actualExpenses = expenseService.getAllExpenses();

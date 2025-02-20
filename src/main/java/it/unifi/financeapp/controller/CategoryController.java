@@ -1,5 +1,8 @@
 package it.unifi.financeapp.controller;
 
+
+import org.hibernate.service.spi.ServiceException;
+
 import it.unifi.financeapp.gui.CategoryView;
 import it.unifi.financeapp.model.Category;
 import it.unifi.financeapp.service.CategoryService;
@@ -25,14 +28,20 @@ public class CategoryController {
 
 	public void addCategory() {
 		Category category = new Category(categoryView.getName(), categoryView.getDescription());
-		Category result = categoryService.addCategory(category);
-		if (result != null) {
-			categoryView.addCategoryToTable(result);
-			categoryView.setStatus("Category added successfully.");
-			categoryView.clearForm();
-		} else {
-			categoryView.setStatus("Failed to add category.");
+		try {
+			Category result = categoryService.addCategory(category);
+			if (result != null) {
+				categoryView.addCategoryToTable(result);
+				categoryView.setStatus("Category added successfully.");
+				categoryView.clearForm();
+			} else {
+				categoryView.setStatus("Failed to add category.");
+			}
 		}
+		catch(ServiceException se) {
+			categoryView.setStatus("Failed to add category: Persistence error.");
+		}
+
 	}
 
 	public void deleteCategory() {
