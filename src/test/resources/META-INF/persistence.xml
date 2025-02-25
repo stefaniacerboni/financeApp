@@ -29,6 +29,7 @@
 		</properties>
 	</persistence-unit>
 
+
 	<persistence-unit name="TestFinanceAppPU" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		<class>it.unifi.financeapp.model.Expense</class>
@@ -47,6 +48,5 @@
 				value="false" />
 			<property name="hibernate.cache.use_query_cache" value="false" />
 		</properties>
-
 	</persistence-unit>
 </persistence>
