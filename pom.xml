@@ -232,6 +232,7 @@
 				<version>2.22.2</version>
 				<executions>
 					<execution>
+						<id>it-tests</id>
 						<goals>
 							<goal>integration-test</goal>
 							<goal>verify</goal>
