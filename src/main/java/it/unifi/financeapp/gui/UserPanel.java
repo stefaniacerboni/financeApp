@@ -1,6 +1,5 @@
 package it.unifi.financeapp.gui;
 
-
 import it.unifi.financeapp.controller.UserController;
 import it.unifi.financeapp.model.User;
 
@@ -9,155 +8,154 @@ import java.awt.*;
 
 public class UserPanel extends BasePanel implements UserView {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private JTextField usernameField;
-    private JTextField nameField;
-    private JTextField surnameField;
-    private JTextField emailField;
-    private transient UserController userController;
+	private JTextField usernameField;
+	private JTextField nameField;
+	private JTextField surnameField;
+	private JTextField emailField;
+	private transient UserController userController;
 
-    @Override
-    protected JPanel createFormPanel() {
-        JPanel formPanel = new JPanel(new GridLayout(5, 2));
-        formPanel.add(new JLabel("Username:"));
-        usernameField = new JTextField();
-        usernameField.setName("usernameField");
-        formPanel.add(usernameField);
+	@Override
+	protected JPanel createFormPanel() {
+		JPanel formPanel = new JPanel(new GridLayout(5, 2));
+		formPanel.add(new JLabel("Username:"));
+		usernameField = new JTextField();
+		usernameField.setName("Username");
+		formPanel.add(usernameField);
 
-        formPanel.add(new JLabel("Name:"));
-        nameField = new JTextField();
-        nameField.setName("nameField");
-        formPanel.add(nameField);
+		formPanel.add(new JLabel("Name:"));
+		nameField = new JTextField();
+		nameField.setName("Name");
+		formPanel.add(nameField);
 
-        formPanel.add(new JLabel("Surname:"));
-        surnameField = new JTextField();
-        surnameField.setName("surnameField");
-        formPanel.add(surnameField);
+		formPanel.add(new JLabel("Surname:"));
+		surnameField = new JTextField();
+		surnameField.setName("Surname");
+		formPanel.add(surnameField);
 
-        formPanel.add(new JLabel("Email:"));
-        emailField = new JTextField();
-        emailField.setName("emailField");
-        formPanel.add(emailField);
+		formPanel.add(new JLabel("Email:"));
+		emailField = new JTextField();
+		emailField.setName("Email");
+		formPanel.add(emailField);
 
-        addButton = createAddButton("User");
-        formPanel.add(addButton);
+		addButton = createAddButton("User");
+		formPanel.add(addButton);
 
-        deleteButton.setText("Delete User");
+		deleteButton.setText("Delete User");
 
+		addButton.addActionListener(e -> userController.addUser());
+		deleteButton.addActionListener(e -> userController.deleteUser());
 
-        addButton.addActionListener(e -> userController.addUser());
-        deleteButton.addActionListener(e -> userController.deleteUser());
+		return formPanel;
+	}
 
+	public void setUserController(UserController userController) {
+		this.userController = userController;
+	}
 
-        return formPanel;
-    }
+	@Override
+	protected String[] getColumnNames() {
+		return new String[] { "Id", "Username", "Name", "Surname", "Email" };
+	}
 
-    public void setUserController(UserController userController) {
-        this.userController = userController;
-    }
+	@Override
+	protected void attachDocumentListeners() {
+		attachDocumentListeners(usernameField, emailField);
+	}
 
-    @Override
-    protected String[] getColumnNames() {
-        return new String[]{"Id", "Username", "Name", "Surname", "Email"};
-    }
+	@Override
+	protected void checkFields() {
+		boolean enabled = !usernameField.getText().trim().isEmpty() && !emailField.getText().trim().isEmpty();
+		addButton.setEnabled(enabled);
+	}
 
-    @Override
-    protected void attachDocumentListeners() {
-        attachDocumentListeners(usernameField, emailField);
-    }
+	@Override
+	public String getUsername() {
+		return usernameField.getText();
+	}
 
-    @Override
-    protected void checkFields() {
-        boolean enabled = !usernameField.getText().trim().isEmpty() && !emailField.getText().trim().isEmpty();
-        addButton.setEnabled(enabled);
-    }
+	@Override
+	public void setUsername(String username) {
+		usernameField.setText(username);
+	}
 
-    @Override
-    public String getUsername() {
-        return usernameField.getText();
-    }
+	@Override
+	public String getName() {
+		return nameField.getText();
+	}
 
-    @Override
-    public void setUsername(String username) {
-        usernameField.setText(username);
-    }
+	@Override
+	public void setName(String name) {
+		nameField.setText(name);
+	}
 
-    @Override
-    public String getName() {
-        return nameField.getText();
-    }
+	@Override
+	public String getSurname() {
+		return surnameField.getText();
+	}
 
-    @Override
-    public void setName(String name) {
-        nameField.setText(name);
-    }
+	@Override
+	public void setSurname(String surname) {
+		surnameField.setText(surname);
+	}
 
-    @Override
-    public String getSurname() {
-        return surnameField.getText();
-    }
+	@Override
+	public String getEmail() {
+		return emailField.getText();
+	}
 
-    @Override
-    public void setSurname(String surname) {
-        surnameField.setText(surname);
-    }
+	@Override
+	public void setEmail(String email) {
+		emailField.setText(email);
+	}
 
-    @Override
-    public String getEmail() {
-        return emailField.getText();
-    }
+	@Override
+	public void setStatus(String status) {
+		statusLabel.setText(status);
+	}
 
-    @Override
-    public void setEmail(String email) {
-        emailField.setText(email);
-    }
+	@Override
+	public void clearForm() {
+		usernameField.setText("");
+		nameField.setText("");
+		surnameField.setText("");
+		emailField.setText("");
+	}
 
-    @Override
-    public void setStatus(String status) {
-        statusLabel.setText(status);
-    }
+	@Override
+	public void addUserToTable(User user) {
+		tableModel.addRow(
+				new Object[] { user.getId(), user.getUsername(), user.getName(), user.getSurname(), user.getEmail() });
+	}
 
-    @Override
-    public void clearForm() {
-        usernameField.setText("");
-        nameField.setText("");
-        surnameField.setText("");
-        emailField.setText("");
-    }
+	@Override
+	public void removeUserFromTable(int rowIndex) {
+		tableModel.removeRow(rowIndex);
+	}
 
-    @Override
-    public void addUserToTable(User user) {
-        tableModel.addRow(new Object[]{user.getId(), user.getUsername(), user.getName(), user.getSurname(), user.getEmail()});
-    }
+	@Override
+	public int getSelectedUserIndex() {
+		return entityTable.getSelectedRow();
+	}
 
-    @Override
-    public void removeUserFromTable(int rowIndex) {
-        tableModel.removeRow(rowIndex);
-    }
+	@Override
+	public Long getUserIdFromTable(int rowIndex) {
+		return (Long) tableModel.getValueAt(rowIndex, 0);
+	}
 
-    @Override
-    public int getSelectedUserIndex() {
-        return entityTable.getSelectedRow();
-    }
+	@Override
+	public JButton getAddUserButton() {
+		return addButton;
+	}
 
-    @Override
-    public Long getUserIdFromTable(int rowIndex) {
-        return (Long) tableModel.getValueAt(rowIndex, 0);
-    }
+	@Override
+	public JButton getDeleteUserButton() {
+		return deleteButton;
+	}
 
-    @Override
-    public JButton getAddUserButton() {
-        return addButton;
-    }
-
-    @Override
-    public JButton getDeleteUserButton() {
-        return deleteButton;
-    }
-
-    @Override
-    public JTable getUserTable() {
-        return entityTable;
-    }
+	@Override
+	public JTable getUserTable() {
+		return entityTable;
+	}
 }

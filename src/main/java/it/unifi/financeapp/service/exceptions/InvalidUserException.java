@@ -2,9 +2,9 @@ package it.unifi.financeapp.service.exceptions;
 
 public class InvalidUserException extends RuntimeException {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public InvalidUserException(String message) {
-        super(message);
-    }
+	public InvalidUserException(String message) {
+		super(message);
+	}
 }

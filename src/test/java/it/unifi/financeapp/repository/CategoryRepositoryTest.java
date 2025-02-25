@@ -10,153 +10,179 @@ import org.junit.jupiter.api.Test;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.PersistenceException;
+
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class CategoryRepositoryTest {
 
-    private EntityManagerFactory emf;
-    private EntityManager em;
-    private CategoryRepository categoryRepository;
+	private EntityManagerFactory emf;
+	private EntityManager em;
+	private CategoryRepository categoryRepository;
 
-    @BeforeEach
-    public void init() {
-        emf = Persistence.createEntityManagerFactory("TestFinanceAppH2PU");
-        em = emf.createEntityManager();
-        categoryRepository = new CategoryRepositoryImpl(em);
-    }
+	@BeforeEach
+	void init() {
+		emf = Persistence.createEntityManagerFactory("TestFinanceAppH2PU");
+		em = emf.createEntityManager();
+		categoryRepository = new CategoryRepositoryImpl(em);
+	}
 
-    @AfterEach
-    public void close() {
-        em.close();
-        emf.close();
-    }
+	@AfterEach
+	void close() {
+		em.close();
+		emf.close();
+	}
 
-    @Test
-    void testFindById() {
-        Category newCategory = new Category("Utilities", "Utility bills");
-        em.getTransaction().begin();
-        em.persist(newCategory);
-        em.getTransaction().commit();
+	@Test
+	void testFindById() {
+		Category newCategory = new Category("Utilities", "Utility bills");
+		em.getTransaction().begin();
+		em.persist(newCategory);
+		em.getTransaction().commit();
 
-        Category foundCategory = categoryRepository.findById(newCategory.getId());
-        assertNotNull(foundCategory);
-        assertEquals("Utilities", foundCategory.getName());
-        assertEquals("Utility bills", foundCategory.getDescription());
+		Category foundCategory = categoryRepository.findById(newCategory.getId());
+		assertNotNull(foundCategory);
+		assertEquals("Utilities", foundCategory.getName());
+		assertEquals("Utility bills", foundCategory.getDescription());
 
-    }
+	}
 
-    @Test
-    void testFindAll() {
-        em.getTransaction().begin();
-        Category cat1 = new Category("Utilities", "Utility bills");
-        Category cat2 = new Category("Groceries", "Weekly food supplies");
-        em.persist(cat1);
-        em.persist(cat2);
-        em.getTransaction().commit();
+	@Test
+	void testFindAll() {
+		em.getTransaction().begin();
+		Category cat1 = new Category("Utilities", "Utility bills");
+		Category cat2 = new Category("Groceries", "Weekly food supplies");
+		em.persist(cat1);
+		em.persist(cat2);
+		em.getTransaction().commit();
 
-        List<Category> categories = categoryRepository.findAll();
+		List<Category> categories = categoryRepository.findAll();
 
-        assertNotNull(categories);
-        assertEquals(2, categories.size());
-        assertEquals(cat1, categories.get(0));
-        assertEquals(cat2, categories.get(1));
-    }
+		assertNotNull(categories);
+		assertEquals(2, categories.size());
+		assertEquals(cat1, categories.get(0));
+		assertEquals(cat2, categories.get(1));
+	}
 
-    @Test
-    void testSaveNewCategory() {
-        Category newCategory = new Category("New", "New Category Description");
-        Category res = categoryRepository.save(newCategory);
-        assertNotNull(res);
-        em.clear();
-        Category retrieved = em.find(Category.class, newCategory.getId());
-        assertNotNull(retrieved);
-        assertEquals("New", retrieved.getName());
-        assertEquals("New Category Description", retrieved.getDescription());
-    }
+	@Test
+	void testSaveNewCategory() {
+		Category newCategory = new Category("New", "New Category Description");
+		Category res = categoryRepository.save(newCategory);
+		assertNotNull(res);
+		em.clear();
+		Category retrieved = em.find(Category.class, newCategory.getId());
+		assertNotNull(retrieved);
+		assertEquals("New", retrieved.getName());
+		assertEquals("New Category Description", retrieved.getDescription());
+	}
 
-    @Test
-    void testSaveExistingCategory() {
-        Category existingCategory = new Category("Existing", "Existing Category Description");
-        em.getTransaction().begin();
-        em.persist(existingCategory);
-        em.getTransaction().commit();
-        
-        // Detach the entity to simulate a real update scenario
-        em.clear();
+	@Test
+	void testSaveExistingCategory() {
+		Category existingCategory = new Category("Existing", "Existing Category Description");
+		em.getTransaction().begin();
+		em.persist(existingCategory);
+		em.getTransaction().commit();
 
-        existingCategory.setDescription("Updated Description");
-        Category res = categoryRepository.save(existingCategory);
-        assertNotNull(res);
+		// Detach the entity to simulate a real update scenario
+		em.clear();
 
-        Category retrieved = em.find(Category.class, existingCategory.getId());
-        assertNotNull(retrieved);
-        assertEquals(existingCategory.getName(), retrieved.getName());
-        assertEquals("Updated Description", retrieved.getDescription());
-    }
+		existingCategory.setDescription("Updated Description");
+		Category res = categoryRepository.save(existingCategory);
+		assertNotNull(res);
 
-    @Test
-    void testUpdateCategory() {
-        Category category = new Category("Existing", "Existing Category Description");
-        em.getTransaction().begin();
-        em.persist(category);
-        em.getTransaction().commit();
+		Category retrieved = em.find(Category.class, existingCategory.getId());
+		assertNotNull(retrieved);
+		assertEquals(existingCategory.getName(), retrieved.getName());
+		assertEquals("Updated Description", retrieved.getDescription());
+	}
+	
+	@Test
+	void testSaveSameNameCategory() {
+		Category existingCategory = new Category("Existing", "Existing Category Description");
+		em.getTransaction().begin();
+		em.persist(existingCategory);
+		em.getTransaction().commit();
+		Category newCategory = new Category("Existing", "Existing Category Description");
+		assertThrows(PersistenceException.class, () -> categoryRepository.save(newCategory));
+	}
 
-        category.setName("Updated Name");
-        Category res = categoryRepository.update(category);
-        assertNotNull(res);
+	@Test
+	void testUpdateCategory() {
+		Category category = new Category("Existing", "Existing Category Description");
+		em.getTransaction().begin();
+		em.persist(category);
+		em.getTransaction().commit();
 
-        em.clear();
+		category.setName("Updated Name");
+		Category res = categoryRepository.update(category);
+		assertNotNull(res);
 
-        Category retrieved = em.find(Category.class, category.getId());
-        assertEquals("Updated Name", retrieved.getName());
-    }
+		em.clear();
 
-    @Test
-    void testDeleteCategory() {
-        Category category = new Category("To Be Deleted", "To be deleted description");
-        em.getTransaction().begin();
-        em.persist(category);
-        em.getTransaction().commit();
+		Category retrieved = em.find(Category.class, category.getId());
+		assertEquals("Updated Name", retrieved.getName());
+	}
+	
+	@Test
+	void testUpdateSameNameCategory() {
+		Category existingCategory = new Category("Existing", "Existing Category Description");
+		em.getTransaction().begin();
+		em.persist(existingCategory);
+		em.getTransaction().commit();
+		Category newCategory = new Category("Not Existing", "Not Existing Category Description");
+		em.getTransaction().begin();
+		em.persist(newCategory);
+		em.getTransaction().commit();
+		newCategory.setName("Existing");
+		assertThrows(PersistenceException.class, () -> categoryRepository.update(newCategory));
+	}
 
-        categoryRepository.delete(category);
+	@Test
+	void testDeleteCategory() {
+		Category category = new Category("To Be Deleted", "To be deleted description");
+		em.getTransaction().begin();
+		em.persist(category);
+		em.getTransaction().commit();
 
-        em.clear();
+		categoryRepository.delete(category);
 
-        Category retrieved = em.find(Category.class, category.getId());
-        assertNull(retrieved);
-    }
+		em.clear();
 
-    @Test
-    void testDeleteCategoryWithDependencies() {
-        Category category = new Category("To Be Deleted", "To be deleted description");
-        User user = new User("username", "email");
-        em.getTransaction().begin();
-        em.persist(category);
-        em.persist(user);
-        em.persist(new Expense(category, user, 0.0, "2024-12-12"));
-        em.getTransaction().commit();
-        assertThrows(IllegalStateException.class, () -> categoryRepository.delete(category));
-        Category retrieved = em.find(Category.class, category.getId());
-        assertNotNull(retrieved);
-    }
+		Category retrieved = em.find(Category.class, category.getId());
+		assertNull(retrieved);
+	}
 
-    @Test
-    void testDeleteAllCategories() {
-        Category newCategory = new Category("New", "New Category Description");
-        Category res = categoryRepository.save(newCategory);
-        assertNotNull(res);
-        em.clear();
-        categoryRepository.deleteAll();
-        em.clear();
-        // Use a new EntityManager for verification
-        EntityManager emVerification = emf.createEntityManager();
-        CategoryRepository categoryRepositoryVerification = new CategoryRepositoryImpl(emVerification);
+	@Test
+	void testDeleteCategoryWithDependencies() {
+		Category category = new Category("To Be Deleted", "To be deleted description");
+		User user = new User("username", "email");
+		em.getTransaction().begin();
+		em.persist(category);
+		em.persist(user);
+		em.persist(new Expense(category, user, 0.0, "2024-12-12"));
+		em.getTransaction().commit();
+		assertThrows(IllegalStateException.class, () -> categoryRepository.delete(category));
+		Category retrieved = em.find(Category.class, category.getId());
+		assertNotNull(retrieved);
+	}
 
-        List<Category> categories = categoryRepositoryVerification.findAll();
-        assertTrue(categories.isEmpty());
+	@Test
+	void testDeleteAllCategories() {
+		Category newCategory = new Category("New", "New Category Description");
+		Category res = categoryRepository.save(newCategory);
+		assertNotNull(res);
+		em.clear();
+		categoryRepository.deleteAll();
+		em.clear();
+		// Use a new EntityManager for verification
+		EntityManager emVerification = emf.createEntityManager();
+		CategoryRepository categoryRepositoryVerification = new CategoryRepositoryImpl(emVerification);
 
-        emVerification.close();
-    }
+		List<Category> categories = categoryRepositoryVerification.findAll();
+		assertTrue(categories.isEmpty());
+
+		emVerification.close();
+	}
 }
