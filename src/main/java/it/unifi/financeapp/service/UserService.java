@@ -16,7 +16,7 @@ public class UserService {
 		this.userRepository = userRepository;
 	}
 
-	public User addUser(User user) {
+	public synchronized User addUser(User user) {
 		validateUser(user);
 
 		try {

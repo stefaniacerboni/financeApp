@@ -218,9 +218,9 @@ class CategoryServiceIT {
 			}
 		}
 		))
-				.peek(t -> t.start())
+				.peek(Thread::start)
 				.collect(Collectors.toList());
-		await().atMost(10, TimeUnit.SECONDS).until(() -> threads.stream().noneMatch(t-> t.isAlive()));
+		await().atMost(10, TimeUnit.SECONDS).until(() -> threads.stream().noneMatch(Thread::isAlive));
 		assertThat(categoryService.getAllCategories()).containsExactly(category);
 	}
 
