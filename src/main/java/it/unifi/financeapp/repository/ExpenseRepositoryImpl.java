@@ -2,6 +2,7 @@ package it.unifi.financeapp.repository;
 
 import it.unifi.financeapp.model.Expense;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
 import java.util.List;
 
@@ -17,10 +18,15 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
 	public Expense save(Expense expense) {
 		entityManager.getTransaction().begin();
 		manageDependencies(expense);
-		if (expense.getId() == null) {
-			entityManager.persist(expense);
-		} else {
-			expense = entityManager.merge(expense);
+		try {
+			if (expense.getId() == null) {
+				entityManager.persist(expense);
+			} else {
+				expense = entityManager.merge(expense);
+			}
+		} catch (PersistenceException pe) {
+			entityManager.getTransaction().rollback();
+			throw pe;
 		}
 		entityManager.getTransaction().commit();
 		return expense;
