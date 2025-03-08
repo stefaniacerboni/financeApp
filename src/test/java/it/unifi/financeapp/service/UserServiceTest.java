@@ -201,7 +201,7 @@ class UserServiceTest {
 			User invalidUser = new User("username", null);
 			assertThrows(InvalidUserException.class, () -> userService.updateUser(invalidUser));
 		}
-		
+
 		@Test
 		void testUpdateUserWithAlreadyExistingName() {
 			User invalidUser = new User("alreadySavedUsername", "Username should be unique");
@@ -227,29 +227,28 @@ class UserServiceTest {
 			Exception ex = assertThrows(InvalidUserException.class, () -> userService.deleteUser(id));
 			assertEquals("Cannot delete user with existing expenses", ex.getMessage());
 		}
-		
+
 		@Test
 		void testNewUserConcurrent() {
 			List<User> users = Collections.synchronizedList(new ArrayList<>());
 			User user = new User("Name", "Description");
 			when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
-				Optional<User>  res = users.stream().filter(x -> x.getUsername().equals(user.getUsername())).findFirst();
-				if(res.isPresent())
+				Optional<User> res = users.stream().filter(x -> x.getUsername().equals(user.getUsername())).findFirst();
+				if (res.isPresent())
 					throw new ServiceException("Already present");
 				else
 					users.add(user);
 				return null;
 			});
-			List<Thread> threads = IntStream.range(0,  10).mapToObj( i -> new Thread(() -> {
+			List<Thread> threads = IntStream.range(0, 10).mapToObj(i -> new Thread(() -> {
 				try {
 					userService.addUser(user);
-				}catch (ServiceException e) {
-					
+				} catch (ServiceException e) {
+					// Expected: when trying to add a duplicate category concurrently,
+					// a ServiceException is thrown. No further action is needed.
+
 				}
-			}
-			))
-					.peek(Thread::start)
-					.collect(Collectors.toList());
+			})).peek(Thread::start).collect(Collectors.toList());
 			await().atMost(10, TimeUnit.SECONDS).until(() -> threads.stream().noneMatch(Thread::isAlive));
 			assertThat(users).containsExactly(user);
 		}
