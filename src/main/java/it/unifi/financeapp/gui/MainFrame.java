@@ -70,13 +70,10 @@ public class MainFrame extends JFrame {
 		tabActions.put(tabbedPane.indexOfTab("Categories"), categoryController::initView);
 		tabActions.put(tabbedPane.indexOfTab("Users"), userController::initView);
 
-
 		// Attach a change listener that executes the corresponding action
 		tabbedPane.addChangeListener(e -> {
 			Runnable action = tabActions.get(tabbedPane.getSelectedIndex());
-			if (action != null) {
-				action.run();
-			}
+			action.run();
 		});
 
 		// Add the tabbed pane to the main frame

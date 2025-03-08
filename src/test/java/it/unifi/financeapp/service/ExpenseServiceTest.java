@@ -309,13 +309,14 @@ class ExpenseServiceTest {
 				try {
 					expenseService.addExpense(expense);
 				}catch (ServiceException e) {
-					
+				    // Expected: when trying to add a duplicate category concurrently,
+				    // a ServiceException is thrown. No further action is needed.
 				}
 			}
 			))
-					.peek(t -> t.start())
+					.peek(Thread::start)
 					.collect(Collectors.toList());
-			await().atMost(10, TimeUnit.SECONDS).until(() -> threads.stream().noneMatch(t-> t.isAlive()));
+			await().atMost(10, TimeUnit.SECONDS).until(() -> threads.stream().noneMatch(Thread::isAlive));
 			assertThat(expenses).containsExactly(expense);
 		}
 	}

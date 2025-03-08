@@ -23,7 +23,6 @@ public class ExpenseService {
 
 	public Expense addExpense(Expense expense) {
 		validateExpense(expense);
-
 		try {
 			return expenseRepository.save(expense);
 		} catch (PersistenceException pe) {

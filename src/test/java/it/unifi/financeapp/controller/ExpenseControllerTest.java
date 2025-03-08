@@ -7,6 +7,8 @@ import it.unifi.financeapp.model.User;
 import it.unifi.financeapp.service.CategoryService;
 import it.unifi.financeapp.service.ExpenseService;
 import it.unifi.financeapp.service.UserService;
+import it.unifi.financeapp.service.exceptions.InvalidExpenseException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -136,6 +138,7 @@ class ExpenseControllerTest {
 			controller.updateData();
 			verify(userService).getAllUsers();
 			verify(categoryService).getAllCategories();
+			verify(expenseService, atLeast(1)).getAllExpenses();
 		}
 
 		@Test
@@ -210,10 +213,12 @@ class ExpenseControllerTest {
 			when(expenseView.getCategoryComboBox().getSelectedItem()).thenReturn(category);
 			when(expenseView.getAmount()).thenReturn("100");
 			when(expenseView.getDate()).thenReturn("aaa");
+			when(expenseService.addExpense(any(Expense.class))).thenThrow(new InvalidExpenseException("Date is invalid."));
+
 
 			controller.addExpense();
 
-			verify(expenseView).setStatus("Failed to add expense.");
+			verify(expenseView).setStatus("Failed to add expense: Date is invalid.");
 		}
 
 		@Test
