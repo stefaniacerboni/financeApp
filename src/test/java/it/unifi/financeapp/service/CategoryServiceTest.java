@@ -14,11 +14,20 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import jakarta.persistence.PersistenceException;
-import java.util.Arrays;
-import java.util.List;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.awaitility.Awaitility.*;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryServiceTest {
@@ -196,6 +205,32 @@ class CategoryServiceTest {
 			Long id = category.getId();
 			Exception ex = assertThrows(InvalidCategoryException.class, () -> categoryService.deleteCategory(id));
 			assertEquals("Cannot delete category with existing expenses", ex.getMessage());
+		}
+		
+		@Test
+		void testNewCategoryConcurrent() {
+			List<Category> categories = Collections.synchronizedList(new ArrayList<>());
+			Category category = new Category("Name", "Description");
+			when(categoryRepository.save(any(Category.class))).thenAnswer(invocation -> {
+				Optional<Category>  res = categories.stream().filter(x -> x.getName().equals(category.getName())).findFirst();
+				if(res.isPresent())
+					throw new ServiceException("Already present");
+				else
+					categories.add(category);
+				return null;
+			});
+			List<Thread> threads = IntStream.range(0,  10).mapToObj( i -> new Thread(() -> {
+				try {
+					categoryService.addCategory(category);
+				}catch (ServiceException e) {
+					
+				}
+			}
+			))
+					.peek(t -> t.start())
+					.collect(Collectors.toList());
+			await().atMost(10, TimeUnit.SECONDS).until(() -> threads.stream().noneMatch(t-> t.isAlive()));
+			assertThat(categories).containsExactly(category);
 		}
 	}
 }

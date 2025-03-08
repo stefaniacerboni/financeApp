@@ -1,24 +1,36 @@
 package it.unifi.financeapp.service;
 
-import it.unifi.financeapp.model.User;
-import it.unifi.financeapp.repository.UserRepository;
-import it.unifi.financeapp.repository.UserRepositoryImpl;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.hibernate.service.spi.ServiceException;
-import org.junit.jupiter.api.*;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.hibernate.service.spi.ServiceException;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
+import it.unifi.financeapp.model.User;
+import it.unifi.financeapp.repository.UserRepository;
+import it.unifi.financeapp.repository.UserRepositoryImpl;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 
 @Testcontainers
 class UserServiceIT {
@@ -99,6 +111,24 @@ class UserServiceIT {
 		User sameUser = new User("username", "differentEmail");
 		assertThrows(ServiceException.class, () -> userService.addUser(sameUser));
 	}
+	
+	@Test
+	void testNewUserConcurrent() {
+		User user = new User("username", "name", "surname", "email");
+		List<Thread> threads = IntStream.range(0,  10).mapToObj( i -> new Thread(() -> {
+			try {
+				userService.addUser(user);
+			}catch (ServiceException e) {
+				e.printStackTrace();
+			}
+		}
+		))
+				.peek(t -> t.start())
+				.collect(Collectors.toList());
+		await().atMost(10, TimeUnit.SECONDS).until(() -> threads.stream().noneMatch(t-> t.isAlive()));
+		assertThat(userService.getAllUsers()).containsExactly(user);
+	}
+
 	
 	@Test
 	void testUpdateUserWithExistingUsernameShouldThrowException() {
@@ -194,4 +224,6 @@ class UserServiceIT {
 		List<User> emptyUsers = userService.getAllUsers();
 		Assertions.assertEquals(0, emptyUsers.size());
 	}
+	
+	
 }

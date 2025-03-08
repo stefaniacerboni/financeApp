@@ -71,26 +71,4 @@ class MainFrameTest {
 		verify(categoryService, atLeastOnce()).getAllCategories();
 		verify(userService, atLeastOnce()).getAllUsers();
 	}
-
-	@Test
-	@GUITest
-	void switchingToCategoriesTabShouldNotTriggerDataLoading() {
-		// Reset mocks to clear any interactions during initialization
-		Mockito.reset(categoryService, userService, expenseService);
-
-		// Interact with the UI
-		mainFrame.getTabbedPane().setSelectedIndex(0);
-
-		// Verify that the expected method was called as a result of the interaction
-		verify(expenseService, never()).getAllExpenses();
-		verify(categoryService, never()).getAllCategories();
-		verify(userService, never()).getAllUsers();
-
-		mainFrame.getTabbedPane().setSelectedIndex(1);
-
-		verify(expenseService, never()).getAllExpenses();
-		verify(categoryService, never()).getAllCategories();
-		verify(userService, never()).getAllUsers();
-
-	}
 }

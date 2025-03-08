@@ -13,8 +13,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,10 +73,7 @@ class UserControllerIT {
 		userView.setEmail("New User Email");
 
 		// Simulating button click
-		ActionEvent e = new ActionEvent(userView.getAddUserButton(), ActionEvent.ACTION_PERFORMED, null);
-		for (ActionListener al : userView.getAddUserButton().getActionListeners()) {
-			al.actionPerformed(e);
-		}
+		userView.getAddUserButton().doClick();
 	}
 
 	@Test
@@ -100,10 +95,7 @@ class UserControllerIT {
 		userView.getUserTable().setRowSelectionInterval(0, 0); // Select the row
 
 		// Simulate delete button click
-		ActionEvent e = new ActionEvent(userView.getDeleteUserButton(), ActionEvent.ACTION_PERFORMED, null);
-		for (ActionListener al : userView.getDeleteUserButton().getActionListeners()) {
-			al.actionPerformed(e);
-		}
+		userView.getDeleteUserButton().doClick();
 
 		// Assert the row is deleted
 		List<User> userList = userService.getAllUsers();

@@ -1,8 +1,9 @@
 package it.unifi.financeapp.steps;
 
-import io.cucumber.java.AfterAll;
-import io.cucumber.java.BeforeAll;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.assertj.swing.core.matcher.JButtonMatcher;
@@ -12,12 +13,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CommonSteps {
 
-	@BeforeAll
+	@Before
 	public static void setUp() {
 		TestConfig.setUpClass();
 	}
 
-	@AfterAll
+	@After
 	public static void onTearDown() {
 		TestConfig.tearDownClass();
 	}
@@ -37,5 +38,10 @@ public class CommonSteps {
 	public void iShouldSeeInTheList(String value) {
 		TestConfig.window.table("entityTable").requireRowCount(1);
 		assertEquals(TestConfig.window.table("entityTable").target().getModel().getValueAt(0, 1), value);
+	}
+
+	@Given("^Clean the db first$")
+	public void cleanTheDbFirst() {
+		TestConfig.cleanUpDB();
 	}
 }

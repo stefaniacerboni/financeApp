@@ -1,5 +1,10 @@
 package it.unifi.financeapp.controller;
 
+import java.util.List;
+import java.util.Vector;
+
+import javax.swing.DefaultComboBoxModel;
+
 import it.unifi.financeapp.gui.ExpenseView;
 import it.unifi.financeapp.model.Category;
 import it.unifi.financeapp.model.Expense;
@@ -7,11 +12,7 @@ import it.unifi.financeapp.model.User;
 import it.unifi.financeapp.service.CategoryService;
 import it.unifi.financeapp.service.ExpenseService;
 import it.unifi.financeapp.service.UserService;
-
-import javax.swing.*;
-
-import java.util.List;
-import java.util.Vector;
+import it.unifi.financeapp.service.exceptions.InvalidExpenseException;
 
 public class ExpenseController {
 	private final ExpenseService expenseService;
@@ -53,6 +54,8 @@ public class ExpenseController {
 
 		} catch (NumberFormatException ex) {
 			expenseView.setStatus("Failed to add expense: Incorrect Amount.");
+		} catch (InvalidExpenseException iee) {
+			expenseView.setStatus("Failed to add expense: " + iee.getMessage());
 		}
 	}
 
@@ -71,6 +74,7 @@ public class ExpenseController {
 	public void updateData() {
 		updateUsers();
 		updateCategories();
+		loadExpenses();
 	}
 
 	void updateUsers() {

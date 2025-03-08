@@ -1,25 +1,28 @@
 package it.unifi.financeapp.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
 import it.unifi.financeapp.gui.CategoryPanel;
 import it.unifi.financeapp.model.Category;
 import it.unifi.financeapp.repository.CategoryRepository;
 import it.unifi.financeapp.repository.CategoryRepositoryImpl;
 import it.unifi.financeapp.service.CategoryService;
-import org.junit.jupiter.api.*;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Testcontainers
 class CategoryControllerIT {
@@ -72,11 +75,7 @@ class CategoryControllerIT {
 	private void addCategory() {
 		categoryView.setName("New Category");
 		categoryView.setDescription("New Description");
-
-		ActionEvent e = new ActionEvent(categoryView.getAddCategoryButton(), ActionEvent.ACTION_PERFORMED, null);
-		for (ActionListener al : categoryView.getAddCategoryButton().getActionListeners()) {
-			al.actionPerformed(e);
-		}
+		categoryView.getAddCategoryButton().doClick();
 	}
 
 	@Test
@@ -94,13 +93,8 @@ class CategoryControllerIT {
 		// Prepare the view with one category
 		addCategory(); // First add a category
 		categoryView.getCategoryTable().setRowSelectionInterval(0, 0); // Select the row
-
 		// Simulate delete button click
-		ActionEvent e = new ActionEvent(categoryView.getDeleteCategoryButton(), ActionEvent.ACTION_PERFORMED, null);
-		for (ActionListener al : categoryView.getDeleteCategoryButton().getActionListeners()) {
-			al.actionPerformed(e);
-		}
-
+		categoryView.getDeleteCategoryButton().doClick();
 		// Assert the row is deleted
 		List<Category> categoryList = categoryService.getAllCategories();
 		assertEquals(0, categoryList.size());

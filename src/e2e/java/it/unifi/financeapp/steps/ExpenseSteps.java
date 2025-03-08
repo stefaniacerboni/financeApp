@@ -1,11 +1,12 @@
 package it.unifi.financeapp.steps;
 
+import static org.assertj.swing.edt.GuiActionRunner.execute;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ExpenseSteps {
 
@@ -16,7 +17,7 @@ public class ExpenseSteps {
 
 	@And("I am on the Expense Management page")
 	public void iAmOnTheExpenseManagementPage() {
-		TestConfig.window.tabbedPane().target().setSelectedIndex(2);
+		execute(() -> TestConfig.window.tabbedPane().target().setSelectedIndex(2));
 	}
 
 	@When("I select the first user")
@@ -38,7 +39,7 @@ public class ExpenseSteps {
 	@When("I select the {string} expense")
 	public void iSelectTheExpense(String amount) {
 		assertEquals(amount, TestConfig.window.table("entityTable").target().getModel().getValueAt(0, 3).toString());
-		TestConfig.window.table("entityTable").target().setRowSelectionInterval(0, 0);
+		execute(() -> TestConfig.window.table("entityTable").target().setRowSelectionInterval(0, 0));
 	}
 
 	@Then("I should not see any expense in the expense list")

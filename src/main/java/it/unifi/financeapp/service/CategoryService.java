@@ -15,7 +15,7 @@ public class CategoryService {
 		this.categoryRepository = categoryRepository;
 	}
 
-	public Category addCategory(Category category) {
+	public synchronized Category addCategory(Category category) {
 		validateCategory(category);
 		try {
 			return categoryRepository.save(category);

@@ -16,8 +16,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,10 +90,12 @@ class ExpenseControllerIT {
 		expenseView.setDate("2024-09-05");
 
 		// Simulating button click
+		expenseView.getAddExpenseButton().doClick();
+		/*
 		ActionEvent e = new ActionEvent(expenseView.getAddExpenseButton(), ActionEvent.ACTION_PERFORMED, null);
 		for (ActionListener al : expenseView.getAddExpenseButton().getActionListeners()) {
 			al.actionPerformed(e);
-		}
+		}*/
 	}
 
 	@Test
@@ -118,10 +118,12 @@ class ExpenseControllerIT {
 		expenseView.getExpenseTable().setRowSelectionInterval(0, 0); // Select the row
 
 		// Simulate delete button click
+		/*
 		ActionEvent e = new ActionEvent(expenseView.getDeleteExpenseButton(), ActionEvent.ACTION_PERFORMED, null);
 		for (ActionListener al : expenseView.getDeleteExpenseButton().getActionListeners()) {
 			al.actionPerformed(e);
-		}
+		}*/
+		expenseView.getDeleteExpenseButton().doClick();
 
 		// Assert the expense is deleted
 		assertEquals(0, expenseService.getAllExpenses().size());

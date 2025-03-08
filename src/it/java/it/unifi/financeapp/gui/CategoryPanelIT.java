@@ -3,8 +3,6 @@ package it.unifi.financeapp.gui;
 import static org.assertj.swing.edt.GuiActionRunner.execute;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -84,11 +82,7 @@ class CategoryPanelIT {
 	private void addCategory() {
 		categoryView.setName(CATEGORY_NAME);
 		categoryView.setDescription(CATEGORY_DESCRIPTION);
-
-		ActionEvent e = new ActionEvent(categoryView.getAddCategoryButton(), ActionEvent.ACTION_PERFORMED, null);
-		for (ActionListener al : categoryView.getAddCategoryButton().getActionListeners()) {
-			al.actionPerformed(e);
-		}
+		categoryView.getAddCategoryButton().doClick();
 	}
 
 	@Test
@@ -128,12 +122,7 @@ class CategoryPanelIT {
 		// Prepare the view with one category
 		addCategory();
 		categoryView.getCategoryTable().setRowSelectionInterval(0, 0);
-
-		ActionEvent e = new ActionEvent(categoryView.getDeleteCategoryButton(), ActionEvent.ACTION_PERFORMED, null);
-		for (ActionListener al : categoryView.getDeleteCategoryButton().getActionListeners()) {
-			al.actionPerformed(e);
-		}
-
+		categoryView.getDeleteCategoryButton().doClick();
 		assertEquals(0, categoryView.getCategoryTable().getModel().getRowCount(),
 				"Table should be empty after deletion.");
 	}

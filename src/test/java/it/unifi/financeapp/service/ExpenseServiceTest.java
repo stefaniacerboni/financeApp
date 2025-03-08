@@ -1,10 +1,28 @@
 package it.unifi.financeapp.service;
 
-import it.unifi.financeapp.model.Category;
-import it.unifi.financeapp.model.Expense;
-import it.unifi.financeapp.model.User;
-import it.unifi.financeapp.repository.ExpenseRepository;
-import it.unifi.financeapp.service.exceptions.InvalidExpenseException;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import org.hibernate.service.spi.ServiceException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -15,12 +33,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import it.unifi.financeapp.model.Category;
+import it.unifi.financeapp.model.Expense;
+import it.unifi.financeapp.model.User;
+import it.unifi.financeapp.repository.ExpenseRepository;
+import it.unifi.financeapp.service.exceptions.InvalidExpenseException;
 import jakarta.persistence.PersistenceException;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ExpenseServiceTest {
@@ -274,6 +292,31 @@ class ExpenseServiceTest {
 			Exception exception = assertThrows(IllegalArgumentException.class, () -> expenseService.deleteExpense(1L));
 			assertEquals("Cannot delete a null expense.", exception.getMessage());
 		}
-
+		
+		@Test
+		void testNewUserConcurrent() {
+			List<Expense> expenses = Collections.synchronizedList(new ArrayList<>());
+			Expense expense = new Expense(category, user, 299.99, "2024-08-01");
+			when(expenseRepository.save(any(Expense.class))).thenAnswer(invocation -> {
+				Optional<Expense>  res = expenses.stream().filter(x -> x.equals(expense)).findFirst();
+				if(res.isPresent())
+					throw new ServiceException("Already present");
+				else
+					expenses.add(expense);
+				return null;
+			});
+			List<Thread> threads = IntStream.range(0,  10).mapToObj( i -> new Thread(() -> {
+				try {
+					expenseService.addExpense(expense);
+				}catch (ServiceException e) {
+					
+				}
+			}
+			))
+					.peek(t -> t.start())
+					.collect(Collectors.toList());
+			await().atMost(10, TimeUnit.SECONDS).until(() -> threads.stream().noneMatch(t-> t.isAlive()));
+			assertThat(expenses).containsExactly(expense);
+		}
 	}
 }

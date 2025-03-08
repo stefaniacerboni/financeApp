@@ -15,10 +15,20 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import jakarta.persistence.PersistenceException;
-import java.util.Arrays;
-import java.util.List;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,7 +59,7 @@ class UserServiceTest {
 		@Test
 		void testSaveExistingUser() {
 			User existingUser = new User("username", "email");
-			existingUser.setId(1L); // Simulate an existing category
+			existingUser.setId(1L); // Simulate an existing user
 			when(userRepository.save(existingUser)).thenReturn(existingUser);
 
 			User updatedUser = userService.addUser(existingUser);
@@ -216,6 +226,32 @@ class UserServiceTest {
 			Long id = user.getId();
 			Exception ex = assertThrows(InvalidUserException.class, () -> userService.deleteUser(id));
 			assertEquals("Cannot delete user with existing expenses", ex.getMessage());
+		}
+		
+		@Test
+		void testNewUserConcurrent() {
+			List<User> users = Collections.synchronizedList(new ArrayList<>());
+			User user = new User("Name", "Description");
+			when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
+				Optional<User>  res = users.stream().filter(x -> x.getUsername().equals(user.getUsername())).findFirst();
+				if(res.isPresent())
+					throw new ServiceException("Already present");
+				else
+					users.add(user);
+				return null;
+			});
+			List<Thread> threads = IntStream.range(0,  10).mapToObj( i -> new Thread(() -> {
+				try {
+					userService.addUser(user);
+				}catch (ServiceException e) {
+					
+				}
+			}
+			))
+					.peek(t -> t.start())
+					.collect(Collectors.toList());
+			await().atMost(10, TimeUnit.SECONDS).until(() -> threads.stream().noneMatch(t-> t.isAlive()));
+			assertThat(users).containsExactly(user);
 		}
 	}
 }

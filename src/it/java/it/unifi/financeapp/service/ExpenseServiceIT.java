@@ -5,6 +5,8 @@ import it.unifi.financeapp.model.Expense;
 import it.unifi.financeapp.model.User;
 import it.unifi.financeapp.repository.ExpenseRepository;
 import it.unifi.financeapp.repository.ExpenseRepositoryImpl;
+
+import org.hibernate.service.spi.ServiceException;
 import org.junit.jupiter.api.*;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -17,7 +19,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
@@ -117,6 +124,23 @@ class ExpenseServiceIT {
 		expenseService.deleteExpense(saved.getId());
 		Expense queriedPostDelete = expenseService.findExpenseById(saved.getId());
 		assertNull(queriedPostDelete, "The expense lingers like a bad odor even after deletion. Intriguing!");
+	}
+	
+	@Test
+	void testNewExpenseConcurrent() {
+		Expense expense = new Expense(category, user, 3.50, "2024-07-15");
+		List<Thread> threads = IntStream.range(0,  10).mapToObj( i -> new Thread(() -> {
+			try {
+				expenseService.addExpense(expense);
+			}catch (ServiceException e) {
+				e.printStackTrace();
+			}
+		}
+		))
+				.peek(t -> t.start())
+				.collect(Collectors.toList());
+		await().atMost(10, TimeUnit.SECONDS).until(() -> threads.stream().noneMatch(t-> t.isAlive()));
+		assertThat(expenseService.getAllExpenses()).containsExactly(expense);
 	}
 
 	@Test

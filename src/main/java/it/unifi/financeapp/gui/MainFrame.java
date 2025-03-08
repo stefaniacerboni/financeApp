@@ -67,6 +67,9 @@ public class MainFrame extends JFrame {
 		// Map each tab index to a Runnable action
 		Map<Integer, Runnable> tabActions = new HashMap<>();
 		tabActions.put(tabbedPane.indexOfTab("Expenses"), expenseController::updateData);
+		tabActions.put(tabbedPane.indexOfTab("Categories"), categoryController::initView);
+		tabActions.put(tabbedPane.indexOfTab("Users"), userController::initView);
+
 
 		// Attach a change listener that executes the corresponding action
 		tabbedPane.addChangeListener(e -> {

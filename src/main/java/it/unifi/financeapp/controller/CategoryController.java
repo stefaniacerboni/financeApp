@@ -1,6 +1,5 @@
 package it.unifi.financeapp.controller;
 
-
 import org.hibernate.service.spi.ServiceException;
 
 import it.unifi.financeapp.gui.CategoryView;
@@ -37,8 +36,7 @@ public class CategoryController {
 			} else {
 				categoryView.setStatus("Failed to add category.");
 			}
-		}
-		catch(ServiceException se) {
+		} catch (ServiceException se) {
 			categoryView.setStatus("Failed to add category: Persistence error.");
 		}
 

@@ -3,8 +3,6 @@ package it.unifi.financeapp.gui;
 import static org.assertj.swing.edt.GuiActionRunner.execute;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -89,10 +87,7 @@ class UserPanelIT {
 		userView.setEmail(USER_EMAIL);
 
 		// Simulating button click
-		ActionEvent e = new ActionEvent(userView.getAddUserButton(), ActionEvent.ACTION_PERFORMED, null);
-		for (ActionListener al : userView.getAddUserButton().getActionListeners()) {
-			al.actionPerformed(e);
-		}
+		userView.getAddUserButton().doClick();
 	}
 
 	@Test
@@ -136,11 +131,7 @@ class UserPanelIT {
 		userView.getUserTable().setRowSelectionInterval(0, 0); // Select the row
 
 		// Simulate delete button click
-		ActionEvent e = new ActionEvent(userView.getDeleteUserButton(), ActionEvent.ACTION_PERFORMED, null);
-		for (ActionListener al : userView.getDeleteUserButton().getActionListeners()) {
-			al.actionPerformed(e);
-		}
-
+		userView.getDeleteUserButton().doClick();
 		// Assert the row is deleted
 		assertEquals(0, userView.getUserTable().getModel().getRowCount(), "Table should be empty after deletion.");
 	}
