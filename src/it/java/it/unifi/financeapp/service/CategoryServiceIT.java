@@ -101,7 +101,7 @@ class CategoryServiceIT {
 		Assertions.assertEquals(category.getName(), savedCategory.getName());
 		Assertions.assertEquals(category.getDescription(), savedCategory.getDescription());
 	}
-	
+
 	@Test
 	void testAddCategoryWithExistingNameShouldThrowException() {
 		// Setup test data
@@ -109,9 +109,9 @@ class CategoryServiceIT {
 		Category savedCategory = categoryService.addCategory(category);
 		assertNotNull(savedCategory);
 		Category sameCategory = new Category("Coffee", "Same Category about coffee");
-		assertThrows(ServiceException.class, () -> categoryService.addCategory(sameCategory)); 
+		assertThrows(ServiceException.class, () -> categoryService.addCategory(sameCategory));
 	}
-	
+
 	@Test
 	void testUpdateCategoryWithExistingNameShouldThrowException() {
 		// Setup test data
@@ -122,7 +122,7 @@ class CategoryServiceIT {
 		Category savedNewCategory = categoryService.addCategory(newCategory);
 		assertNotNull(savedNewCategory);
 		savedNewCategory.setName("Coffee");
-		assertThrows(ServiceException.class, () -> categoryService.updateCategory(savedNewCategory)); 
+		assertThrows(ServiceException.class, () -> categoryService.updateCategory(savedNewCategory));
 	}
 
 	@Test
@@ -206,20 +206,17 @@ class CategoryServiceIT {
 		List<Category> emptyCategories = categoryService.getAllCategories();
 		Assertions.assertEquals(0, emptyCategories.size());
 	}
-	
+
 	@Test
 	void testNewCategoryConcurrent() {
 		Category category = new Category("Name", "Description");
-		List<Thread> threads = IntStream.range(0,  10).mapToObj( i -> new Thread(() -> {
+		List<Thread> threads = IntStream.range(0, 10).mapToObj(i -> new Thread(() -> {
 			try {
 				categoryService.addCategory(category);
-			}catch (ServiceException e) {
+			} catch (ServiceException e) {
 				e.printStackTrace();
 			}
-		}
-		))
-				.peek(Thread::start)
-				.collect(Collectors.toList());
+		})).peek(Thread::start).collect(Collectors.toList());
 		await().atMost(10, TimeUnit.SECONDS).until(() -> threads.stream().noneMatch(Thread::isAlive));
 		assertThat(categoryService.getAllCategories()).containsExactly(category);
 	}

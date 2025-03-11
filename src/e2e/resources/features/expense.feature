@@ -30,7 +30,7 @@ Feature: Manage Expenses
 		When I select the "100.0" expense
 		And I click the "Delete Expense" button
 		Then I should not see any expense in the expense list
-		
+
 	Scenario: Adding an expense with invalid date format
 		Given The database contains a category and a user
 		And I am on the Expense Management page

@@ -50,7 +50,7 @@ public class CommonSteps {
 	public void cleanTheDbFirst() {
 		TestConfig.cleanUpDB();
 	}
-	
+
 	@Then("I should see in the list")
 	public void iShouldSeeInTheList(DataTable dataTable) {
 		TestConfig.window.robot().waitForIdle();

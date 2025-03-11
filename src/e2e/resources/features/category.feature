@@ -10,7 +10,7 @@ Feature: Manage Categories
 		Then I should see in the list
 			| Coffee | Category about coffee |
 			| Travel | Category about travel |
-			
+
 	Scenario: Add a new category
 		Given I am on the User Management page
 		When I am on the Category Management page
@@ -27,7 +27,7 @@ Feature: Manage Categories
 		And I select the "Travel" category
 		And I click the "Delete Category" button
 		Then I should not see any category in the category list
-		
+
 	Scenario: Add an existing category
 		Given I am on the User Management page
 		And The database contains the categories with the following values

@@ -28,7 +28,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-
 import it.unifi.financeapp.gui.UserView;
 import it.unifi.financeapp.model.User;
 import it.unifi.financeapp.service.UserService;
@@ -119,7 +118,7 @@ class UserControllerTest {
 	@Nested
 	@DisplayName("Bad Cases")
 	class BadCases {
-		
+
 		@Test
 		void testDuplicatedUser() {
 			when(userView.getUsername()).thenReturn("JohnDoe");

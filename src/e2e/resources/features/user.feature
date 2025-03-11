@@ -9,7 +9,7 @@ Feature: Manage Users
 		Then I should see in the list
 			| Username1 | Name1 | Surname1 | Email1 |
 			| Username2 | Name2 | Surname2 | Email2 |
-		
+
 	Scenario: Add a new user
 		Given I am on the User Management page
 		When I enter "Username" into the "Username" field
@@ -26,7 +26,7 @@ Feature: Manage Users
 		When I select the "Username" user
 		And I click the "Delete User" button
 		Then I should not see any user in the user list
-		
+
 	Scenario: Add an existing user should rise error
 		Given The database contains the users with the following values
 			| Username1 | Name1 | Surname1 | Email1 |
@@ -36,7 +36,7 @@ Feature: Manage Users
 		And I enter "Email1" into the "Email" field
 		And I click the "Add User" button
 		Then I should see "Failed to add user: Persistence error." in the status label
-		
+
 	Scenario: Delete a user with dependencies should rise error
 		Given The database contains a category or user connected to an expense
 		And I am on the User Management page

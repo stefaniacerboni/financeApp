@@ -111,25 +111,21 @@ class UserServiceIT {
 		User sameUser = new User("username", "differentEmail");
 		assertThrows(ServiceException.class, () -> userService.addUser(sameUser));
 	}
-	
+
 	@Test
 	void testNewUserConcurrent() {
 		User user = new User("username", "name", "surname", "email");
-		List<Thread> threads = IntStream.range(0,  10).mapToObj( i -> new Thread(() -> {
+		List<Thread> threads = IntStream.range(0, 10).mapToObj(i -> new Thread(() -> {
 			try {
 				userService.addUser(user);
-			}catch (ServiceException e) {
+			} catch (ServiceException e) {
 				e.printStackTrace();
 			}
-		}
-		))
-				.peek(Thread::start)
-				.collect(Collectors.toList());
+		})).peek(Thread::start).collect(Collectors.toList());
 		await().atMost(10, TimeUnit.SECONDS).until(() -> threads.stream().noneMatch(Thread::isAlive));
 		assertThat(userService.getAllUsers()).containsExactly(user);
 	}
 
-	
 	@Test
 	void testUpdateUserWithExistingUsernameShouldThrowException() {
 		// Setup test data
@@ -224,6 +220,5 @@ class UserServiceIT {
 		List<User> emptyUsers = userService.getAllUsers();
 		Assertions.assertEquals(0, emptyUsers.size());
 	}
-	
-	
+
 }

@@ -126,7 +126,7 @@ class ExpenseServiceIT {
 		Expense queriedPostDelete = expenseService.findExpenseById(saved.getId());
 		assertNull(queriedPostDelete, "The expense lingers like a bad odor even after deletion. Intriguing!");
 	}
-	
+
 	@Test
 	void testUpdateExpense() {
 		// Create and save an initial expense

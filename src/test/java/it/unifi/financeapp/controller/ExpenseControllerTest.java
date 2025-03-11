@@ -213,8 +213,8 @@ class ExpenseControllerTest {
 			when(expenseView.getCategoryComboBox().getSelectedItem()).thenReturn(category);
 			when(expenseView.getAmount()).thenReturn("100");
 			when(expenseView.getDate()).thenReturn("aaa");
-			when(expenseService.addExpense(any(Expense.class))).thenThrow(new InvalidExpenseException("Date is invalid."));
-
+			when(expenseService.addExpense(any(Expense.class)))
+					.thenThrow(new InvalidExpenseException("Date is invalid."));
 
 			controller.addExpense();
 

@@ -110,7 +110,7 @@ class UserRepositoryTest {
 		User newUser = new User("Existing", "Different User Email");
 		assertThrows(PersistenceException.class, () -> userRepository.save(newUser));
 	}
-	
+
 	@Test
 	void testUpdateUser() {
 		User user = new User("Existing", "Existing User Description");
@@ -126,7 +126,7 @@ class UserRepositoryTest {
 		User retrieved = em.find(User.class, user.getId());
 		assertEquals("Updated Name", retrieved.getName());
 	}
-	
+
 	@Test
 	void testUpdateSameUsernameUser() {
 		User existingUser = new User("Existing", "Existing User Email");

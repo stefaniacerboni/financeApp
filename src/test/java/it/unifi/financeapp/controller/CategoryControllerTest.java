@@ -107,7 +107,7 @@ class CategoryControllerTest {
 	@Nested
 	@DisplayName("Bad Cases")
 	class BadCases {
-		
+
 		@Test
 		void testDuplicatedCategory() {
 			when(categoryView.getName()).thenReturn("Category Name");

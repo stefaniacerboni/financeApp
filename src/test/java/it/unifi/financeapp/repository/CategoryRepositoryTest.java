@@ -97,7 +97,7 @@ class CategoryRepositoryTest {
 		assertEquals(existingCategory.getName(), retrieved.getName());
 		assertEquals("Updated Description", retrieved.getDescription());
 	}
-	
+
 	@Test
 	void testSaveSameNameCategory() {
 		Category existingCategory = new Category("Existing", "Existing Category Description");
@@ -124,7 +124,7 @@ class CategoryRepositoryTest {
 		Category retrieved = em.find(Category.class, category.getId());
 		assertEquals("Updated Name", retrieved.getName());
 	}
-	
+
 	@Test
 	void testUpdateSameNameCategory() {
 		Category existingCategory = new Category("Existing", "Existing Category Description");

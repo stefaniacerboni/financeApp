@@ -92,10 +92,11 @@ class ExpenseControllerIT {
 		// Simulating button click
 		expenseView.getAddExpenseButton().doClick();
 		/*
-		ActionEvent e = new ActionEvent(expenseView.getAddExpenseButton(), ActionEvent.ACTION_PERFORMED, null);
-		for (ActionListener al : expenseView.getAddExpenseButton().getActionListeners()) {
-			al.actionPerformed(e);
-		}*/
+		 * ActionEvent e = new ActionEvent(expenseView.getAddExpenseButton(),
+		 * ActionEvent.ACTION_PERFORMED, null); for (ActionListener al :
+		 * expenseView.getAddExpenseButton().getActionListeners()) {
+		 * al.actionPerformed(e); }
+		 */
 	}
 
 	@Test
@@ -119,10 +120,11 @@ class ExpenseControllerIT {
 
 		// Simulate delete button click
 		/*
-		ActionEvent e = new ActionEvent(expenseView.getDeleteExpenseButton(), ActionEvent.ACTION_PERFORMED, null);
-		for (ActionListener al : expenseView.getDeleteExpenseButton().getActionListeners()) {
-			al.actionPerformed(e);
-		}*/
+		 * ActionEvent e = new ActionEvent(expenseView.getDeleteExpenseButton(),
+		 * ActionEvent.ACTION_PERFORMED, null); for (ActionListener al :
+		 * expenseView.getDeleteExpenseButton().getActionListeners()) {
+		 * al.actionPerformed(e); }
+		 */
 		expenseView.getDeleteExpenseButton().doClick();
 
 		// Assert the expense is deleted
