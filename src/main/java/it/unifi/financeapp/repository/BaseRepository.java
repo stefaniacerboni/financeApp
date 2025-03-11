@@ -3,16 +3,16 @@ package it.unifi.financeapp.repository;
 import java.util.List;
 
 public interface BaseRepository<T> {
-	
-    T findById(Long id);
 
-    List<T> findAll();
+	T findById(Long id);
 
-    T save(T category);
+	List<T> findAll();
 
-    T update(T category);
+	T save(T category);
 
-    void delete(T category);
+	T update(T category);
 
-    void deleteAll();
+	void delete(T category);
+
+	void deleteAll();
 }

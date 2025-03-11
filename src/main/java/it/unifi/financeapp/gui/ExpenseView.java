@@ -7,33 +7,33 @@ import it.unifi.financeapp.model.User;
 import javax.swing.*;
 
 public interface ExpenseView {
-    JComboBox<User> getUserComboBox();
+	JComboBox<User> getUserComboBox();
 
-    JComboBox<Category> getCategoryComboBox();
+	JComboBox<Category> getCategoryComboBox();
 
-    String getAmount();
+	String getAmount();
 
-    void setAmount(String amount);
+	void setAmount(String amount);
 
-    String getDate();
+	String getDate();
 
-    void setDate(String date);
+	void setDate(String date);
 
-    void setStatus(String status);
+	void setStatus(String status);
 
-    void clearForm();
+	void clearForm();
 
-    void addExpenseToTable(Expense expense);
+	void addExpenseToTable(Expense expense);
 
-    void removeExpenseFromTable(int rowIndex);
+	void removeExpenseFromTable(int rowIndex);
 
-    int getSelectedExpenseIndex();
+	int getSelectedExpenseIndex();
 
-    Long getExpenseIdFromTable(int rowIndex);
+	Long getExpenseIdFromTable(int rowIndex);
 
-    JButton getAddExpenseButton();
+	JButton getAddExpenseButton();
 
-    JButton getDeleteExpenseButton();
+	JButton getDeleteExpenseButton();
 
-    JTable getExpenseTable();
+	JTable getExpenseTable();
 }
